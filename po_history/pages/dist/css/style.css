@@ -1,0 +1,15 @@
+body{
+	font-family: OCR A Std, monospace;
+}
+label {
+	font-size: 13px;
+}
+.form-control {
+	height:30px
+}
+thead, th {
+	text-align: center;
+}
+#tbl_asset_record th, #tbl_asset_record td { 
+	white-space: nowrap; 
+}

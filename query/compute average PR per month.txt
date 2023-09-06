@@ -1,0 +1,7 @@
+SELECT 
+	DISTINCT( DATE_FORMAT(`t1`.`date_flag`,'%Y-%m-%d')) as date_flag2, 
+	(SELECT count(`t2`.`order_number`) FROM purchase_order_header  `t2` WHERE `t2`.`date_flag` LIKE  CONCAT( DATE_FORMAT(t1.date_flag , '%Y-%m-%d'), '%' ) ) as rec_count
+FROM 
+	purchase_order_header t1
+WHERE t1.`date_flag` BETWEEN '2017-01-01 00:00:01' AND '2017-01-31 23:59:59' 
+ORDER BY `t1`.`date_flag`

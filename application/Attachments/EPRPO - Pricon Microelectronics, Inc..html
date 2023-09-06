@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://systemone/eprpo/application/main.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<title>EPRPO - Pricon Microelectronics, Inc.</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/bootstrap.css">
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/main.css">
+		<!--<link href='https://fonts.googleapis.com/css?family=Pacifico|Open+Sans|Lato:400,700,300,900|Carter+One' rel='stylesheet' type='text/css'>-->
+		<link rel="shortcut icon" href="http://systemone/eprpo/resources/pricon.ico">
+		<!-- <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'> -->
+
+    	<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/bootstrap-tagsinput.css">
+
+		<link href="./EPRPO - Pricon Microelectronics, Inc._files/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="./EPRPO - Pricon Microelectronics, Inc._files/animate.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/functions.js.download"></script>
+
+		<!-- FOR DROPDOWN -->
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/chosen.css">
+		<link href="./EPRPO - Pricon Microelectronics, Inc._files/select2.css" rel="stylesheet">
+
+		<!-- DIALOG, CONFIRM, ALERTS-->
+		<link rel="stylesheet" type="text/css" href="./EPRPO - Pricon Microelectronics, Inc._files/jquery-confirm.css">
+
+		<!--DATE PICKER -->
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/jquery-ui.css">
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/jquery-ui.theme.css">
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/jquery-ui.structure.css">
+
+		<!-- DATATABLES -->
+		<link rel="stylesheet" href="./EPRPO - Pricon Microelectronics, Inc._files/dataTables.bootstrap.css">
+
+
+	</head>
+	<body style="background-color: #0F3057;" tabindex="1" class="">
+				<img src="./EPRPO - Pricon Microelectronics, Inc._files/loading.gif" height="150px" id="loading-img" style="position:fixed; z-index:10000; top:30%; left:45%;" class="hidden">
+
+			    <!-- ********************************* MOBILE NAV *********************************************************************-->
+    			<div class="visible-xs visible-sm">
+        			<div class="navbar navbar-inverse navbar-fixed-top">
+           				<div class="container">
+
+                			<div class="navbar-header">
+			                    <div class="navbar-brand">EPRPO</div>
+			                    <button class="navbar-toggle" data-toggle="collapse" data-target=".collapseThisNav">
+			                        <span class="icon-bar"></span>
+			                        <span class="icon-bar"></span>
+			                        <span class="icon-bar"></span>
+			                    </button>
+			                </div>
+
+			                <div class="collapse navbar-collapse collapseThisNav">
+			                    <ul class="nav navbar-nav">
+			                    	<li class="nosubmenu" data-file="dashboard.php"><a>Dashboard</a></li>
+			                        
+			                        <li class="dropdown hidden" data-id="system-section">
+			                            <a class="dropdown-toggle" data-toggle="dropdown">System &nbsp;<i class="fa fa-caret-down"></i></a>
+			                                <ul class="dropdown-menu">
+			                                	 <li class="nosubmenu hidden" data-file="System/configuration.php" data-id="configuration" data-js="configuration.js">
+				                                	<a>Configuration</a>
+				                                </li>
+				                                <li class="nosubmenu hidden" data-file="System/user.php" data-id="user" data-js="user.js">
+				                                	<a>User</a>
+				                                </li>
+				                                <li class="nosubmenu hidden" data-file="System/user-group.php" data-js="user-group.js" data-id="usergroup">
+				                                	<a>User Group</a>
+				                                </li>
+				                                <li class="nosubmenu hidden" data-file="System/approver.php" data-id="approver" data-js="approver.js">
+				                                	<a>Approver</a>
+				                                </li>
+				                                <li class="nosubmenu hidden" data-file="System/transaction-type.php" data-js="transaction-type.js" data-id="transaction">
+				                                	<a>Transaction Type</a>
+				                                </li>
+			                                </ul>   
+			                        </li>
+			                         <li class="dropdown hidden" data-id="maintenance-section">
+          								<a href="http://systemone/eprpo/application/main.php#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Maintenance&nbsp; <span class="caret"></span></a>
+							          	<ul class="dropdown-menu">
+								            <li class="nosubmenu hidden" data-file="Maintenance/items.php" data-js="item.js" data-id="items">
+			                                	<a>Item</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Maintenance/supplier.php" data-js="supplier.js" data-id="supplier">
+			                                	<a>Supplier</a>
+			                         		 </li>
+			                                <li class="nosubmenu hidden" data-file="Maintenance/terms-of-payment.php" data-js="terms-of-payment.js" data-id="terms">
+			                                	<a>Term of Payment</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Maintenance/section-department.php" data-js="section-department.js" data-id="department">
+			                                	<a>Section/Department</a>
+			                                </li>
+
+         								 </ul>
+       								</li>
+       								<li class="dropdown" data-id="transaction-section">
+          								<a href="http://systemone/eprpo/application/main.php#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Transaction&nbsp;<span class="caret"></span></a>
+							          	<ul class="dropdown-menu">
+										    <li class="nosubmenu" data-file="Transaction/purchase-requisition.php" data-js="purchase-requisition.js" data-id="pr">
+			                                	<a>Purchase Requisition</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Transaction/purchase-order.php" data-js="purchase-order.js" data-id="po">
+			                                	<a>Purchase Order</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Transaction/receiving.php" data-js="receiving.js" data-id="receiving">
+			                                	<a>Receiving</a>
+			                                </li>
+
+         								 </ul>
+       								</li>
+       								<li class="dropdown hidden" data-id="reports-section">
+          								<a href="http://systemone/eprpo/application/main.php#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports&nbsp; <span class="caret"></span></a>
+							          	<ul class="dropdown-menu">
+							          		<li class="nosubmenu hidden" data-file="Reports/pr-summary.php" data-js="pr-summary.js" data-id="prsumm">
+			                                	<a>Purchase Request Summary</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Reports/po-summary.php" data-js="po-summary.js" data-id="posumm">
+			                                	<a>Purchase Order Summary</a>
+			                                </li>
+			                                <li class="nosubmenu hidden" data-file="Reports/rcv-summary.php" data-js="rcv-summary.js" data-id="rcvsumm">
+			                                	<a>Receiving Summary</a>
+			                                </li>
+							          	</ul>
+							         </li>
+							         <li><a href="http://systemone/eprpo/application/logout.php">Logout</a></li>
+			                       
+
+
+
+
+			                    </ul>
+			                </div>
+
+			            </div>
+			        </div>
+			    </div>
+			    <!-- ********************************* END MOBILE NAV ******************************************************************-->
+
+
+
+
+
+			   <!-- ************************************ SIDEBAR NAV ****************************************************************** -->
+			   <div id="sidebar">
+			   		<ul id="sidebar-nav">
+			   			<li class="sidebarlogo">
+			   				<a href="http://www.pricon.com.ph/"><img class="img img-responsive" src="./EPRPO - Pricon Microelectronics, Inc._files/logo.png"></a>
+			   			</li>
+			   			<li class="nosubmenu" data-file="dashboard.php" data-js="dashboard.js" id="dash"><img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/home.png"><span>Dashboard</span></li>
+			   			<li class="withsubmenu hidden" id="system-section"><img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/system.png">System</li>
+	                            <ul class="submenu">
+	                                <li class="hidden" data-file="System/configuration.php" id="configuration" data-js="configuration.js">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Configuration
+	                                </li>
+	                                <li class="hidden" data-file="System/user.php" id="user" data-js="user.js">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">User
+	                                </li>
+	                                <li class="hidden" data-file="System/user-group.php" data-js="user-group.js" id="usergroup">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">User Group
+	                                </li>
+	                                <li class="hidden" data-file="System/approver.php" id="approver" data-js="approver.js">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Approver
+	                                </li>
+	                                <li class="hidden" data-file="System/transaction-type.php" data-js="transaction-type.js" id="transaction">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Transaction Type
+	                                </li>
+	                            </ul>
+	                    <li class="withsubmenu hidden" id="maintenance-section"><img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/maintenance.png">Maintenance</li>
+	                            <ul class="submenu">
+	                                <li class="hidden" data-file="Maintenance/items.php" data-js="item.js" id="items">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Item
+	                                </li>
+	                                <li class="hidden" data-file="Maintenance/supplier.php" data-js="supplier.js" id="supplier">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Supplier
+	                                </li>
+	                                <li class="hidden" data-file="Maintenance/terms-of-payment.php" data-js="terms-of-payment.js" id="terms">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Term of Payment
+	                                </li>
+	                                <li class="hidden" data-file="Maintenance/section-department.php" data-js="section-department.js" id="department">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Section/Department
+	                                </li>
+	                                <li class="hidden" data-file="Maintenance/ship-via.php" data-js="ship-via.js" id="shipvia">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Ship Via
+	                                </li>
+	                                <li class="hidden" data-file="Maintenance/mode-of-shipment.php" data-js="mode-of-shipment.js" id="modeofshipment">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Mode of Shipment
+	                                </li>
+	                            </ul>
+	                    <li class="withsubmenu" id="transaction-section"><img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/approver.png">Transaction</li>
+	                            <ul class="submenu">
+	                                <li class="" data-file="Transaction/purchase-requisition.php" data-js="purchase-requisition.js" id="pr">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Purchase Requisition
+	                                </li>
+	                                <li class="hidden" data-file="Transaction/purchase-order.php" data-js="purchase-order.js" id="po">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Purchase Order
+	                                </li>
+	                                <li class="hidden" data-file="Transaction/receiving.php" data-js="receiving.js" id="receiving">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Receiving
+	                                </li>
+
+	                            </ul>
+	                    <li class="withsubmenu hidden" id="reports-section"><img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/po.png">Reports</li>
+	                            <ul class="submenu">
+	                                <li class="hidden" data-file="Reports/pr-summary.php" data-js="pr-summary.js" id="prsumm">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Purchase Request Summary</li>
+	                                <li class="hidden" data-file="Reports/po-summary.php" data-js="po-summary.js" id="posumm">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Purchase Order Summary</li>
+	                                <li class="hidden" data-file="Reports/rcv-summary.php" data-js="rcv-summary.js" id="rcvsumm">
+	                                	<img class="img" src="./EPRPO - Pricon Microelectronics, Inc._files/folder_64.png">Receiving Summary</li>
+	                            </ul>
+
+			   		</ul>
+			   </div>
+
+			   <!-- ************************************END SIDEBAR NAV ****************************************************************** -->
+
+
+
+
+
+			   <!-- ************************************************ HEADER ******************************************** -->
+			   <div class="topheader">
+			   			<div class="user-header hidden-xs hidden-sm">
+			   				<div class="user-header-inner">
+				   				<i class="fa fa-user fa-2x" style="padding-right:5px; font-size:1.5em;"></i>
+				   				<span>
+				   					Hello, Eric				   				</span>!&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;October 30, 2017 Monday&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+				   				<span class="account-settings-link pointer" id="usersettings" title="User Settings">
+				   					Settings
+				   				</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+				   				<a class="signout" href="http://systemone/eprpo/application/logout.php">
+				   					<i class="fa fa-sign-out fa-2x" style="padding-right:5px; font-size:1.2em"></i>Sign out
+				   				</a>
+				   				
+				   			</div>	   				
+			   			</div>
+			   </div>
+
+			   <!-- ************************************************ HEADER ******************************************** -->
+
+
+
+
+
+			   <!-- ******************************************* CONTENT ****************************************************************-->
+
+				<div class="content" id="content" style="overflow: auto; height: 630px;"> <script type="text/javascript">
+				var loggedin = true;
+				if(loggedin=='false'||loggedin==false||loggedin==0){
+					window.location.href = '../index.php?0jksleo03lDnlei=1&sessionExpired=true';
+				}
+</script><div class="header-page">
+	<div class="header-page-inner">
+		Purchase Requisition
+		<div class="button-group">
+			<button class="btn btn-sm btn-blue2 mybtn border-right" id="addpr">
+				<i class="fa fa-plus fa-lg fa-space"></i>New Purchase Requisition
+			</button>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+    <div class="pageContent">
+    	<div class="panel panel-primary mypanel">
+    			<div class="panel-body">
+
+	    			<div class="col-sm-12">
+										<div id="prtable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer"><div class="row"><div class="col-sm-6"><div class="dataTables_length" id="prtable_length"><label>Show <select name="prtable_length" aria-controls="prtable" class="form-control input-xs"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-6"><div id="prtable_filter" class="dataTables_filter"><label>Search<input type="search" class="form-control input-xs" placeholder="" aria-controls="prtable"></label></div></div></div><div class="row"><div class="col-sm-12"><div class="table-responsive"><div class="dataTables_scroll"><div class="dataTables_scrollHead" style="overflow: hidden; position: relative; border: 0px; width: 100%;"><div class="dataTables_scrollHeadInner" style="box-sizing: content-box; width: 1156px; padding-right: 0px;"><table class="table table-striped table-hover table-bordered no-side-borders table-condensed mytable dataTable no-footer" style="width: 1156px; margin-left: 0px;" role="grid"><thead>
+												<tr role="row"><th class="text-center column-nosort sorting_disabled" rowspan="1" colspan="1" style="width: 56.0104px;" aria-label="ACTIONS">ACTIONS</th><th class="clickable text-center sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 65.0208px;" aria-label="STATUS: activate to sort column ascending">STATUS</th><th class="text-nowrap clickable sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 121.021px;" aria-label="PR NUMBER: activate to sort column ascending">PR NUMBER</th><th class="text-nowrap clickable text-center sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 84.0208px;" aria-label="REVISION NO.: activate to sort column ascending">REVISION NO.</th><th class="text-nowrap clickable text-center sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 116.021px;" aria-label="REQUISITION DATE: activate to sort column ascending">REQUISITION DATE</th><th class="clickable sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 291.021px;" aria-label="DESCRIPTION: activate to sort column ascending">DESCRIPTION</th><th class="clickable sorting" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 64.0208px;" aria-label="REMARKS: activate to sort column ascending">REMARKS</th><th class="clickable sorting_desc" tabindex="0" aria-controls="prtable" rowspan="1" colspan="1" style="width: 144.01px;" aria-sort="descending" aria-label="LAST MADE CHANGES: activate to sort column ascending">LAST MADE CHANGES</th></tr>
+											</thead></table></div></div><div class="dataTables_scrollBody" style="position: relative; overflow: auto; width: 100%; height: 350px;"><table class="table table-striped table-hover table-bordered no-side-borders table-condensed mytable dataTable no-footer" id="prtable" style="width: 100%;" role="grid" aria-describedby="prtable_info"><thead>
+												<tr role="row" style="height: 0px;"><th class="text-center column-nosort sorting_disabled" rowspan="1" colspan="1" style="width: 56.0104px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="ACTIONS"><div class="dataTables_sizing" style="height:0;overflow:hidden;">ACTIONS</div></th><th class="clickable text-center sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 65.0208px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="STATUS: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">STATUS</div></th><th class="text-nowrap clickable sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 121.021px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="PR NUMBER: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">PR NUMBER</div></th><th class="text-nowrap clickable text-center sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 84.0208px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="REVISION NO.: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">REVISION NO.</div></th><th class="text-nowrap clickable text-center sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 116.021px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="REQUISITION DATE: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">REQUISITION DATE</div></th><th class="clickable sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 291.021px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="DESCRIPTION: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">DESCRIPTION</div></th><th class="clickable sorting" aria-controls="prtable" rowspan="1" colspan="1" style="width: 64.0208px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-label="REMARKS: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">REMARKS</div></th><th class="clickable sorting_desc" aria-controls="prtable" rowspan="1" colspan="1" style="width: 144.01px; padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px;" aria-sort="descending" aria-label="LAST MADE CHANGES: activate to sort column ascending"><div class="dataTables_sizing" style="height:0;overflow:hidden;">LAST MADE CHANGES</div></th></tr>
+											</thead>
+											
+											<tbody>
+												
+											<tr class="tablerow pointer odd" revnumber="2" prnotes="&lt;&gt; Materials: Stainless SUS 304
+&lt;&gt; Please changed on March&amp;#3917 expenses" id="YF-PROD-PR1702-016" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" dept="YF Production" canceleddate="May 15, 2017 11:04:50 AM" prtotal="548.93" requisitioner="Eric  Gamboa" currency="USD" remarks="Modification of Die set rack thru additional layer" stat="CANCELED" type="REGULAR" reqdate="Feb 23, 2017" dateneeded="Mar 13, 2017" lastmodified="Feb 23, 2017 02:58:40 PM" sh1="Marvin I. Cruz " sh2="Alice B. Rivero " conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo " svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"><img prnum="YF-PROD-PR1702-016" style="margin-left:3px" class="nopadding cancelprbtn" src="./EPRPO - Pricon Microelectronics, Inc._files/block_32.png" data-toggle="modal" href="#prcancellationmodal" title="Cancel PR"></td><td class=" clickable text-center"><b>CANCELED</b></td><td class=" clickable">YF-PROD-PR1702-016</td><td class=" clickable text-center">2</td><td class=" clickable text-center">Feb 23, 2017</td><td class=" clickable">Modification of Existing Die Sets Rack. (No: 1)</td><td class=" clickable"></td><td class="clickable sorting_1">May 15, 2017 08:27:42 AM</td></tr><tr class="tablerow pointer even" revnumber="0" prnotes="Repeat order" id="YF-PROD-PR1705-002" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="2,800.00" requisitioner="Eric  Gamboa" currency="PHP" remarks="Additional layer of tools and jigs shelves" stat="APPROVED" type="REGULAR" reqdate="May 09, 2017" dateneeded="May 16, 2017" lastmodified="May 09, 2017 08:37:27 AM" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 11:07:05 AM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 12:51:42 PM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 04:33:33 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1705-002</td><td class=" clickable text-center">0</td><td class=" clickable text-center">May 09, 2017</td><td class=" clickable">Ord. plyboard</td><td class=" clickable"></td><td class="clickable sorting_1">May 10, 2017 04:33:33 PM</td></tr><tr class="tablerow pointer odd" revnumber="0" prnotes="Repeat order" id="YF-PROD-PR1705-003" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="65.00" requisitioner="Eric  Gamboa" currency="USD" remarks="Edging materials for addtional layer of tools and jigs shelves" stat="APPROVED" type="REGULAR" reqdate="May 09, 2017" dateneeded="May 16, 2017" lastmodified="May 09, 2017 08:43:48 AM" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 11:07:25 AM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 12:51:23 PM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 04:31:00 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1705-003</td><td class=" clickable text-center">0</td><td class=" clickable text-center">May 09, 2017</td><td class=" clickable">Edging Gray</td><td class=" clickable"></td><td class="clickable sorting_1">May 10, 2017 04:31:00 PM</td></tr><tr class="tablerow pointer even" revnumber="0" prnotes="Repeat order" id="YF-PROD-PR1705-005" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="1,477.20" requisitioner="Eric  Gamboa" currency="USD" remarks="Replacement of damaged NG box" stat="APPROVED" type="REGULAR" reqdate="May 09, 2017" dateneeded="May 16, 2017" lastmodified="May 09, 2017 03:07:00 PM" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 11:07:55 AM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 12:51:04 PM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 10, 2017 04:30:33 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1705-005</td><td class=" clickable text-center">0</td><td class=" clickable text-center">May 09, 2017</td><td class=" clickable">Labor Cost</td><td class=" clickable"></td><td class="clickable sorting_1">May 10, 2017 04:30:33 PM</td></tr><tr class="tablerow pointer odd" revnumber="0" prnotes="repeat order" id="YF-PROD-PR1705-004" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" dept="YF Production" canceleddate="" prtotal="0.00" requisitioner="Eric  Gamboa" currency="PHP" remarks="Materials for fabrication of additional layer of tools and jigs shelves" stat="DRAFT" type="REGULAR" reqdate="" dateneeded="May 16, 2017" lastmodified="" sh1="   " sh2="   " conf="   " gm="   " avp="   " svp="   " pr="   " reasonforcancellation="" role="row"><td class=" text-center"><img prnum="YF-PROD-PR1705-004" class="nopadding editpurchaserequisition " src="./EPRPO - Pricon Microelectronics, Inc._files/File_Edit.png" title="Edit Purchase Requisition"><img prnum="YF-PROD-PR1705-004" style="margin-left:3px" class="nopadding cancelprbtn" src="./EPRPO - Pricon Microelectronics, Inc._files/block_32.png" data-toggle="modal" href="#prcancellationmodal" title="Cancel PR"></td><td class=" clickable text-center"><b>DRAFT</b></td><td class=" clickable">YF-PROD-PR1705-004</td><td class=" clickable text-center">0</td><td class=" clickable text-center"></td><td class=" clickable"></td><td class=" clickable"></td><td class="clickable sorting_1">May 09, 2017 09:32:51 AM</td></tr><tr class="tablerow pointer even" revnumber="0" prnotes="N/A" id="YF-PROD-PR1705-001" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="480.00" requisitioner="Eric  Gamboa" currency="PHP" remarks="Pilot bulb for indicator light of AIDA press machine" stat="APPROVED" type="URGENT" reqdate="May 03, 2017" dateneeded="May 06, 2017" lastmodified="" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 03, 2017 06:34:25 PM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 04, 2017 11:06:43 AM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 04, 2017 01:08:51 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1705-001</td><td class=" clickable text-center">0</td><td class=" clickable text-center">May 03, 2017</td><td class=" clickable">Pilot Bulb</td><td class=" clickable"></td><td class="clickable sorting_1">May 04, 2017 01:08:51 PM</td></tr><tr class="tablerow pointer odd" revnumber="0" prnotes="Improvement on cost of FCT release jig" id="YF-PROD-PR1704-010" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="169.28" requisitioner="Eric  Gamboa" currency="USD" remarks="FCT release jig for FI-X adapter models" stat="APPROVED" type="REGULAR" reqdate="Apr 26, 2017" dateneeded="May 05, 2017" lastmodified="" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 27, 2017 08:46:29 AM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 03, 2017 09:10:06 AM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;May 04, 2017 12:15:34 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1704-010</td><td class=" clickable text-center">0</td><td class=" clickable text-center">Apr 26, 2017</td><td class=" clickable">Fabrication of  Released Connector monitoring jig # 1</td><td class=" clickable"></td><td class="clickable sorting_1">May 04, 2017 12:15:34 PM</td></tr><tr class="tablerow pointer even" revnumber="1" prnotes="Solder tip spare parts designed for fine pitch" id="YF-PROD-PR1607-006" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" dept="YF Production" canceleddate="May 04, 2017 11:17:20 AM" prtotal="189.10" requisitioner="Eric  Gamboa" currency="USD" remarks="Solder tip spare parts designed for fine pitch" stat="CANCELLED" type="REGULAR" reqdate="Jul 14, 2016" dateneeded="Jul 21, 2016" lastmodified="" sh1="Marvin I. Cruz " sh2="Alice B. Rivero " conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo " svp="Not Required " pr="Not Required " reasonforcancellation="Double entry" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>CANCELLED</b></td><td class=" clickable">YF-PROD-PR1607-006</td><td class=" clickable text-center">1</td><td class=" clickable text-center">Jul 14, 2016</td><td class=" clickable">Plato Soldering Tip</td><td class=" clickable"></td><td class="clickable sorting_1">May 04, 2017 11:17:20 AM</td></tr><tr class="tablerow pointer odd" revnumber="0" prnotes="Repeat order" id="YF-PROD-PR1704-009" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="40.00" requisitioner="Eric  Gamboa" currency="USD" remarks="Replacement of bunny suit holder" stat="APPROVED" type="REGULAR" reqdate="Apr 26, 2017" dateneeded="May 05, 2017" lastmodified="" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 27, 2017 08:46:46 AM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 27, 2017 09:04:06 AM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 28, 2017 08:10:10 AM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1704-009</td><td class=" clickable text-center">0</td><td class=" clickable text-center">Apr 26, 2017</td><td class=" clickable">ILPJ-201</td><td class=" clickable"></td><td class="clickable sorting_1">Apr 28, 2017 08:10:10 AM</td></tr><tr class="tablerow pointer even" revnumber="0" prnotes="Consumable parts" id="YF-PROD-PR1704-008" rejectedby="" rejectionreason="" withdiscrepancy="false" forrevision="0" lastapprovedby="Assistant VP: Joel C. Padullo" dept="YF Production" canceleddate="" prtotal="15,000.00" requisitioner="Eric  Gamboa" currency="PHP" remarks="Screw of adapter push plate" stat="APPROVED" type="REGULAR" reqdate="Apr 21, 2017" dateneeded="Apr 28, 2017" lastmodified="Apr 21, 2017 11:50:21 AM" sh1="Marvin I. Cruz &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 25, 2017 04:10:53 PM&lt;br&gt;" sh2="Alice B. Rivero &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 25, 2017 04:24:35 PM&lt;br&gt;" conf="Not Required " gm="Not Applicable" avp="Joel C. Padullo &lt;br&gt;&lt;span style=&quot;color:green; font-weight:bold&quot;&gt;APPROVED&lt;/span&gt;&lt;br&gt;Apr 26, 2017 12:43:28 PM&lt;br&gt;" svp="Not Required " pr="Not Required " reasonforcancellation="" role="row"><td class=" text-center"></td><td class=" clickable text-center"><b>APPROVED</b></td><td class=" clickable">YF-PROD-PR1704-008</td><td class=" clickable text-center">0</td><td class=" clickable text-center">Apr 21, 2017</td><td class=" clickable">Misumi</td><td class=" clickable"></td><td class="clickable sorting_1">Apr 26, 2017 12:43:28 PM</td></tr></tbody>
+										</table></div></div><div id="prtable_processing" class="dataTables_processing panel panel-default" style="display: none;">Processing...</div></div></div></div><div class="row"><div class="col-sm-5"><div class="dataTables_info" id="prtable_info" role="status" aria-live="polite">Showing 51 to 60 of 6,917 entries</div></div><div class="col-sm-7"><div class="dataTables_paginate paging_full_numbers" id="prtable_paginate"><ul class="pagination pagination-sm"><li class="paginate_button first" id="prtable_first"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="0" tabindex="0">&lt;&lt;</a></li><li class="paginate_button previous" id="prtable_previous"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="1" tabindex="0">&lt;</a></li><li class="paginate_button "><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="2" tabindex="0">1</a></li><li class="paginate_button disabled" id="prtable_ellipsis"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="3" tabindex="0">…</a></li><li class="paginate_button "><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="4" tabindex="0">5</a></li><li class="paginate_button active"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="5" tabindex="0">6</a></li><li class="paginate_button "><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="6" tabindex="0">7</a></li><li class="paginate_button disabled" id="prtable_ellipsis"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="7" tabindex="0">…</a></li><li class="paginate_button "><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="8" tabindex="0">692</a></li><li class="paginate_button next" id="prtable_next"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="9" tabindex="0">&gt;</a></li><li class="paginate_button last" id="prtable_last"><a href="http://systemone/eprpo/application/main.php#" aria-controls="prtable" data-dt-idx="10" tabindex="0">&gt;&gt;</a></li></ul></div></div></div></div>
+	    			</div>
+	    		</div>
+	    </div>
+
+	</div>
+</div>
+
+<div class="modal fade" id="prblowup" aria-hidden="true" style="display: none;">
+	<div class="modal-dialog modal-lg ui-draggable ui-draggable-handle">
+		<div class="modal-content">
+			<form class="form-horizontal">
+				<div class="modal-header">
+					<div class="page-title">
+						Purchase Requisition
+						<button class="close" data-dismiss="modal">×</button>
+					</div>
+				</div>
+				<div class="modal-body">
+								<div class="tabpane-white margin-top-20 margin-bottom-10" id="generalinfosection">
+										<ul class="nav nav-tabs">
+										  <li role="presentation" class="active" data-pane="#pr-geninfo" id="pr-geninfotab"><a>General Information</a></li>
+										  <li role="presentation" data-pane="#pr-approverspane"><a>Approvers</a></li>
+										  <li role="presentation" class="hidden" data-pane="#pr-revisionremarks" id="pr-revisionremarkstab"><a>Revision Remarks</a></li>
+										  <li role="presentation" class="hidden" data-pane="#pr-discrepancy" id="pr-discrepancytab"><a>Discrepancy Details</a></li>
+										  <li role="presentation" class="hidden" data-pane="#pr-rejectionremarks" id="pr-rejectionremarkstab"><a>Rejection Remarks</a></li>
+										</ul>
+										<div class="tab-panes">
+											<div class="pane active" id="pr-geninfo">
+												<div class="pane-content">
+													<div class="col-sm-6">
+														<div class="form-group">
+															<label class="control-label col-sm-4">Requisition No.</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="prnumber">YF-PROD-PR1705-005</span>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="control-label col-sm-4">Status</label>
+															<div class="col-sm-8">
+																<span class="form-control-static" id="reqstat">APPROVED</span>
+															</div>
+														</div>
+
+														<div class="form-group">
+															<label class="control-label col-sm-4">Requisitioner</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="requisitioner">Eric  Gamboa</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Department</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="dept">YF Production</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Currency</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="reqcurrency">USD</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Justification</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="justification">Replacement of damaged NG box</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Revision Number</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="revprnumber">0</span>
+															</div>
+														</div>
+														<br>
+													</div>
+													<div class="col-sm-6">
+														<div class="form-group">
+															<label class="control-label col-sm-4">Type</label>
+															<div class="col-sm-8">
+																 <span id="reqtype" class="label label-primary">REGULAR</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Requisition Date</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="reqdate">May 09, 2017</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Date Needed</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="reqdateneeded">May 16, 2017</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Last Modified</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="lastmodified">May 09, 2017 03:07:00 PM</span>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="control-label col-sm-4">PR Remarks</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="prnotes">Repeat order</span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Date Cancelled</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="datecanceled"></span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-4">Reason for Cancellation</label>
+															<div class="col-sm-8">
+																 <span class="form-control-static" id="cancellationreason"></span>
+															</div>
+														</div>
+
+														<br>
+													</div>
+
+												</div>
+											</div>
+											<div class="pane" id="pr-approverspane">
+												<div class="pane-content">
+													<div class="col-sm-6">
+														
+														<div class="form-group">
+															<label class="control-label col-sm-5">Section Head</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static sectionhead1">Marvin I. Cruz <br><span style="color:green; font-weight:bold">APPROVED</span><br>May 10, 2017 11:07:55 AM<br></span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-5">Section Head</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static sectionhead2">Alice B. Rivero <br><span style="color:green; font-weight:bold">APPROVED</span><br>May 10, 2017 12:51:04 PM<br></span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-5">Conformance Head</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static confhead">Not Required </span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-5">General Manager</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static genman">Not Applicable</span>
+															</div>
+														</div>
+														
+														
+														<br>
+													</div>
+													<div class="col-sm-6">
+														<div class="form-group">
+															<label class="control-label col-sm-5">Vice President</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static asstvp">Joel C. Padullo <br><span style="color:green; font-weight:bold">APPROVED</span><br>May 10, 2017 04:30:33 PM<br></span>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<label class="control-label col-sm-5">Chairman</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static srvp">Not Required </span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-5">President</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static president">Not Required </span>
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-sm-5">Last approved/rejected by</label>
+															<div class="col-sm-7">
+																 <span class="form-control-static lastapprovedby" id="prnumber">Assistant VP: Joel C. Padullo</span>
+															</div>
+														</div>
+													</div>
+
+
+													
+
+												</div>
+											</div>
+											<div class="pane hidden" id="pr-revisionremarks">
+											</div>
+											<div class="pane hidden" id="pr-discrepancy">
+											</div>
+											<div class="pane hidden" id="pr-rejectionremarks">
+												
+													
+														<div class="form-group">
+															<label class="control-label col-md-2">Approver</label>
+															<div class="col-md-10">
+																<input type="text" id="rejectedby" class="form-control" disabled="">
+															</div>
+														</div>
+														<div class="form-group">
+															<label class="control-label col-md-2">Reason for Rejection</label>
+															<div class="col-md-10">
+																<textarea class="form-control" rows="4" id="reasonforrejection" readonly=""></textarea>
+															</div>
+														</div>
+												
+											</div>
+										</div>
+								</div>
+								<br>
+								<div class="tabpane-white margin-top-20 margin-bottom-10" id="prdetails">
+										<ul class="nav nav-tabs">
+										  <li role="presentation" class="" data-pane="#lineitemspane"><a>Line Items</a></li>
+										  <li role="presentation" data-pane="#allocationsummarypane"><a>Allocation Summary</a></li>
+										  <li role="presentation" data-pane="#attachmentspane" class="active"><a>Attachments</a></li>
+										</ul>
+										<div class="tab-panes">
+											<div class="pane" id="lineitemspane">
+												<div class="pane-content">
+													<div class="tablewithbuttons">
+														<div class="table-wrapper" style="height:200px">
+															<table class="table table-striped table-condensed mytable table-bordered no-side-borders table-hover">
+																<thead>
+																	<tr>
+																		<th class="text-center">LINE</th>
+																		<th>ITEM CODE</th>
+																		<th>NAME</th>
+																		<th>DESCRIPTION</th>
+																		<th>SUPPLIER</th>
+																		<th>CLASSF'N CODE</th>
+																		<th class="text-right">QTY</th>
+																		<th class="text-center">UOM</th>
+																		<th class="text-center">CURRENCY</th>
+																		<th class="text-right">UNIT PRICE</th>
+																		<th class="text-right">AMOUNT</th>
+																		<th class="text-center">PO NUMBER</th>
+																		<th class="text-center">STATUS</th>
+																	</tr>
+																</thead>
+																<tbody id="cartitems"><!-- THIS PAGE IS LOADED IN #CARTITEMS(PURCHASE REQUISITION VIEW) -->
+ <tr title="Item Description: 
+For Fabrication of Crylic Plastic computer box">
+    				<td class="text-center">1</td>
+    				<td>15875</td>
+    				<td>Labor Cost </td>
+                    <td>For Fabrication of Crylic Plastic computer box</td>
+                    <td>MILLENIUM TOOLINGS &amp; FABRICATION SERVICES</td>
+                    <td class="text-center">FSE</td>
+    				<td class="text-right">10</td>
+    				<td class="text-center">PCS</td>
+                    <td class="text-center">USD</td>
+    				<td class="text-right">147.72000</td>
+    				<td class="text-right">1,477.20</td>
+    				<td class="text-center text-nowrap">PO-04349</td>
+                    <td class="text-center text-nowrap">SERVED</td>
+    			  </tr></tbody>
+															</table>
+														</div>
+														<div class="row">
+															<div class="col-md-offset-5 col-md-7" style="margin-top: 10px;">
+																<form class="form-horizontal">
+																	<div class="form-group">
+																		<label class="control-label col-xs-5">Total Amount</label> 
+																		<div class="col-xs-7">
+																			<div class="input-group">
+																				<div class="input-group-addon bold" id="prblowupcurrencysymbol"><b>USD</b></div>
+																				<input type="text" class="form-input form-control text-right disabled" id="grandtotal" readonly="">
+																			</div>
+																			
+																		</div>
+																	</div>			
+																</form>
+															</div>
+														</div>
+													</div>
+													
+												</div>
+											</div>
+											<div class="pane" id="allocationsummarypane">
+												<div class="pane-content">
+													<div class="table-wrapper" style="height:200px">
+			                                            <table class="table table-striped table-condensed mytable">
+			                                                <thead>
+			                                                    <tr>
+			                                                        <th class="text-center">LINE</th>
+			                                                        <th>DEPARTMENT</th>
+			                                                        <th class="text-center">PERCENTAGE %</th>
+			                                                        <th>REMARKS</th>
+			                                                    </tr>
+
+			                                                </thead>
+			                                                <tbody id="allocationsummary"> <tr>
+            <td class="text-center">1</td>
+            <td>YF</td>
+            <td class="text-center">100</td>
+            <td>N/A</td>
+            </tr></tbody>
+			                                            </table>
+			                                        </div>
+												</div>
+											</div>
+											<div class="pane active" id="attachmentspane">
+												<div class="pane-content">
+													<div class="table-wrapper" style="height:200px">
+			                                            <table class="table table-striped table-condensed table-hover mytable">
+			                                                <thead>
+			                                                    <tr>
+			                                                        <th style="width:100px;"></th>
+			                                                        <th>FILE</th>
+			                                                        <th>DESCRIPTION</th>
+			                                                        <th>OTHER DESCRIPTION</th>
+			                                                    </tr>
+			                                                </thead>
+			                                                <tbody id="attachmentstable"> <tr class="attachmentrow">
+					<td class="text-center">
+						<form action="http://systemone/eprpo/application/Attachments/download.php" method="post">
+							<input type="hidden" name="file" value="PMI-15-152(3).pdf">
+							<input class="btn btn-xs btn-default" type="submit" value="download" name="downloadbtn">
+						</form>
+					</td>
+					<td>PMI-15-152(3).pdf</td>
+					<td></td>
+					<td>Quotation</td>
+				</tr></tbody>
+			                                            </table>
+			                                        </div> 
+												</div>
+											</div>
+										</div>
+								</div>
+				</div></form>
+			
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="followupmodal">
+    <div class="modal-dialog ui-draggable ui-draggable-handle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="page-title">
+                    Follow-up Approval
+                    <button class="close" data-dismiss="modal">×</button>
+                </div>
+            </div>
+            <div class="modal-body">
+            	<input type="hidden" id="followup-prnumber">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="errordiv"></div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Message</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-input form-control followupmessage" rows="4"></textarea>
+                    </div>
+                </div>
+                                    
+            </div>
+            <div class="modal-footer">
+                            <div class="text-center">
+                                <button class="btn btn-blue2 mybtn" id="followup-confirmbtn">Send</button>
+                                <button class="btn btn-blue2 mybtn modal-cancelbtn">Cancel</button>
+                            </div>
+            </div>
+        </div>
+    </div>  
+</div>
+
+
+<div class="modal fade" id="prcancellationmodal">
+    <div class="modal-dialog ui-draggable ui-draggable-handle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="page-title">
+                    PR Cancellation
+                    <button class="close" data-dismiss="modal">×</button>
+                </div>
+            </div>
+            <div class="modal-body">
+            	<div class="form-horizontal">
+            		<input type="hidden" id="prcancellationmodal-prnumber">
+	                <div class="form-group">
+	                    <div class="col-sm-12">
+	                        <div class="errordiv"></div>
+
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label class="control-label col-md-3 col-sm-3">PR Number</label>
+	                    <div class="col-md-5 col-sm-8">
+	                        <input type="text" class="form-input form-control prcancellationmodal-prnumber" disabled="">
+	                    </div>
+	                </div>
+
+	                <div class="form-group">
+	                    <label class="control-label col-sm-3">Reason</label>
+	                    <div class="col-sm-8">
+	                        <textarea class="form-input form-control reasonofcancellation" rows="4"></textarea>
+	                    </div>
+	                </div>
+	            </div>
+                                    
+            </div>
+            <div class="modal-footer">
+                            <div class="text-center">
+                                <button class="btn btn-blue2 mybtn" id="prcancellationmodal-confirmbtn">Confirm</button>
+                                <button class="btn btn-blue2 mybtn modal-cancelbtn">Close</button>
+                            </div>
+            </div>
+        </div>
+    </div>  
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+	sliceTable(rowperpage,'#prtable','#prpagination');
+	userAccess();
+	$('.modal-dialog').draggable();
+	$('#prtable').DataTable({
+				pagingType:"full_numbers",
+				aaSorting: [[ 7, "desc" ]],
+	        	columnDefs: [
+				      				 {
+								        targets: "column-nosort", 
+								        orderable: false,
+								     }
+							 ],
+
+	            "columns": [
+		            			
+						        {
+						        	data:'ACTION',
+						        	"className":'text-center',
+						            "mRender":function(data){
+                            				return data;
+                            			}
+						        },
+						        
+		                        { data: 'requisition_status',
+		                          "className":'clickable text-center' 
+		                        },
+		                        { data: 'requisition_number',
+		                          "className":'clickable'
+		                        },
+		                        { data: 'next_revision_series',
+		                          "className":'clickable text-center' 
+		                        },
+		                        { data: 'requisition_date',
+		                          "className":'clickable text-center' 
+		                        },
+		                        { data: 'pr_description', 
+		                          "className":'clickable'
+		                        },
+		                        { data: 'pr_notes',
+		                          "className":'clickable' 
+		                        },
+		                        { data: 'last_made_changes',
+		                          "className":'clickable' 
+		                        }
+		                   ],
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+				                url: "Other/ajax/purchase-requisition.php",
+				                type: 'POST'
+				        },
+				"sScrollY": "350px",
+				"sScrollX": "auto"
+		});
+
+	
+</script></div>
+
+			   <!-- ************************************ END OF CONTENT ********************************************************************-->
+
+
+
+		
+
+
+
+
+
+		<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/jquery-1.11.3.min.js.download"></script>
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/bootstrap.min.js.download"></script>
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/jsfunctions.js.download"></script>
+
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/bootstrap-notify.min.js.download"></script>
+
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/jquery-confirm.js.download"></script> 	
+
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/jquery-ui.js.download"></script>
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/jquery-ui.js(1).download"></script>
+
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/bootstrap-tagsinput.min.js.download"></script>
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/app.js.download"></script>
+
+		<!-- MY CUSTOM SCRIPTS -->
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/custom.js.download"></script>	
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/main.js.download"></script>
+
+		<!-- DATATABLES -->
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/jquery.dataTables.js.download"></script>
+		<script type="text/javascript" src="./EPRPO - Pricon Microelectronics, Inc._files/dataTables.bootstrap.js.download"></script>
+
+		<!-- FOR DROPDOWN -->
+		<script src="./EPRPO - Pricon Microelectronics, Inc._files/select2.js.download"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				
+				$('#loading-img').addClass('hidden');
+				
+				var windowHeight = $(window).height()-51;
+				$('.content').css("height",windowHeight);
+				$(window).resize(function(){
+					$('.content').css({height:$(window).height()-51});
+				});
+
+				userAccess();
+				userAccessMobile();
+
+				var viewtobeloaded  = "";
+				viewtobeloaded = viewtobeloaded.trim();
+				///////////////
+				var email_prnum = "";
+				var email_to = "";
+				var email_toname = "";
+				var sourcebtn = "";
+				//////////////
+
+				if(viewtobeloaded=='purchase-requisition'){
+					$('#dash').removeClass('active');
+					$('#pr').addClass('active');
+					$('#transaction-section').next('ul').slideToggle(400);
+					$('.content').load('Transaction/'+viewtobeloaded+'.php',function(){
+						setTimeout(function(){
+							$.getScript(pagescripts+viewtobeloaded+'.js');
+							if(sourcebtn.trim()=='submitbtn'){
+								notify("Purchase Requisition has been <b>submitted</b>", "success","fa fa-check-circle");
+								$.post(server+'purchase-requisition.php',{emailnotification:'Nsl3Ep203N0amlOepan10@#0',reqnum:email_prnum,emailto:email_to,emailtoname:email_toname},function(data){
+									if(data.trim()!=1||data.trim()!=true){
+										alert(data);
+									}
+								});
+							}
+							else if(sourcebtn.trim()=='savebtn'){
+								notify("Purchase Requisition has been <b>saved</b>", "success","fa fa-check-circle");
+							}
+						},400);
+					});
+					
+					
+
+					///////////////// PR Creation with Attachment - send email after files are attached and page redirected to pr view
+					
+					//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+					//////////// SESSIONS SET /////////////////////////////////////
+										//////////////////////////////////////////////////////////////
+
+				}
+				else if(viewtobeloaded=='supplier-upload-file'||viewtobeloaded=='item-upload-file'){
+					$('.content').load('Other/'+viewtobeloaded+'.php',function(){
+						setTimeout(function(){
+							$.getScript(pagescripts+viewtobeloaded+'.js');
+							$('#loading-img').addClass('hidden');
+						},400);
+					});
+					
+									}
+				else{
+					$('.content').load('dashboard.php');
+					$.getScript(pagescripts+'dashboard.js');
+				}
+
+				$(document).on('click','#usersettings',function(){
+					$('#dash').removeClass('active');
+					$('.content').load('user-settings.php');
+					$.getScript(pagescripts+'user-settings.js');
+				});
+
+				/** BUTTON CLICK SOUND ***/
+				var obj = document.createElement("audio"); 
+				obj.src="../resources/click.mp3";
+				obj.volume=1;
+				obj.autoPlay=false;
+				obj.preLoad=true;
+				$(document).on("click","#sidebar-nav li, .pagination>li,#usersettings, .pointer, .mybtn, .approvalrow,#pohistory>tr,#prhistory>tr,#dashsettingsbtn",function(){
+			        obj.play();
+				});
+				/***************************/
+
+				
+				
+			});
+
+		</script>
+
+
+
+
+
+
+		
+
+
+	
+</body></html>
