@@ -9,7 +9,7 @@
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
    
-    
+        // 09062023 add WHERE clause
         $qry = "select * 
                 from(
                         select 
@@ -36,8 +36,13 @@ if (!empty($_POST) ) {
                         inner join supplier on supplier.id=receiving_header.supplier_id
                         inner join user on user.id=receiving_header.received_by
                         inner join currency on currency.id=receiving_header.currency
+                        
+                        where receiving_header.received_date LIKE '%2022%' or receiving_header.received_date LIKE '%2023%'
+
                     ) as a
-               ";
+            ";
+
+            //    where receiving_header.received_date LIKE '%2022%' or receiving_header.received_date LIKE '%2023%'
 
 	function getData2($sql){
         global $connection ;//we use connection already opened
@@ -117,8 +122,6 @@ if (!empty($_POST) ) {
     /* END of POST variables */
 
     
-
-
     $recordsTotal = mysql_num_rows(mysql_query($qry));
 
     /* SEARCH CASE : Filtered data */
@@ -127,12 +130,12 @@ if (!empty($_POST) ) {
         /* WHERE Clause for searching */
         for($i=0 ; $i<$columncount;$i++){
             $column = $_POST['columns'][$i]['data'];//we get the name of each column using its index from POST request
-            if($column=='actual_delivery_date'||$column=='received_date'){
-            	//$where[]="$column like '%".date('Y-m-d', strtotime(escapeString($_POST['search']['value'])))."%'";
-            }
-            else{
+            // if($column=='actual_delivery_date'||$column=='received_date'){
+            // 	//$where[]="$column like '%".date('Y-m-d', strtotime(escapeString($_POST['search']['value'])))."%'";
+            // }
+            // else{
             	$where[]="$column like '%".escapeString($_POST['search']['value'])."%'";
-            }
+            // }
 
         }
 

@@ -98,7 +98,7 @@ if(isset($_GET['rcvSummaryNonPoExcelFormat1231003435'])){
 								<td>".$obj->supplier_name."</td>
 								<td>".$obj->currency_code."</td>
 								<td>".$obj->unit_of_measure_code."</td>
-								<td>".convertWithDecimal($obj->unit_price,5)."</td>
+								<td>".convertWithDecimal($obj->unit_price,6)."</td>
 								<td>".convertWithDecimal($obj->quantity_received,0)."</td>
 								<td>NO PO REFERENCE</td>
 								<td>".formatDate($obj->received_date)."</td>

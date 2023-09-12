@@ -86,7 +86,7 @@ if(isset($_GET['rcvSummarySupplierExcelFormat1231003435'])){
 								<td>".$item_name."</td>
 								<td>".$long_description."</td>
 								<td>".$obj->currency_code."</td>
-								<td>".convertWithDecimal($obj->unit_price,5)."</td>
+								<td>".convertWithDecimal($obj->unit_price,6)."</td>
 								<td>".convertWithDecimal($obj->quantity_received,0)."</td>
 								<td>".getUserName($obj->received_by)."</td>
 								<td>".$obj->classification_code."</td>

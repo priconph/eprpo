@@ -175,7 +175,7 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
 				$amount = convertWithDecimal($amount,2);
 				$rcvd = convertWithDecimal($rcvd,0);
 				$bal = convertWithDecimal($bal,0);
-				$unitprice = convertWithDecimal($obj->unit_price,5);
+				$unitprice = convertWithDecimal($obj->unit_price,6);
 				$qty = convertWithDecimal($obj->quantity,0);
 
 				$orderdate = formatDate($obj->order_date);

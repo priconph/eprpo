@@ -6,7 +6,7 @@
 ?>
 <div class='header-page' >
 	<div class='header-page-inner'>
-		Purchase Order 
+		Purchase Order .
         <?php 
             $rs = query("select COUNT(order_number) as numrows from purchase_order_header WHERE `printed_flag`=0 AND (printed_timestamp='0000-00-00 00:00:00' OR printed_timestamp='') AND `assigned_to`='$userid'");
             if($obj=fetch($rs)){

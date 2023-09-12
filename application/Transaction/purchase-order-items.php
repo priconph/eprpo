@@ -89,7 +89,7 @@
            $bal = $qty-$rcvdqty;
            $bal = convertWithDecimal($bal,0);
            $qty = convertWithDecimal($qty,0);
-           $price = convertWithDecimal($price,5);
+           $price = convertWithDecimal($price,6); //09072023
 
            //10222021
            $amount = convertWithDecimal($amount); // orig data
