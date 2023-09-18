@@ -42,7 +42,7 @@
 
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
-	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==51||USERID==348){
+	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==51||USERID==374){
 		//do nothing
 //            $condition = '';
 	}
@@ -166,7 +166,7 @@ if (!empty($_POST) ) {
                 $enableedit = "<img ponum='$orderNum' class='nopadding editpurchaseorder' src='../resources/img/File_Edit.png' title='Edit Purchase Order'>";
             }
             else if($orderStatus=='NEW'){
-                if (USERID==51||USERID==348){
+                if (USERID==51||USERID==374){
                     $assignbtn='';
                 }else{
                     $assignbtn = "<img ponum='$orderNum' data-toggle='modal' href='#assignmentmodal' class='nopadding assignpurchaseorder' src='../resources/img/assign.png' title='Assign Purchase Order'>";
@@ -174,13 +174,13 @@ if (!empty($_POST) ) {
             }
             else if($orderStatus=='UNSERVED'||$orderStatus=='PARTIAL DELIVERY'||$orderStatus=='SERVED'||$orderStatus=='HOLD'){
                 
-                if (USERID==51||USERID==348){
+                if (USERID==51||USERID==374){
                    $revisebtn =''; 
                 }else{
                     $revisebtn = "<img data-toggle='modal' href='#revisionmodal' ponum='$orderNum' reqnum='$referenceprnum' class='nopadding revisepurchaseorder' src='../resources/img/File_List.png' title='Revise Purchase Order'>";
                     if($printedflag=='NO'){
                         
-                        if (USERID==51||USERID==348){
+                        if (USERID==51||USERID==374){
                             $printbtn =''; 
                         }else{
                             $printbtn = "<img ponum='$orderNum' class='nopadding printpurchaseorder' src='../resources/img/Printer.png' data-toggle='modal' href='#printpomodal' title='Print Purchase Order'>";
@@ -198,7 +198,7 @@ if (!empty($_POST) ) {
             $cancelpobtn = '';
             if($orderStatus!='CANCELLED'&&$orderStatus!='FOR REVISION'&&$orderStatus!='FOR CANCELLATION'){
                 
-                if (USERID==51||USERID==348){
+                if (USERID==51||USERID==374){
                    $cancelpobtn =''; 
                 }else{
                     $cancelpobtn = "<img ponum='$orderNum' style='margin-left:3px' class='nopadding cancelpobtn' src='../resources/img/block_32.png' data-toggle='modal' href='#pocancellationmodal' title='Cancel PO'>";
