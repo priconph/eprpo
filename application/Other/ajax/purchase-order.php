@@ -42,7 +42,7 @@
 
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
-	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==51||USERID==374){
+	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==106||USERID==51||USERID==374){
 		//do nothing
 //            $condition = '';
 	}

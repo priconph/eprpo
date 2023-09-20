@@ -280,7 +280,8 @@ if($ponum!=''&&$check==true){
     		$amount=convertWithDecimal($amount,2); //old data
     		// $amount=bcdiv($amount, 1, 2); //uncomment this to resolve the .1 issue/concern in total amount
 
-    		$price=convertWithDecimal($price,5);
+    		// $price=convertWithDecimal($price,5);
+    		$price=convertWithDecimal($price,6); // 09182023 due to SANNO
     		
     		$itemlineheight = 4;
     		$pdf->SetFont('Arial','',$fontsize);

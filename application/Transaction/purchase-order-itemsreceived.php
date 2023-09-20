@@ -89,7 +89,7 @@
 			$uom = $obj->unit_of_measure_code;
 			$qty = $obj->quantity;
 			$rcvdqty = $obj->quantity_received;
-            $price = convertWithDecimal($price,5);
+            $price = convertWithDecimal($price,6);
 			$receiver = strUtfEncode(getUserName($obj->received_by));
             $datereceived = formatDate4($obj->received_date);
 			

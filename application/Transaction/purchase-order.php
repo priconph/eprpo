@@ -348,7 +348,7 @@
 								<div class='tabpane-white margin-top-20 margin-bottom-10' id='polineitems'>
 										<ul class="nav nav-tabs">
 										  <li role="presentation" class="active" data-pane='#lineitems'><a>Line Items</a></li>
-										  <li role="presentation" data-pane='#receivinghistory'><a>Receiving Historyss</a></li>
+										  <li role="presentation" data-pane='#receivinghistory'><a>Receiving History</a></li>
 										</ul>
 										<div class='tab-panes'>
 											<div class='pane active' id='lineitems'>

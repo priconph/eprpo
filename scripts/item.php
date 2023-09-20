@@ -86,7 +86,7 @@
 														  'EPRPO - Item for Approval',
 														  ForApprovalItemMessage($code,$shortdesc,$price,$uploadby,$date),
 														  ForApprovalItemMessage($code,$shortdesc,$price,$uploadby,$date),
-														  array('mdgodoy@pricon.ph','rmpaulino@pricon.ph'));
+														  array('mdgodoy@pricon.ph','mspenaflorida@pricon.ph'));
 			/* */
 			
 		}
@@ -278,7 +278,7 @@
 		$date = date('Y-m-d H:i:s');
 		$loginuser = $userid;
 
-		$rs = query("select * from user where id='203'"); //rmpaulino
+		$rs = query("select * from user where id='340'"); //mspenaflorida
 		while($obj=fetch($rs)){
 			$staffname = getUserName($obj->id);
 			$staffemail = getUserEmail($obj->id);
@@ -323,7 +323,7 @@
 		$date = date('Y-m-d H:i:s');
 		$loginuser = $userid;
 
-		$rs = query("select * from user where id='203'"); //rmpaulino
+		$rs = query("select * from user where id='340'"); //mspenaflorida
 		while($obj=fetch($rs)){
 			$staffname = getUserName($obj->id);
 			$staffemail = getUserEmail($obj->id);
