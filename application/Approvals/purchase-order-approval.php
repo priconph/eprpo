@@ -44,14 +44,17 @@
                      currency_code,
                      first_approver,
                      second_approver,
+                     division_approver,
                      third_approver,
                      purch_revision_no,
-                     purchase_order_header.posted_by
-              from purchase_order_header, supplier, payment_terms, mode_of_shipment, currency, ship_via 
+                     purchase_order_header.posted_by,
+                     purchase_requisition_header.facshipto
+              from purchase_order_header, supplier, payment_terms, mode_of_shipment, currency, ship_via, purchase_requisition_header
               where currency.id=purchase_order_header.currency and 
                     ship_via.id=purchase_order_header.ship_via and
                     mode_of_shipment=mode_of_shipment.id and 
                     payment_terms.id=purchase_order_header.terms and 
+                    purchase_requisition_header.requisition_number=purchase_order_header.reference_requisition_number and 
                     order_number='$po' and 
                     supplier.id=supplier_id";
     $rs = query($query);
@@ -69,6 +72,7 @@
     	$remarks = strUtfEncode($obj->po_remarks);
         $mode = $obj->description;
     	$via = $obj->ship_by;
+    	$facshipto = $obj->facshipto;
         $currency = $obj->currency_name;
         $currencysymbol = $obj->currency_code;
         $pr = $obj->reference_requisition_number;
@@ -78,7 +82,8 @@
 
         $approverfirst = getUserName($obj->first_approver).' '.getPoApprovalTimestamp($po,$obj->first_approver,1);;
         $approversecond = getUserName($obj->second_approver).' '.getPoApprovalTimestamp($po,$obj->second_approver,2);;
-        $approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalTimestamp($po,$obj->third_approver,3);
+        $approverdivision = $obj->division_approver==NULL?'Not Required':getUserName($obj->division_approver).' '.getPoApprovalTimestamp($po,$obj->division_approver,3);
+        $approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalTimestamp($po,$obj->third_approver,4);
     }
     $withdiscrepancy = checkIfDiscrepancyExist($po);
     $forrevisionremarks = getRevisionSources($po, 'order_number');
@@ -87,7 +92,7 @@
 
 <div class='header-page' >
     <div class='header-page-inner'>
-        Purchase Order Approvals
+        Purchase Order Approval
     </div>
 </div>
 <div class="container-fluid">
@@ -166,6 +171,13 @@
                                                 <input type='text' class='form-input form-control' value='<?php echo $currency;?>' readonly>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-4">Ship To</label>
+                                            <div class="col-sm-8">
+                                                <input type='text' class='form-input form-control' value='<?php echo $facshipto;?>' readonly>
+                                            </div>
+                                        </div>
+                                        
                                         
 
                                         
@@ -232,17 +244,26 @@
                                 <form class='form-horizontal'>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="control-label col-sm-5">Asst. Manager</label>
+                                            <!-- <label class="control-label col-sm-5">Asst. Manager</label> -->
+                                            <label class="control-label col-sm-5">Section Head</label>
                                             <div class="col-sm-7">
                                                 <span class='form-control-static sectionhead1'><?php echo $approverfirst; ?></span>
                                             </div>
                                         </div>
                                        <div class="form-group">
-                                            <label class="control-label col-sm-5">General Manager</label>
+                                            <!-- <label class="control-label col-sm-5">General Manager</label> -->
+                                            <!-- <label class="control-label col-sm-5">Asst. VP</label> -->
+                                            <label class="control-label col-sm-5">Department Head</label>
                                             <div class="col-sm-7">
                                                 <span class='form-control-static sectionhead2'><?php echo $approversecond; ?></span>
                                             </div>
-                                        </div>       
+                                        </div> 
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-5">Division Head</label>
+                                            <div class="col-sm-7">
+                                                <span class='form-control-static sectionhead3'><?php echo $approverdivision; ?></span>
+                                            </div>
+                                        </div>      
                                         <br>
                                     </div>
                                     <div class="col-sm-6">
@@ -382,6 +403,8 @@
                     <button class='btn btn-blue2 mybtn' id='poapproval-approvebtn' data-toggle='modal' href='#poapprovedmodal' ponumber="<?php echo $po; ?>" poqty="<?php echo $po_qty; ?>" prqty="<?php echo $pr_qty; ?>">Approve</button>
                         <button class='btn btn-blue2 mybtn' id='poapproval-rejectbtn' data-toggle='modal' href='#rejectionmodal'>Reject</button>
                         <button class='btn btn-blue2 mybtn' id='poapproval-cancelbtn'>Back</button>
+                        <button class='btn btn-blue2 mybtn' id='poapproval-viewbtn'>VIEW PO FORM</button>
+
                 </div>
             </div>
         </div>
@@ -476,4 +499,9 @@
         $('#poapproval-revisionremarks').removeClass('hidden').load('Other/purchase-order-revision-remarks.php?Kbdkldriiopirn389yd9830='+ponumber);
     }
     $('.modal-dialog').draggable();
+
+    $(document).off('click','#poapproval-viewbtn').on('click','#poapproval-viewbtn', function(){
+        window.open('Printouts/purchase-order-printout_draft.php?jkHIejPoeiwMlkdA='+ponumber);
+    });
+
 </script>

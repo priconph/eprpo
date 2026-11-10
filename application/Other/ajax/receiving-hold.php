@@ -1,3 +1,4 @@
+
 <?php
 	include("../../../config/connection.php");
     include("../../../config/checkurlaccess.php");
@@ -9,7 +10,7 @@
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
    
-    
+        
         $qry = "select * 
                 from(
                         SELECT purchase_order_header.order_number,
@@ -29,6 +30,23 @@ if (!empty($_POST) ) {
                         WHERE hold_invoice_remarks.logdel ='0' AND purchase_order_header.order_status ='HOLD'
                     ) as a
                ";
+
+
+            //    SELECT purchase_order_header.order_number,
+            //             purchase_order_header.order_status,
+            //             hold_invoice_remarks.pkid,
+            //             hold_invoice_remarks.reference_po_number, 
+            //             hold_invoice_remarks.remarks,
+            //             hold_invoice_remarks.user_id,
+            //             concat(user.first_name,' ',user.last_name) as hold_by,
+            //             hold_invoice_remarks.lastupdate,
+            //             supplier.id,
+            //             supplier.supplier_name
+            //             FROM purchase_order_header
+            //             inner join hold_invoice_remarks ON hold_invoice_remarks.reference_po_number = purchase_order_header.order_number
+            //             inner join user ON user.id = hold_invoice_remarks.user_id
+            //             inner join supplier ON supplier.id = purchase_order_header.supplier_id
+            //             WHERE hold_invoice_remarks.logdel ='0' AND purchase_order_header.order_status ='HOLD'
 
 	function getData2($sql){
         global $connection ;//we use connection already opened
@@ -62,7 +80,7 @@ if (!empty($_POST) ) {
             if($orderStatus =='HOLD'){
                 $cancelpobtn = "<img ponum='$orderNum' style='margin-left:3px' class='nopadding cancelholdbtn' src='../resources/img/block_32.png' data-toggle='modal' href='#holdcancellationmodal' title='Cancel PO'>";
             }
-
+        
             if($orderStatus=='HOLD'){
                 $viewrcvpo = "<img ponum='$orderNum' class='nopadding viewreceivingpo $viewreceivingpobtn' src='../resources/img/File_Edit.png' title='Go to receiving'>";    
             }

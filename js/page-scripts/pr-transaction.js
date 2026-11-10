@@ -11,13 +11,22 @@ $('.fileattachment').on('change', function(evt) {
  });*/
 //attachment btn - add more file
 
-$(document).off('click','#prcreate-additembtn').on('click','#prcreate-additembtn', function(){
-	if($('.currency').val()!='NULL'){
-		$('#addpritemmodal').modal('show');
-	}
-	else{
-		say('Please select a <b>currency</b>');
-	}
+$(document).off('click','#prcreate-additembtn').on('click','#prcreate-additembtn', function(){ // 02212024 by Nessa
+	// if($('.currency').val()!='NULL'){
+	// 	$('#addpritemmodal').modal('show');
+	// }
+	// else{
+	// 	say('Please select a <b>currency</b>');
+	// }
+
+	 if($('.currency').val()=='NULL'){
+	 	say('Please select a <b>currency</b>');
+	 }else if($('.facshipto').val()=='NULL'){
+	 	say('Please select a <b>ship to</b>');
+	 }else{
+	 	$('#addpritemmodal').modal('show');
+	 }
+
 });
 
 $(document).off('click','#fileattachment-addbtn').on('click','#fileattachment-addbtn', function(){
@@ -107,9 +116,13 @@ $(document).off('change','.currency').on('change','.currency',function(){
 
 
 $(document).off('click','#allocationmodal-addbtn').on('click','#allocationmodal-addbtn', function(){
-	var deptid, department, percentage, current, newperc, exist=false, totalpercperitem=0, temp;
+	var deptid, department, buid, business_unit, plid, product_line, percentage, current, newperc, exist=false, totalpercperitem=0, temp;
 	deptid = $('#allocationmodal .department').val();
 	department = $('#allocationmodal .department').find("option:selected").text();
+	buid = $('#allocationmodal .business_unit').val();
+	business_unit = $('#allocationmodal .business_unit').find("option:selected").text();
+	plid = $('#allocationmodal .product_line').val();
+	product_line = $('#allocationmodal .product_line').find("option:selected").text();
 	percentage = $('#allocationmodal .percentage').val();
 	remarks = $('#allocationmodal .allocationremarks').val();
 	$('#allocationsummary tr').each(function(){
@@ -119,6 +132,12 @@ $(document).off('click','#allocationmodal-addbtn').on('click','#allocationmodal-
 	
 	if(deptid==''){
 		$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>department.</b></div></div>");
+	} 
+	else if (buid == '') {
+		$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>business unit.</b></div></div>");
+	}
+	else if (plid == '') {
+		$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>product line.</b></div></div>");
 	}
 	else if(percentage<.01){
 		$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Invalid Percentage Input</b><br>Please provide <b>percentage</b> for selected department.</div></div>");
@@ -128,20 +147,38 @@ $(document).off('click','#allocationmodal-addbtn').on('click','#allocationmodal-
 	}
 	else{
 		$('#allocationsummary tr').each(function(){
-			if($(this).children('.allocationdeptid').text().search(new RegExp(department,"i"))>=0){
+			// if ($(this).children('.allocationdeptid').text().search(new RegExp(department, "i")) >= 0) {
+			console.log('business_unit', $(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")));
+			console.log('product_line', $(this).children('.allocationplid').text().search(new RegExp(product_line, "i")));
+			
+			if (plid != 0) {
+				if ($(this).children('.allocationplid').text().search(new RegExp(product_line, "i")) >= 0 && $(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")) >= 0) {
+
 					current = $(this).children('.allocationpercentage').text();
 					newperc = parseFloat(current) + parseFloat(percentage);
 					$(this).children('.allocationpercentage').html(newperc);
 					$(this).children('.allocationnotes').html(remarks);
-					exist=true;
-				}
+					exist = true;
 
+				}
+			}else{
+				if ($(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")) >= 0) {
+					current = $(this).children('.allocationpercentage').text();
+					newperc = parseFloat(current) + parseFloat(percentage);
+					$(this).children('.allocationpercentage').html(newperc);
+					$(this).children('.allocationnotes').html(remarks);
+					exist = true;
+				}
+			}
+				
 		});
 		if(exist==false){
-			$('#allocationsummary').append("<tr ><td><input type='checkbox' class='itemcheckbox'></td><td class='allocationdeptid' allocdeptid='"+deptid+"'>"+department+"</td><td class='allocationpercentage text-center'>"+percentage+"</td><td class='allocationnotes'>"+remarks+"</td></tr>");
+			$('#allocationsummary').append("<tr ><td><input type='checkbox' class='itemcheckbox'></td><td class='allocationdeptid' allocdeptid='" + deptid + "' >" + department + "</td><td class='allocationbuid' allocbuid='" + buid + "' >" + business_unit + "</td><td class='allocationplid' allocplid='" + plid + "' >" + product_line +"</td><td class='allocationpercentage text-center'>"+percentage+"</td><td class='allocationnotes'>"+remarks+"</td></tr>");
 		}
 		$('#allocationmodal .allocationremarks').val('');
 		$('#allocationmodal .department').val('').trigger('change');
+		$('#allocationmodal .business_unit').val('').trigger('change');
+		$('#allocationmodal .product_line').val('').trigger('change');
 		$('#allocationmodal .percentage').val('');
 		$('.modal').modal('hide');
 
@@ -211,7 +248,8 @@ $(document).off('click','#addpritemmodal-addbtn').on('click','#addpritemmodal-ad
 	}
 	else{
 		amount = convertFloat(floatamount);
-		desctrim = description.replace(/(\r\n|\n|\r|\s)/gm,'').toLowerCase();
+		itemcodetrim = itemcode.replace(/(\r\n|\n|\r|\s)/gm, '').toLowerCase();
+		desctrim = description.replace(/(\r\n|\n|\r|\s)/gm, '').toLowerCase();
 		itemdesctrim = longdesc.replace(/(\r\n|\n|\r|\s)/gm,'').toLowerCase();
 		classfntrim = classfn.replace(/(\r\n|\n|\r|\s)/gm,'').toLowerCase();
 		supptrim = supplier.replace(/(\r\n|\n|\r|\s)/gm,'').toLowerCase();
@@ -241,7 +279,9 @@ $(document).off('click','#addpritemmodal-addbtn').on('click','#addpritemmodal-ad
 			}
 			//Check if item has same Item name, description, unit of measure, supplier, unit price, classification code and currency
 			else {
-				if(rowtrim.search(new RegExp(desctrim,"i"))>=0 && rowtrim.search(new RegExp(itemdesctrim,"i"))>=0 && rowtrim.search(new RegExp(classfntrim,"i"))>=0 && rowtrim.search(new RegExp(supptrim,"i"))>=0 && rowtrim.search(new RegExp(uptrim,"i"))>=0){			
+				// if (rowtrim.search(new RegExp(desctrim, "i")) >= 0 && rowtrim.search(new RegExp(itemdesctrim, "i")) >= 0 && rowtrim.search(new RegExp(classfntrim, "i")) >= 0 && rowtrim.search(new RegExp(supptrim, "i")) >= 0 && rowtrim.search(new RegExp(uptrim, "i")) >= 0) {
+				// 09192024 by Nessa - Include item code sa checking	
+				if (rowtrim.search(new RegExp(itemcodetrim, "i")) >= 0 && rowtrim.search(new RegExp(desctrim,"i"))>=0 && rowtrim.search(new RegExp(itemdesctrim,"i"))>=0 && rowtrim.search(new RegExp(classfntrim,"i"))>=0 && rowtrim.search(new RegExp(supptrim,"i"))>=0 && rowtrim.search(new RegExp(uptrim,"i"))>=0){			
 					rowexist = true;
 				}
 			}
@@ -414,7 +454,8 @@ $(document).off('click','#editpritemmodal-confirmbtn').on('click','#editpritemmo
 $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesubmit:not(".disabled")', function(){
 	var button = $(this);
 	button.addClass('disabled');
-	var file, filetype, fileotherdesc, prnotes, allocvalid, currency, type, dateneeded, justification, sh1, sh2, dh, gm, avp, svp, p, conf, attachmentcount=0, defaultsign=false, items=[], qty=[], prices=[], suppliers=[], classfns=[], attachmenterr=false, allocremarks=[], allocdept=[], allocperc=[];
+	var file, filetype, fileotherdesc, prnotes, facshipto, allocvalid, currency, type, dateneeded, justification, sh1, sh2, dh, gm, avp, svp, p, conf, attachmentcount = 0, defaultsign = false, items = [], qty = [], prices = [], suppliers = [], classfns = [], attachmenterr = false, allocremarks = [], allocdept = [], allocbu = [], allocpl = [], allocperc = [];
+	// var file, filetype, fileotherdesc, prnotes, facshipto, allocvalid, currency, type, dateneeded, justification, sh1, sh2, dh, avp, svp, p, conf, attachmentcount = 0, defaultsign = false, items = [], qty = [], prices = [], suppliers = [], classfns = [], attachmenterr = false, allocremarks = [], allocdept = [], allocbu = [], allocpl = [], allocperc=[];
 	currency = $('.pageContent .currency').val();
 	type = $('.pageContent .reqtype').val();
 	dateneeded = $('.pageContent .dateneeded').val();
@@ -422,12 +463,14 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 	sh1 = $('.pageContent .sectionhead1').val();
 	sh2 = $('.pageContent .sectionhead2').val();
 	dh = $('.pageContent .depthead').val();
-	gm = $('.pageContent .genman').val();
+	//gm = $('.pageContent .genman').val();
 	avp = $('.pageContent .asstvp').val();
 	svp = $('.pageContent .srvp').val();
 	p = $('.pageContent .president').val();
 	conf = $('.pageContent .confhead').val();
 	prnotes = $('.pageContent .prnotes').val();
+	facshipto = $('.pageContent .facshipto').val();
+
 	$('.defaultsign').each(function(){
 		if($(this).val()=='NULL'){
 			defaultsign=true;
@@ -475,6 +518,8 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 			$('#allocationsummary tr').each(function(){
 				//allocitem.push($(this).children(':nth-child(2)').attr('allocitemid'));
 				allocdept.push($(this).children('.allocationdeptid').attr('allocdeptid'));
+				allocbu.push($(this).children('.allocationbuid').attr('allocbuid'));
+				allocpl.push($(this).children('.allocationplid').attr('allocplid'));
 				allocperc.push($(this).children('.allocationpercentage').text());
 				allocremarks.push($(this).children('.allocationnotes').text());
 	});
@@ -507,7 +552,8 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 			else{	
 					$('#source-button').val('savebtn');
 					$('#loading-img').removeClass('hidden');
-					$.post(server+'purchase-requisition.php',{SdjfrlFBroigjRi:'',prnotes:prnotes,reqtype:type,dateneeded:dateneeded,remarks:justification,sh1:sh1,sh2:sh2,gm:gm,avp:avp,svp:svp,pr:p,conf:conf,items:items,qty:qty,prices:prices,classfns:classfns,suppliers:suppliers,allocremarks:allocremarks,allocdept:allocdept,allocperc:allocperc,curr:currency},function(data){
+				$.post(server + 'purchase-requisition.php', { SdjfrlFBroigjRi: '', prnotes: prnotes, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, gm: gm, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, suppliers: suppliers, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc: allocperc, curr: currency }, function (data) {
+					// $.post(server + 'purchase-requisition.php', { SdjfrlFBroigjRi: '', prnotes: prnotes, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, suppliers: suppliers, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc:allocperc,curr:currency},function(data){
 						data = data.trim();
 						$('#prnum').val(data);
 						if(attachmentcount>0){
@@ -537,7 +583,8 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 			button.removeClass('disabled');
 		}
 		// else if(allocvalid==false){
-		else if(allocdept==false || allocvalid == false){
+		// else if (allocdept == false || allocvalid == false) {
+		else if (allocbu == '' || allocvalid == false){
 			$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Purchase Requisition</b> is not properly allocated.<br>Please check allocation summary.</div></div>");
 			$('#content').animate({scrollTop:0},200);
 			$(this).removeClass('disabled');
@@ -559,6 +606,13 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 			$('#content').animate({scrollTop:0},200);
 			button.removeClass('disabled');
 		}
+
+		else if(facshipto=='NULL'||facshipto==''){
+			$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select <b>Ship to.</b></div></div>");
+			$('#content').animate({scrollTop:0},200);
+			button.removeClass('disabled');
+		}
+
 		else if(currency=='NULL'||currency==''){
 			$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select <b>currency.</b></div></div>");
 			$('#attachments').addClass('active').siblings().removeClass('active');
@@ -604,7 +658,8 @@ $(document).off('click','.prsavesubmit:not(".disabled")').on('click','.prsavesub
 
 									confirm: function(){
 										$('#loading-img').removeClass('hidden');
-										$.post(server+'purchase-requisition.php',{SKdHeKorUowAnPl:'',prnotes:prnotes,reqtype:type,dateneeded:dateneeded,remarks:justification,sh1:sh1,sh2:sh2,gm:gm,avp:avp,svp:svp,pr:p,conf:conf,items:items,qty:qty,prices:prices,classfns:classfns,allocremarks:allocremarks,allocdept:allocdept,allocperc:allocperc,curr:currency,suppliers:suppliers},function(data){
+										// $.post(server + 'purchase-requisition.php', { SKdHeKorUowAnPl: '', prnotes: prnotes, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, gm: gm, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc: allocperc, curr: currency, suppliers: suppliers }, function (data) {
+											$.post(server + 'purchase-requisition.php', { SKdHeKorUowAnPl: '', prnotes: prnotes, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc:allocperc,curr:currency,suppliers:suppliers},function(data){
 											data = data.trim();
 											//if(data.length==14){
 												var dt = data.split('@#$');

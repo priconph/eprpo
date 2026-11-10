@@ -1,0 +1,12 @@
+July 5 changes in EPRPO
+1. Other/ajax/itemlist.php
+- Add supplier.active_flag=1
+2. Transaction/pr-transaction.php
+- No more inactive/blank Supplier
+- Removed supplier search button 
+3. Changed Sr. Vice Pres./Asst. Vice Pres./Vice President -->
+Asst. Vice Pres./Vice President to all affected file
+4. js/functions.js
+- Comment all .srvp except to the ELSE
+5. Changed Sr.VP/AVP/VP --> Asst. Vice Pres./Vice President to all affected file
+6. Transfer Ishii's approval from Asst. VP to SR. VP (Database)

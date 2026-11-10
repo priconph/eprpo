@@ -18,6 +18,7 @@
 			$prnumber = $obj->requisition_number;
 			$stat = strtoupper($obj->requisition_status);
 			$revnumber = $obj->next_revision_series;
+			$facshipto = $obj->facshipto;
 			$currency = getCurrencyCode($obj->currency);
 			
 			$requester = getUserName($obj->requisitioner);
@@ -114,6 +115,12 @@
 															</div>
 														</div>
 														<div class="form-group">
+															<label class="control-label col-sm-4">Ship To</label>
+															<div class="col-sm-8">
+																 <span class='form-control-static' id='facshipto'><?php echo $facshipto; ?></span>
+															</div>
+														</div>
+														<div class="form-group">
 															<label class="control-label col-sm-4">Justification</label>
 															<div class="col-sm-8">
 																 <span class='form-control-static' id='justification'><?php echo $justification; ?></span>
@@ -173,13 +180,13 @@
 												<div class="pane-content">
 													<div class="col-sm-6">
 														<div class="form-group">
-															<label class="control-label col-sm-5">Section Head</label>
+															<label class="control-label col-sm-5">Checked By / Section Head</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static sectionhead'><?php echo $sh1; ?></span>
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="control-label col-sm-5">Section Head</label>
+															<label class="control-label col-sm-5">Section Head (2) </label>
 															<div class="col-sm-7">
 																 <span class='form-control-static sectionhead'><?php echo $sh2; ?></span>
 															</div>
@@ -191,26 +198,26 @@
 															</div>
 														</div>
 														
-														<div class="form-group">
+														<!-- <div class="form-group">
 															<label class="control-label col-sm-5">General Manager</label>
 															<div class="col-sm-7">
-																 <span class='form-control-static genman'><?php echo $gm; ?></span>
+																 <span class='form-control-static genman'><?php //echo $gm; ?></span>
 															</div>
-														</div>
+														</div> -->
 														
 														
 														<br>
 													</div>
 													<div class="col-sm-6">
 														<div class="form-group">
-															<label class="control-label col-sm-5">Asst. Vice Pres./Vice President</label>
+															<label class="control-label col-sm-5">GM / AVP / VP</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static asstvp'><?php echo $avp; ?></span>
 															</div>
 														</div>
 														
 														<div class="form-group">
-															<label class="control-label col-sm-5">Sr. Vice President</label>
+															<label class="control-label col-sm-5">Operations Division Head</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static srvp'><?php echo $svp; ?></span>
 															</div>
@@ -316,10 +323,27 @@
 																    		$uom=$obj->unit_of_measure_code;
 																    		$price=$obj->unit_price;
 																    		$amount = $qty*$price;
-																    		$gtotal = $gtotal + round($amount,2);
+
+																			if ($prnumber == 'CN-PPC-PR2505-020' || $prnumber == 'CN-PPC-PR2504-005'){
+																				$gtotal = $gtotal + bcdiv($amount, 1, 2); 
+																				$amount = bcdiv($amount, 1, 2); 
+																			}
+																			else if ($prnumber == 'PPSTS-PR2605-024'){ // chris for YEC adjustment -0.02
+																				$amount = $amount - 0.02;
+																				$gtotal = $gtotal + round($amount,2);
+																				$amount = bcdiv($amount, 1, 2); 
+
+																			}
+																			else{
+																				$gtotal = $gtotal + round($amount,2);
+																				$amount = convertWithDecimal($amount,2);
+																			}
+																    		
+
 																            $qty=convertWithDecimal($obj->quantity,0);
-																    		$price = convertWithDecimal($price,5);
-																    		$amount = convertWithDecimal($amount,2);
+																    		// $price = convertWithDecimal($price,5);
+																    		$price = convertWithDecimal($price,6); // 09172024 By nessa
+																    		
 																    		$supplier=strUtfEncode($obj->supplier_name);
 																    		$po=getPoNumber($pr,$itemid);
 																            $postat = getPoStatus($po);
@@ -376,6 +400,8 @@
 			                                                    <tr>
 			                                                        <th class='text-center'>LINE</th>
 			                                                        <th>DEPARTMENT</th>
+			                                                        <th>BUSINESS UNIT</th>
+			                                                        <th>PRODUCT LINE</th>
 			                                                        <th class='text-center'>PERCENTAGE %</th>
 			                                                        <th>REMARKS</th>
 			                                                    </tr>
@@ -384,13 +410,15 @@
 			                                                <tbody id='allocationsummary'>
 			                                                	<?php
 			                                                	 //if(strtoupper(getPrStatus($pr))=='APPROVED'){
-				                                                	 $query="select section_department_name, 
-				                                                	 				purchase_requisition_allocation.remarks, 
-				                                                	 				percentage
-																	        from purchase_requisition_allocation, 
-																	        	 section_department 
-																	        where requisition_number='$prnumber' and
-																	        	  department_id=section_department.id";
+				                                                	
+																 //  $query="
+																	//  select section_department_name, 
+				                                                	//  				purchase_requisition_allocation.remarks, 
+				                                                	//  				percentage
+																	//         from purchase_requisition_allocation, 
+																	//         	 section_department 
+																	//         where requisition_number='$prnumber' and
+																	//         	  department_id=section_department.id";
 																//}
 																/*else{
 																	 $query="select section_department_name, 
@@ -401,15 +429,27 @@
 																        where requisition_number='$prnumber' and
 																        	  department_id=section_department.id";
 																}*/
+
+																$query="SELECT a.*, b.section_department_name as dept, c.section_department_name as bu, d.section_department_name as pl 
+																		FROM `purchase_requisition_allocation` a 
+																		left JOIN section_department b ON b.id = a.department_id
+																		left JOIN section_department c ON c.id = a.business_unit
+																		left JOIN section_department d ON d.id = a.product_line
+																		where a.requisition_number='$prnumber'";
+																		
 																        $rs = query($query);
 																        $line = 1;
 																        while($obj=fetch($rs)){;
-																            $dept = $obj->section_department_name;
+																            $dept = $obj->dept;
+																            $bu = $obj->bu;
+																            $pl = $obj->pl;
 																            $perc = $obj->percentage;
 																            $remarks = strUtfEncode($obj->remarks);
 																            echo "<tr>
 																		            <td class='text-center'>$line</td>
 																		            <td>$dept</td>
+																		            <td>$bu</td>
+																		            <td>$pl</td>
 																		            <td class='text-center'>$perc</td>
 																		            <td>$remarks</td>
 																		          </tr>";

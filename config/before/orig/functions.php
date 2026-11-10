@@ -1078,11 +1078,11 @@
 				case 2:
 					return 'Conformance: '.getUserName($user_id);
 					break;
-				case 3:
-					return 'General Manager: '.getUserName($user_id);
-					break;
+				// case 3:
+				// 	return 'General Manager: '.getUserName($user_id);
+				// 	break;
 				case 4:
-					return 'Assistant VP: '.getUserName($user_id);
+					return 'GM / AVP / VP: '.getUserName($user_id);
 					break;
 
 				case 5:
@@ -1241,11 +1241,11 @@
                         case 2:
                             return 'Conformance: '.getUserName($confappr);
                             break;
-                        case 3:
-                            return 'General Manager: '.getUserName($gmappr);
-                            break;
+                        // case 3:
+                        //     return 'General Manager: '.getUserName($gmappr);
+                        //     break;
                         case 4:
-                            return 'Assistant VP: '.getUserName($avpappr);
+                            return 'GM / AVP / VP: '.getUserName($avpappr);
                             break;
 
                         case 5:

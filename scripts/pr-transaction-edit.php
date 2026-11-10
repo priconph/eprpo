@@ -77,7 +77,8 @@
 		$remarks = escapeString($_POST['remarks']);
 		$sh1 = escapeString($_POST['sh1']);
 		$sh2 = escapeString($_POST['sh2']);
-		$gm = escapeString($_POST['gm']);
+		// $gm = escapeString($_POST['gm']);
+		$gm = 1;
 		$avp = escapeString($_POST['avp']);
 		$svp = escapeString($_POST['svp']);
 		$pr = escapeString($_POST['pr']);
@@ -99,8 +100,10 @@
 
 		$allocremarks = $_POST['allocremarks'];
 		$allocdept = $_POST['allocdept'];
+		$allocbu = $_POST['allocbu'];
+		$allocpl = $_POST['allocpl'];
 		$allocperc = $_POST['allocperc'];
-		$alloclength = count($allocdept);
+		$alloclength = count($allocbu);
 
 		////////////////////EMAIL NOTIFICATION/////////////////////////////////
 
@@ -141,8 +144,10 @@
 						for($i=0;$i<$alloclength;$i++){
 							$aRem = escapeString($allocremarks[$i]);
 							$aDept = escapeString($allocdept[$i]);
+							$aBU = escapeString($allocbu[$i]);
+							$aPL = escapeString($allocpl[$i]);
 							$aPerc = escapeString($allocperc[$i]);
-							$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+							$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aBU','$aPL','$aPerc','$aRem')";
 							$rs = query($query);
 
 						}
@@ -179,7 +184,8 @@
 			$remarks = escapeString($_POST['remarks']);
 			$sh1 = escapeString($_POST['sh1']);
 			$sh2 = escapeString($_POST['sh2']);
-			$gm = escapeString($_POST['gm']);
+			// $gm = escapeString($_POST['gm']);
+			$gm = 1;
 			$avp = escapeString($_POST['avp']);
 			$svp = escapeString($_POST['svp']);
 			$pr = escapeString($_POST['pr']);
@@ -206,8 +212,10 @@
 
 			@$allocremarks = $_POST['allocremarks'];
 			@$allocdept = $_POST['allocdept'];
+			@$allocbu = $_POST['allocbu'];
+			@$allocpl = $_POST['allocpl'];
 			@$allocperc = $_POST['allocperc'];
-			$alloclength = count($allocdept);
+			$alloclength = count($allocbu);
 
 			$stat = 'DRAFT';
 			$prstat = getPrStatus($reqnum);
@@ -253,8 +261,11 @@
 					for($i=0;$i<$alloclength;$i++){
 						$aRem = escapeString($allocremarks[$i]);
 						$aDept = escapeString($allocdept[$i]);
+						$aBU = escapeString($allocbu[$i]);
+						$aPL = escapeString($allocpl[$i]);
 						$aPerc = escapeString($allocperc[$i]);
-						$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+						// $query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+						$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aBU','$aPL','$aPerc','$aRem')";
 						$rs = query($query);
 						if(!$rs){
 							echo mysql_error();

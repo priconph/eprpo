@@ -30,9 +30,11 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
 					 unit_of_measure_id,
 					 unit_of_measure_code,
 
-					 (SELECT purchase_order_details.`classification_code` FROM `purchase_order_details` WHERE purchase_order_details.`order_number` = receiving_header.reference_po_number AND purchase_order_details.item_id= receiving_details.item_id LIMIT 0,1) as classification_code,
+					(SELECT purchase_order_details.`classification_code` FROM `purchase_order_details` WHERE purchase_order_details.`order_number` = receiving_header.reference_po_number AND purchase_order_details.item_id= receiving_details.item_id LIMIT 0,1) as classification_code,
 					 
-					 (SELECT purchase_order_header.`po_remarks` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as po_remarks,
+					(SELECT purchase_order_header.`po_remarks` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as po_remarks,
+
+					(SELECT purchase_order_header.`bir_po_number` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as bir_po_number,
 
 					(SELECT purchase_order_details.`quantity` 
 						FROM `purchase_order_details` 
@@ -40,7 +42,7 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
 						receiving_header.receiving_number = receiving_details.receiving_number and
 						receiving_details.item_id = purchase_order_details.item_id LIMIT 0,1) as po_balance,
 
-					 (SELECT hold_invoice_remarks.`remarks` FROM `hold_invoice_remarks` WHERE hold_invoice_remarks.`reference_po_number` = receiving_header.reference_po_number LIMIT 0,1) as hold_remarks
+					(SELECT hold_invoice_remarks.`remarks` FROM `hold_invoice_remarks` WHERE hold_invoice_remarks.`reference_po_number` = receiving_header.reference_po_number LIMIT 0,1) as hold_remarks
 
 
 				 from receiving_header, receiving_details, item, supplier, currency, unit_of_measure
@@ -48,7 +50,8 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
 				  		supplier.id=receiving_header.supplier_id and
 				  		receiving_header.currency=currency.id and 
 				  		item.id=receiving_details.item_id and
-				  		item.unit_of_measure_id=unit_of_measure.id";
+				  		item.unit_of_measure_id=unit_of_measure.id
+						";
 				  		
 	
 	if($from!=''&&$to!=''){
@@ -108,17 +111,27 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>HOLD REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>BIR PO NUMBER</th>
     					</tr>
     				";
 
    		while($obj=fetch($rs)){
     			$ref = ($obj->reference_po_number==NULL)?$obj->other_reference:$obj->reference_po_number;
 				$prnumber 	= getRefPrNumber($obj->reference_po_number); 
+				$fac 		= getRefFac($obj->reference_po_number); 
 				$allocation = getAllocation($prnumber); 		//add as of January 31, 2018 by Rona
 				$item_name = $obj->item_name == '' ? $obj->item_name1 : $obj->item_name;
 				$long_description = strUtfEncode($obj->long_description) == '' ? strUtfEncode($obj->long_description1) : strUtfEncode($obj->long_description);
 				$po_balance = ( $obj->po_balance - $obj->quantity_received );
 				
+				// 10272025 by Nessa
+				if($obj->bir_po_number != "" || $obj->bir_po_number != NULL){
+					$bir_po_number 	= 'PO'.$obj->bir_po_number; 
+				}else{
+					$bir_po_number 	= '';  
+				}
+
 							$output .="<tr>	
 								<td>".getPoDate($obj->reference_po_number)."</td>
 								<td>".$obj->reference_po_number."</td>
@@ -142,6 +155,8 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
 								<td>".$allocation."</td>
 								<td>".$obj->po_remarks."</td>
 								<td>".$obj->hold_remarks."</td>
+								<td>".$fac."</td>
+								<td>".$bir_po_number."</td>
 							</tr>";
 
 		}
@@ -205,9 +220,8 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
 							</tr>";
 	    	}
 		//NON CATALOG ITEMS - END
-
 	    if($count==0&&$count2==0){
-			$output .= "<tr><td colspan='16' align='center'>No Results Found</td></tr>";
+			$output .= "<tr><td colspan='23' align='center'>No Results Found</td></tr>";
 		}
 		$output .="</table>";
 	
@@ -215,4 +229,5 @@ if(isset($_GET['rcvSummaryExcelFormat1231003435'])){
     header("Content-Disposition: attachment; filename=rcv-summary.xls");
     echo $output;
 }
+
 ?>

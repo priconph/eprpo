@@ -8,7 +8,8 @@
     if($po==''){
     	exit('DIRECT ACCESS NOT ALLOWED');
     }
-    $query = "select * from purchase_order_header, supplier where order_number='$po' and supplier.id=supplier_id";
+    // $query = "select * from purchase_order_header, supplier where order_number='$po' and supplier.id=supplier_id"; // old 03112024
+    $query = "select * from purchase_order_header, supplier, purchase_requisition_header where order_number='$po' and supplier.id=supplier_id and purchase_requisition_header.requisition_number=reference_requisition_number";
     $rs = query($query);
     while($obj=fetch($rs)){
     	$refreqnum = $obj->reference_requisition_number;
@@ -24,6 +25,7 @@
     	$attn = strUtfEncode($obj->supplier_contact);
     	$via = $obj->ship_via;
     	$mode = $obj->mode_of_shipment;
+		$president = $obj->president;
     	if($defaultterm==NULL){
     		$defaultterm = $obj->payment_term_id;
     		if($defaultterm==NULL){
@@ -34,6 +36,7 @@
     	$remarks = strUtfEncode($obj->po_remarks);
     	$currencyId=$obj->currency;
     	$currency = getCurrencyCode($obj->currency);
+		$shipto=$obj->facshipto;
 
 
     }
@@ -86,7 +89,8 @@
 											<label class="control-label col-sm-4">Requisition No.</label>
 											<div class="col-sm-8">
                                                 <span class='form-control-static'><?php echo $refreqnum.$prrevsuffix; ?></span>&nbsp;&nbsp;&nbsp;
-                                                <span prnumber='<?php echo $refreqnum;?>' class='pointer potrans-prviewdetails' title='Click to see details' style="font-style:italic;color:blue;font-size:11px">View details</span>
+                                                <input type='hidden' class='form-input form-control president' value='<?php echo $president; ?>' readonly> <!-- 10222024 -->
+												<span prnumber='<?php echo $refreqnum;?>' class='pointer potrans-prviewdetails' title='Click to see details' style="font-style:italic;color:blue;font-size:11px">View details</span>
                                             </div>
 										</div>
 										<div class="form-group">
@@ -111,6 +115,12 @@
 											<label class="control-label col-sm-4">Supplier</label>
 											<div class="col-sm-8">
 												<input type='text' class='form-input form-control ' value='<?php echo $suppliername; ?>' suppid='<?php echo $supplierId; ?>' readonly>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-4">Ship to</label>
+											<div class="col-sm-8">
+												<input type='text' class='form-input form-control ' value='<?php echo $shipto; ?>' readonly>
 											</div>
 										</div>
 										<div class="form-group">

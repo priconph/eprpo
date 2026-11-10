@@ -5,8 +5,19 @@
     include('../config/functions.php');
     include("email-class.php");
  
+    /****** 
+    	Added facshipto by Nessa 02212024
+    ******/
+
+	$allocdept =0;
+	$allocbu = 0;
+	$allocpl = 0;
+	// echo json_encode($_POST);	
+	// exit;
 
 	if(isset($_POST['SdjfrlFBroigjRi'])){//save
+		$facshipto = escapeString($_POST['facshipto']);
+
 		$currency = escapeString($_POST['curr']);
 		$status = "DRAFT";
 		$requester = $userid;
@@ -22,7 +33,8 @@
 		$remarks = escapeString($_POST['remarks']);
 		$sh1 = escapeString($_POST['sh1']);
 		$sh2 = escapeString($_POST['sh2']);
-		$gm = escapeString($_POST['gm']);
+		// $gm = escapeString($_POST['gm']);
+		$gm = 1;
 		$avp = escapeString($_POST['avp']);
 		$svp = escapeString($_POST['svp']);
 		$pr = escapeString($_POST['pr']);
@@ -46,6 +58,8 @@
 
 		//@$allocitem = $_POST['allocitem'];
 		@$allocdept = $_POST['allocdept'];
+		@$allocbu = $_POST['allocbu'];
+		@$allocpl = $_POST['allocpl'];
 		@$allocperc = $_POST['allocperc'];
 		@$allocremarks = $_POST['allocremarks'];
 		$alloclength = count($allocdept);
@@ -81,7 +95,9 @@
 								 						  currency,
 								 						  last_made_changes,
 								 						  pr_notes,
-								 						  pr_description) 
+								 						  pr_description,
+								 						  facshipto
+								 						  ) 
 												   values('$reqnum',
 												   	      '$status',
 												   	      '$requester',
@@ -100,7 +116,9 @@
 												   	      $currency,
 												   	      '$date',
 												   	      '$prnotes',
-												   	      '$prdesc')";
+												   	      '$prdesc',
+												   	      '$facshipto'
+												   	  )";
 		$rs = query($query);
 		if($rs){
 
@@ -118,8 +136,11 @@
 			for($i=0;$i<$alloclength;$i++){
 					$aRem = escapeString($allocremarks[$i]);
 					$aDept = escapeString($allocdept[$i]);
+					$aBU = escapeString($allocbu[$i]);
+					$aPL = escapeString($allocpl[$i]);
 					$aPerc = escapeString($allocperc[$i]);
-					$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+					// $query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+					$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aBU','$aPL','$aPerc','$aRem')";
 					$rs = query($query);
 					
 			}
@@ -130,6 +151,7 @@
 	}
 
 	if(isset($_POST['SKdHeKorUowAnPl'])){//submit
+		$facshipto = escapeString($_POST['facshipto']);
 		$currency = escapeString($_POST['curr']);
 		$status = "IN REVIEW";
 		$requester = $userid;
@@ -139,7 +161,8 @@
 		$remarks = escapeString($_POST['remarks']);
 		$sh1 = escapeString($_POST['sh1']);
 		$sh2 = escapeString($_POST['sh2']);
-		$gm = escapeString($_POST['gm']);
+		// $gm = escapeString($_POST['gm']);
+		$gm = 1;
 		$avp = escapeString($_POST['avp']);
 		$svp = escapeString($_POST['svp']);
 		$pr = escapeString($_POST['pr']);
@@ -153,14 +176,27 @@
 		$length = count($items);
 		$suppliers = $_POST['suppliers'];
 
+		$suppliers = $_POST['suppliers']; 
+
 		$prdesc = getItemInfo($items[0],"item_name");
 		$prdesc = strUtfDecode($prdesc);
 
 		@$allocremarks = $_POST['allocremarks'];
 		$allocdept = $_POST['allocdept'];
+		$allocbu = $_POST['allocbu'];
+		$allocpl = $_POST['allocpl'];
 		$allocperc = $_POST['allocperc'];
-		$alloclength = count($allocdept);
-
+		// $alloclength = count($allocdept);
+		$alloclength = count($allocbu);
+		// print_r($allocdept);
+		// print_r($allocbu);
+		// print_r($allocpl);
+		// print_r($alloclength);
+		// exit;
+		// echo $allocdept;
+		// echo $allocbu;
+		// echo $allocpl;
+		// exit;
 		if(array_sum($allocperc) != 100) {
 			echo "Purchase Requisition is not properly allocated. Please check allocation summary.";
 		}
@@ -199,7 +235,9 @@
 															  currency,
 															  last_made_changes,
 															  pr_notes,
-															  pr_description) 
+															  pr_description,
+															  facshipto
+															  ) 
 													   values('$reqnum',
 													   		  '$status',
 													   		  '$requester',
@@ -218,7 +256,9 @@
 													   		  '$currency',
 													   		  '$reqdate',
 													   		  '$prnotes',
-													   		  '$prdesc')";
+													   		  '$prdesc',
+													   		  '$facshipto'
+													   		)";
 			$rs = query($query);
 			if($rs){
 				$ok= true;
@@ -239,8 +279,10 @@
 					for($i=0;$i<$alloclength;$i++){
 						$aRem = escapeString($allocremarks[$i]);
 						$aDept = escapeString($allocdept[$i]);
+						$aBU = escapeString($allocbu[$i]);
+						$aPL = escapeString($allocpl[$i]);
 						$aPerc = escapeString($allocperc[$i]);
-						$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aPerc','$aRem')";
+						$query = "insert into purchase_requisition_allocation values('$reqnum','$aDept','$aBU','$aPL','$aPerc','$aRem')";
 						$rs = query($query);
 						if(!$rs){
 							echo $rs;

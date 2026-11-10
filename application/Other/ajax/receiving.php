@@ -4,49 +4,49 @@
     include("../../../config/checklogin.php");
     include("../../../config/functions.php");
 
-
-
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
    
         // 09062023 add WHERE clause
-        $qry = "select * 
-                from(
-                        select 
-                                receiving_header.receiving_number,
-                                receiving_header.receiving_status,
-                                receiving_header.reference_po_number,
-                                receiving_header.received_date,
-                                receiving_header.received_by,
-                                receiving_header.carrier,
-                                receiving_header.transaction_type,
-                                receiving_header.supplier_id,
-                                receiving_header.remarks,
-                                receiving_header.other_reference,
-                                receiving_header.currency,
-                                receiving_header.actual_delivery_date,
-                                receiving_header.next_revision_series,
-                                receiving_header.first_approver,
-                                receiving_header.second_approver,
-                                supplier.supplier_name,
-                                currency.currency_code,
-                                concat(user.first_name,' ',user.last_name) as rcvd_by,
-                                (SELECT hold_invoice_remarks.`remarks` FROM `hold_invoice_remarks` WHERE hold_invoice_remarks.`reference_po_number` = receiving_header.reference_po_number LIMIT 0,1) as hold_remarks
-                        from receiving_header 
-                        inner join supplier on supplier.id=receiving_header.supplier_id
-                        inner join user on user.id=receiving_header.received_by
-                        inner join currency on currency.id=receiving_header.currency
+        // $qry = "select * 
+        //         from(
+        //                 select 
+        //                         receiving_header.receiving_number,
+        //                         receiving_header.receiving_status,
+        //                         receiving_header.reference_po_number,
+        //                         receiving_header.received_date,
+        //                         receiving_header.received_by,
+        //                         receiving_header.carrier,
+        //                         receiving_header.transaction_type,
+        //                         receiving_header.supplier_id,
+        //                         receiving_header.remarks,
+        //                         receiving_header.other_reference,
+        //                         receiving_header.currency,
+        //                         receiving_header.actual_delivery_date,
+        //                         receiving_header.next_revision_series,
+        //                         receiving_header.first_approver,
+        //                         receiving_header.second_approver,
+        //                         supplier.supplier_name,
+        //                         currency.currency_code,
+        //                         concat(user.first_name,' ',user.last_name) as rcvd_by,
+        //                         (SELECT hold_invoice_remarks.`remarks` FROM `hold_invoice_remarks` WHERE hold_invoice_remarks.`reference_po_number` = receiving_header.reference_po_number LIMIT 0,1) as hold_remarks
+        //                 from receiving_header 
+        //                 inner join supplier on supplier.id=receiving_header.supplier_id
+        //                 inner join user on user.id=receiving_header.received_by
+        //                 inner join currency on currency.id=receiving_header.currency
                         
-                        where receiving_header.received_date LIKE '%2022%' or receiving_header.received_date LIKE '%2023%'
+        //                 where receiving_header.received_date LIKE '%2022%' or receiving_header.received_date LIKE '%2023%'
 
-                    ) as a
-            ";
+        //             ) as a
+        //     ";
 
-            //    where receiving_header.received_date LIKE '%2022%' or receiving_header.received_date LIKE '%2023%'
+
+    $qry = "SELECT * from receiving_header ";
 
 	function getData2($sql){
         global $connection ;//we use connection already opened
         $query = mysql_query($sql) OR DIE ("Can't get Data from DB , check your SQL Query " );
+
         $data = array();
 
         while($obj=mysql_fetch_object($query)){
@@ -58,16 +58,42 @@ if (!empty($_POST) ) {
                  $itemcount = getNumOfItemsReceived($rcvnum);
                  $actualdate = formatDate($obj->actual_delivery_date);
                  $rcvdate = formatDate2($obj->received_date);
-                 $rcvby = strUtfEncode($obj->rcvd_by);
-                 $carrier = strUtfEncode($obj->carrier);
-                 $remarks = strUtfEncode($obj->remarks);
-                 $currency = $obj->currency_code;
-                 $supplier = strUtfEncode($obj->supplier_name);
+
+                 $received_by = strUtfEncode($obj->received_by);
+                 $rcvby = getUserName($received_by);
+
+                 $carr = strUtfEncode($obj->carrier);
+                    if ($carr == '') {
+                        $carrier = '';
+                    } else {
+                        $carrier = $carr;
+
+                    }
+                 $rem = strUtfEncode($obj->remarks);
+                    if ($rem == '') {
+                        $remarks = '';
+                    } else {
+                        $remarks = $rem;
+
+                    }
+                 $currency_code = $obj->currency;
+                 $currency = getCurrencyCode($currency_code);               
+
+                 $supplier_id = strUtfEncode($obj->supplier_id);
+                 $supplier = getSupplierName($supplier_id);
+
                  $otherref = strUtfEncode($obj->other_reference);
                  $prrevsuffix = appendPrRevSuffix($pr);
 				 $asstmngr = getUserName($obj->first_approver).' '.getRcvApprovalHistoryTimestamp($obj->receiving_number,1,$revision);
 				 $genmngr = getUserName($obj->second_approver).' '.getRcvApprovalHistoryTimestamp($obj->receiving_number,2,$revision);
-                 $hold_remarks = $obj->hold_remarks == '' ? 'N/A' : $obj->hold_remarks;
+                //  $hold_remarks = $obj->hold_remarks == '' ? 'N/A' : $obj->hold_remarks;
+                 $hr = getHoldRemarks($poref);
+                    if ($hr == '') {
+                        $hold_remarks = '';
+                    } else {
+                        $hold_remarks = $hr;
+
+                    }
 
             $arraydata =  array(
                                 "DT_RowAttr"=>array(
@@ -93,10 +119,10 @@ if (!empty($_POST) ) {
                                 'receiving_status'=>$rcvstat, 
                                 'reference_po_number'=>$poref, 
                                 'other_reference'=>$otherref, 
-                                'supplier_name'=>$supplier,
+                                'supplier_id'=>$supplier,
                                 'actual_delivery_date'=>$actualdate,
                                 'received_date'=>$rcvdate,
-                                'rcvd_by'=>$rcvby
+                                'received_by'=>$rcvby
 
                             );
             array_push($data, $arraydata);
@@ -105,12 +131,6 @@ if (!empty($_POST) ) {
         return $data;
         
     }
-
-
-
-
-
-
 
     /* Useful $_POST Variables coming from the plugin */
     $draw = $_POST["draw"];//counter used by DataTables to ensure that the Ajax returns from server-side processing requests are drawn in sequence by DataTables
@@ -126,6 +146,8 @@ if (!empty($_POST) ) {
 
     /* SEARCH CASE : Filtered data */
     if(!empty($_POST['search']['value'])){
+        // echo json_encode($_POST['columns']);
+        // exit;
         $columncount = count($_POST['columns']);
         /* WHERE Clause for searching */
         for($i=0 ; $i<$columncount;$i++){
@@ -144,6 +166,7 @@ if (!empty($_POST) ) {
 
        
         $sql = sprintf("%s %s", $qry , $where);//Search query without limit clause (No pagination)
+        
         $recordsFiltered = mysql_num_rows(mysql_query($sql));//Count of search result
 
         /* SQL Query for search with limit and orderBy clauses*/

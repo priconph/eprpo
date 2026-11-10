@@ -79,8 +79,9 @@
 
 			$approverfirst = getUserName($obj->first_approver).' '.getPoApprovalHistoryTimestamp($ponum,1,$revision);
 			$approversecond = getUserName($obj->second_approver).' '.getPoApprovalHistoryTimestamp($ponum,2,$revision);
+			
+			$approverdivision = $obj->division_approver==NULL?'Not Required':getUserName($obj->division_approver).' '.getPoApprovalHistoryTimestamp($ponum,3,$revision);
 			$approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalHistoryTimestamp($ponum,3,$revision);
-			//$lastapprovedby = getLastPoApprover2($orderNum);
 
 
 			if($fl==''){
@@ -128,7 +129,7 @@
 												<div class="pane-content">
 													<div class="col-sm-6">
 														<div class="form-group">
-															<label class="control-label col-sm-4">Order No.</label>
+															<label class="control-label col-sm-4">Order Noss.</label>
 															<div class="col-sm-8">
 																 <span class='form-control-static' id='ponumber'><?php echo $orderNum.$suffx; ?></span>
 															</div>
@@ -245,17 +246,24 @@
 					                                <form class='form-horizontal'>
 					                                    <div class="col-sm-6">
 					                                        <div class="form-group">
-					                                            <label class="control-label col-sm-5">Asst. Manager</label>
+					                                            <!-- <label class="control-label col-sm-5">Asst. Manager</label> -->
+					                                            <label class="control-label col-sm-5">Section Head</label>
 					                                            <div class="col-sm-7">
 					                                                <span class='form-control-static asstmngr'><?php echo $approverfirst; ?></span>
 					                                            </div>
 					                                        </div>
 					                                       <div class="form-group">
-					                                            <label class="control-label col-sm-5">General Manager</label>
+					                                            <label class="control-label col-sm-5">Department Head</label>
 					                                            <div class="col-sm-7">
 					                                                <span class='form-control-static genmngr'><?php echo $approversecond; ?></span>
 					                                            </div>
-					                                        </div>       
+					                                        </div>  
+															<div class="form-group">
+					                                            <label class="control-label col-sm-5">Division Head</label>
+					                                            <div class="col-sm-7">
+					                                                <span class='form-control-static divmngr'><?php echo $approverdivision; ?></span>
+					                                            </div>
+					                                        </div>     
 					                                        <br>
 					                                    </div>
 					                                    <div class="col-sm-6">

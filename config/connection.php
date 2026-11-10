@@ -1,10 +1,8 @@
 <?php
 
 	$host = "127.0.0.1";
-	// $dbname = "db_eprpo_test";
-	$dbname = "pricon-prpo-db";
-	// $dbname = "pricon-prpo-db_finaltest";	
-	// $dbname = "pricon-prpo-db_20200721";	
+	// $dbname = "pricon-prpo-db_v3"; // test db
+	$dbname = "pricon-prpo-db"; // LIVE
 	$username = "root";
 	$password = "newd3v";
 

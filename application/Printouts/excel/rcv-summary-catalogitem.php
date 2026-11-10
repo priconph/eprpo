@@ -82,6 +82,7 @@ if(isset($_GET['rcvSummaryCatalogItemExcelFormat1231003435'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>CLASSIFICATION CODE</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
     					</tr>
     				";
     
@@ -92,7 +93,7 @@ if(isset($_GET['rcvSummaryCatalogItemExcelFormat1231003435'])){
 				$allocation = getAllocation($prnumber); 		//add as of January 31, 2018 by Rona
 				$item_name = $obj->item_name == '' ? $obj->item_name1 : $obj->item_name;
 				$long_description = $obj->long_description == '' ? $obj->long_description1 : $obj->long_description;
-				
+				$fac 		= getRefFac($obj->reference_po_number);  // 01312025 by Nessa
 				$output .="<tr>
 								<td>".getPoDate($obj->reference_po_number)."</td>
 								<td>".$obj->reference_po_number."</td>
@@ -113,11 +114,12 @@ if(isset($_GET['rcvSummaryCatalogItemExcelFormat1231003435'])){
 								<td>".$obj->classification_code."</td>
 								<td>".$allocation."</td>
 								<td>".$obj->po_remarks."</td>
+								<td>".$fac."</td>
 							</tr>";
 
 	}
 			if($count==0){
-				$output .= "<tr><td colspan='16' align='center'>No Results Found</td></tr>";
+				$output .= "<tr><td colspan='20' align='center'>No Results Found</td></tr>";
 			}
 			$output .="</table>";
 	

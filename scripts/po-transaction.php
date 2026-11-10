@@ -37,40 +37,72 @@
 		$firstapprover=getPoConfigData('first_approver');
 		$secondapprover=getPoConfigData('second_approver');
 
-		$thirdapprover = '';
-		if($currency=='1'){
-			if($grandtotal>=228153){
+		$thirdapprover = 'NULL';
+		$divisionapprover = 'NULL';
+		if($currency=='1'){ // JPY
+			
+			if($grandtotal>=145000 && $grandtotal<=362499.99){
+				$divisionapprover=getPoConfigData('division_approver');
+			}
+			else{
+				$divisionapprover="NULL";
+			}
+
+			if($grandtotal>=362500){ // President
 				$thirdapprover=getPoConfigData('third_approver');
+				$divisionapprover=getPoConfigData('division_approver');
 			}
 			else{
 				$thirdapprover="NULL";
 			}
+
+			
 		}
-		else if($currency=='2'){
-			if($grandtotal>=100000){
+		else if($currency=='2'){ // PHP
+			if($grandtotal>=50000 && $grandtotal<=99999.99){
+				$divisionapprover=getPoConfigData('division_approver');
+			} else if($grandtotal>=100000){ // President
 				$thirdapprover=getPoConfigData('third_approver');
+				$divisionapprover=getPoConfigData('division_approver');
 			}
 			else{
 				$thirdapprover="NULL";
+				$divisionapprover="NULL";
 			}
+
 		}
-		else if($currency=='3'){
-			if($grandtotal>=2500){
+		else if($currency=='3'){ // USD
+			if($grandtotal>=1000 && $grandtotal<=2499.99){
+				$divisionapprover=getPoConfigData('division_approver');
+			}
+			else{
+				$divisionapprover="NULL";
+			}
+
+			if($grandtotal>=2500){ // President
 				$thirdapprover=getPoConfigData('third_approver');
+				$divisionapprover=getPoConfigData('division_approver');
 			}
 			else{
 				$thirdapprover="NULL";
 			}
 		}	
-		else if($currency=='4'){
+		else if($currency=='4'){ // SGD
 			if($grandtotal>=2800){
+				$divisionapprover=getPoConfigData('division_approver');
+			}
+			else{
+				$divisionapprover="NULL";
+			}
+
+			if($grandtotal>=2800){ // President
 				$thirdapprover=getPoConfigData('third_approver');
+				$divisionapprover=getPoConfigData('division_approver');
 			}
 			else{
 				$thirdapprover="NULL";
 			}
 		}
-
 
 		if($_POST['kerbfdsoirp']=='SAVE'){
 			$query = "update purchase_order_header 
@@ -84,6 +116,7 @@
 					  	  updated_by='$loginuser', 
 					  	  first_approver='$firstapprover', 
 					  	  second_approver='$secondapprover', 
+					  	  division_approver=$divisionapprover, 
 					  	  third_approver=$thirdapprover,
 					  	  date_flag='$date',
 					  	  expected_date='$dateneeded' 
@@ -97,7 +130,6 @@
 			}
 		}
 		else if($_POST['kerbfdsoirp']=='SUBMIT'){
-			
 
 			$query = "update purchase_order_header 
 					  set order_status='IN REVIEW', 
@@ -113,6 +145,7 @@
 					  	  po_remarks='$remarks', 
 					  	  first_approver='$firstapprover', 
 					  	  second_approver='$secondapprover', 
+					  	  division_approver=$divisionapprover, 
 					  	  third_approver=$thirdapprover,
 					  	  expected_date='$dateneeded', 
 					  	  flag='1',

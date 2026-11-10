@@ -19,9 +19,11 @@
             $dateneeded = formatDate3($obj->date_needed);
             $remarks = strUtfEncode($obj->justification);
             $currency = $obj->currency_name;
+            $facshipto = $obj->facshipto;
             $currencysymbol = $obj->currency_code;
             $prnotes = strUtfEncode($obj->pr_notes);
             //$forrevision = $obj->revision_flag;
+            $president = $obj->president;
 
             //////////////////////
             $lastapprovedby = getLastPrApprover($pr,$revnumber);
@@ -93,6 +95,12 @@
                                                 <input type='text' class='form-input form-control' value="<?php echo $currency; ?>" readonly>
                                             </div>
                                         </div>
+                                         <div class="form-group">
+                                            <label class="control-label col-sm-4">Ship To</label>
+                                            <div class="col-sm-8">
+                                                <input type='text' class='form-input form-control' value="<?php echo $facshipto; ?>" readonly>
+                                            </div>
+                                        </div>
                                         <?php 
                                             if($forrevision>0){
                                                 echo "<div class=\"form-group\">
@@ -141,13 +149,13 @@
                                 <form class='form-horizontal'>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="control-label col-sm-5">Section Head</label>
+                                            <label class="control-label col-sm-5">Checked By / Section Head</label>
                                             <div class="col-sm-7">
                                                 <span class='form-control-static sectionhead1'><?php echo $approver_sh1; ?></span>
                                             </div>
                                         </div>
                                        <div class="form-group">
-                                            <label class="control-label col-sm-5">Section Head</label>
+                                            <label class="control-label col-sm-5">Section Head (2)</label>
                                             <div class="col-sm-7">
                                                 <span class='form-control-static sectionhead2'><?php echo $approver_sh2; ?></span>
                                             </div>
@@ -158,24 +166,24 @@
                                                 <span class='form-control-static confhead'><?php echo $approver_conf; ?></span>
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label class="control-label col-sm-5">General Manager</label>
                                             <div class="col-sm-7">
-                                               <span class='form-control-static genman'><?php echo $approver_gm; ?></span>
+                                               <span class='form-control-static genman'><?php //echo $approver_gm; ?></span>
                                            </div>
                                         </div>            
-                                        <br>
+                                        <br> -->
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label class="control-label col-sm-5">Asst. Vice Pres./Vice President</label>
+                                            <label class="control-label col-sm-5">GM / AVP / VP</label>
                                             <div class="col-sm-7">
                                                <span class='form-control-static asstvp'><?php echo $approver_avp; ?></span>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label col-sm-5">Sr. Vice President</label>
+                                            <label class="control-label col-sm-5">Operations Division Head</label>
                                             <div class="col-sm-7">
                                                <span class='form-control-static srvp'><?php echo $approver_svp; ?></span>
                                             </div>
@@ -226,6 +234,7 @@
                                                             <th>DESCRIPTION</th>
                                                             <th>SUPPLIER</th>
                                                             <th class='text-center'>CLASSF'N CODE</th>
+                                                            <th class='text-center'>CLASSF'N DESCRIPTION</th>
                                                             
                                                             <th class='text-center'>UOM</th>
                                                             
@@ -237,32 +246,58 @@
                                                     </thead>
                                                     <tbody id='pritems'>
                                                         <?php
+                                                            // $query = "select item_code,
+                                                            //                  item_name,
+                                                            //                  classification_code,
+                                                            //                  acct_name,
+                                                            //                  quantity,
+                                                            //                  purchase_requisition_details.unit_price,
+                                                            //                  unit_of_measure_code,
+                                                            //                  long_description,
+                                                            //                  supplier_name
+                                                            //           from purchase_requisition_details, item, supplier, unit_of_measure, classification_code
+                                                            //           where unit_of_measure_id=unit_of_measure.id and 
+                                                            //                 item_id=item.id and 
+                                                            //                 purchase_requisition_details.supplier_id=supplier.id and 
+                                                            //                 classification_code.acct_code=purchase_requisition_details.classification_code and
+                                                            //                 requisition_number='$pr'";
+                                                            // $rs = query($query);
+                                                            /* 05292025 by Nessa - correction on Classification duplicate */    
                                                             $query = "select item_code,
-                                                                             item_name,
-                                                                             classification_code,
-                                                                             quantity,
-                                                                             purchase_requisition_details.unit_price,
-                                                                             unit_of_measure_code,
-                                                                             long_description,
-                                                                             supplier_name
-                                                                      from purchase_requisition_details, item, supplier, unit_of_measure 
-                                                                      where unit_of_measure_id=unit_of_measure.id and 
-                                                                            item_id=item.id and 
-                                                                            purchase_requisition_details.supplier_id=supplier.id and 
-                                                                            requisition_number='$pr'";
+                                                                            purchase_requisition_details.item_id,
+                                                                            item.item_name,
+                                                                            long_description,
+                                                                            purchase_requisition_details.quantity,
+                                                                            unit_of_measure_code,
+                                                                            purchase_requisition_details.unit_price,
+                                                                            supplier_name, 
+                                                                            currency.currency_code as curr,
+                                                                            classification_code,
+                                                                            classification_code.acct_name
+                                                                    from purchase_requisition_details
+                                                                    left join purchase_requisition_header on purchase_requisition_details.requisition_number = purchase_requisition_header.requisition_number
+                                                                    left join item on purchase_requisition_details.item_id=item.id
+                                                                    left join supplier on purchase_requisition_details.supplier_id=supplier.id
+                                                                    left join unit_of_measure on unit_of_measure_id=unit_of_measure.id
+                                                                    left join currency on purchase_requisition_header.currency=currency.id
+                                                                    left join classification_code on purchase_requisition_details.classification_code=classification_code.acct_code
+                                                                    where purchase_requisition_details.requisition_number='$pr'";
                                                             $rs = query($query);
                                                             $line = 1;
                                                             $grandtotal = 0;
+                                                            $gtotal = 0;
                                                             while($obj=fetch($rs)){
                                                                 $itemcode = $obj->item_code;
                                                                 $shortdesc = strUtfEncode($obj->item_name);
                                                                 $desc = strUtfEncode($obj->long_description);
                                                                 $classfn = strUtfEncode($obj->classification_code);
+                                                                $classfn_name = strUtfEncode($obj->acct_name);
                                                                 $qty = $obj->quantity;
                                                                 $price = $obj->unit_price;
                                                                 $uom = $obj->unit_of_measure_code;
                                                                 $supplier = strUtfEncode($obj->supplier_name);
                                                                 $amount = $price * $qty;
+                                                                $gtotal = $gtotal + $amount;
                                                                 $grandtotal = $grandtotal + round($amount,2);
                                                                 $qty = convertWithDecimal($qty,0);
                                                                 $price = convertWithDecimal($price,5);
@@ -275,6 +310,7 @@
                                                                             <td>$desc</td>
                                                                             <td>$supplier</td>
                                                                             <td class='text-center'>$classfn</td>
+                                                                            <td class='text-center'>$classfn_name</td>
                                                                             
                                                                             <td class='text-center'>$uom</td>
                                                                             
@@ -318,6 +354,8 @@
                                                     <tr>
                                                        <th class='text-center'>LINE</th>
                                                        <th>DEPARTMENT</th>
+                                                       <th>BUSINESS UNIT</th>
+                                                       <th>PRODUCT LINE</th>
                                                        <th class='text-center'>PERCENTAGE %</th>
                                                        <th>REMARKS</th>
                                                     </tr>
@@ -326,18 +364,24 @@
                                                 <tbody id='allocationsummary'>
                                                     <?php
                                                     $line = 1;
-                                                    $query="select section_department_name, purchase_requisition_allocation.remarks, percentage
-                                                            from purchase_requisition_allocation, section_department 
-                                                            where requisition_number='$pr' and
-                                                            department_id=section_department.id";
+                                                    $query="SELECT a.*, b.section_department_name as dept, c.section_department_name as bu, d.section_department_name as pl 
+                                                    FROM `purchase_requisition_allocation` a 
+                                                    left JOIN section_department b ON b.id = a.department_id
+                                                    left JOIN section_department c ON c.id = a.business_unit
+                                                    left JOIN section_department d ON d.id = a.product_line
+                                                    where a.requisition_number='$pr'";
                                                     $rs = query($query);
                                                     while($obj=fetch($rs)){;
-                                                        $dept = $obj->section_department_name;
+                                                        $dept = $obj->dept;
+                                                        $bu = $obj->bu;
+                                                        $pl = $obj->pl;
                                                         $perc = $obj->percentage;
                                                         $remarks = strUtfEncode($obj->remarks);
                                                         echo "<tr>
                                                         <td class='text-center'>$line</td>
-                                                        <td>$dept</td>
+                                                         <td>$dept</td>
+                                                        <td>$bu</td>
+                                                        <td>$pl</td>
                                                         <td class='text-center'>$perc</td>
                                                         <td>$remarks</td>
                                                         </tr>";
@@ -403,7 +447,7 @@
         <div class="panel panel-primary mypanel">
                 <div class="panel-body">
                     <div class="panel-content text-center">
-                                <button class='btn btn-blue2 mybtn' id='pr-approval-approvebtn' data-toggle='modal' href='#prapprovedmodal'prnumber="<?php echo $pr; ?>">Approve</button>
+                                <button class='btn btn-blue2 mybtn' id='pr-approval-approvebtn' data-toggle='modal' href='#prapprovedmodal' prnumber="<?php echo $pr; ?>" gtotal="<?php echo $gtotal; ?>" currency="<?php echo $currency; ?>" president="<?php echo $president; ?>">Approve</button>
                                 <button class='btn btn-blue2 mybtn' id='pr-approval-rejectbtn' data-toggle='modal' href='#rejectionmodal'>Reject</button>
                                 <button class='btn btn-blue2 mybtn' id='pr-approval-cancelbtn'>Back</button>
                     </div>
@@ -429,6 +473,9 @@
                     </div>
                 </div>
                 <input type='hidden' class='prapprovedprnumber'>
+                <input type='hidden' class='prapprovedgrandtotal'>
+                <input type='hidden' class='prapprovedcurrency'>
+                <input type='hidden' class='prapprovedpresident'>
                 <div class="form-group">
                     <label class="control-label col-sm-4">Remarks</label>
                     <div class="col-sm-8">

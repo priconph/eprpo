@@ -48,10 +48,11 @@
 						left join (select id, concat(COALESCE(first_name,''),' ',COALESCE(last_name,'')) as updated_by from user) as b on b.id=item.updated_by_user_id
 						left join item_supplier on item_supplier.item_id=item.id and item_supplier.item_id=item.id
 						left join supplier on supplier.id=item_supplier.supplier_id
-						where item.active_flag=1 and (item.app_status=2 or item.app_status=4)
+						where item.active_flag=1 and (item.app_status=2 or item.app_status=4) and supplier.active_flag=1
 						$crncy
 						group by item.id) as a";
-
+						// where item.active_flag=1 and (item.app_status=2 or item.app_status=4) // old 07052024 by Nessa
+						
 
 		
 		

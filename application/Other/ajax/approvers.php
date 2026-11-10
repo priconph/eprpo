@@ -21,10 +21,14 @@
 	    						approver.updated_by_user_id,
 	    						approver.updated_date
 	    		from approver, user, approval_type, section_department 
-	    		where user_id=user.id 
-	    						and approver.section_department_id=section_department.id 
-	    						and approval_type_id=approval_type.id"
+	    		where user_id=user.id and 
+					approver.section_department_id=section_department.id and 
+					approval_type_id=approval_type.id 
+					
+					"
 				);
+				// and section_department.status='ACTIVE' and
+				// 	approver.active_flag='1'
 
 	$hidebtn = (userAccess(USERID,'.editapproverbtn')==false)?'hidden':'';
 	while($obj=mysql_fetch_object($rs)){

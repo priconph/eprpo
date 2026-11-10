@@ -15,6 +15,8 @@
 		$rs = query($query);
 		while($obj=fetch($rs)){
 			$prnumber = $obj->requisition_number;
+			$facshipto = $obj->facshipto;
+	
 			$revision = str_replace($pr.'-R', '', $prnumber);
 			$stat = strtoupper($obj->requisition_status);
 
@@ -114,6 +116,13 @@
 															</div>
 														</div>
 														<div class="form-group">
+															<label class="control-label col-sm-4">Ship To</label>
+															<div class="col-sm-8">
+																 <span class='form-control-static' id='facshipto'><?php echo $facshipto; ?></span>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="control-label col-sm-4">Justification</label>
 															<div class="col-sm-8">
 																 <span class='form-control-static' id='justification'><?php echo $justification; ?></span>
@@ -174,13 +183,13 @@
 													<div class="col-sm-6">
 														
 														<div class="form-group">
-															<label class="control-label col-sm-5">Section Head</label>
+															<label class="control-label col-sm-5">Checked By / Section Head</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static sectionhead'><?php echo $sh1; ?></span>
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="control-label col-sm-5">Section Head</label>
+															<label class="control-label col-sm-5">Section Head (2) </label>
 															<div class="col-sm-7">
 																 <span class='form-control-static sectionhead'><?php echo $sh2; ?></span>
 															</div>
@@ -191,26 +200,26 @@
 																 <span class='form-control-static confhead'><?php echo $conf; ?></span>
 															</div>
 														</div>
-														<div class="form-group">
+														<!-- <div class="form-group">
 															<label class="control-label col-sm-5">General Manager</label>
 															<div class="col-sm-7">
-																 <span class='form-control-static genman'><?php echo $gm; ?></span>
+																 <span class='form-control-static genman'><?php //echo $gm; ?></span>
 															</div>
-														</div>
+														</div> -->
 														
 														
 														<br>
 													</div>
 													<div class="col-sm-6">
 														<div class="form-group">
-															<label class="control-label col-sm-5">Asst. Vice Pres./Vice President</label>
+															<label class="control-label col-sm-5">GM / AVP / VP</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static asstvp'><?php echo $avp; ?></span>
 															</div>
 														</div>
 														
 														<div class="form-group">
-															<label class="control-label col-sm-5">Sr. Vice President</label>
+															<label class="control-label col-sm-5">Operations Division Head</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static srvp'><?php echo $svp; ?></span>
 															</div>

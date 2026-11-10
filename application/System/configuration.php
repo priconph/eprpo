@@ -182,6 +182,7 @@
 		</div>
 	</div>  
 </div>
+
 <div class="modal fade" id="po-approval-settings">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -205,11 +206,13 @@
 									$purchasinghead = '';
 									$fapprover ='';
 									$sapprover='';
+									$divpprover=''; 
 									$lapprover = '';
 									while($obj=fetch($rs)){
 										$purchasinghead = $obj->purchasing_head;
 										$fapprover = $obj->first_approver;
 										$sapprover = $obj->second_approver;
+										$divpprover = $obj->division_approver; 
 										$lapprover = $obj->third_approver;
 										$agm = $obj->assistant_manager;
 										$gm = $obj->general_manager;
@@ -226,7 +229,15 @@
 								<select class='form-input form-control purchasingsectionhead'>
 									<option value='NULL'>-</option>
 									<?php 
-										$query = "select * from user where active_flag='1'";
+										// $query = "select * from user where active_flag='1'";
+										$query = "select  user.id,
+																	  first_name,
+																	  middle_name,
+																	  last_name
+															  from approver, user 
+															  where approver.user_id = user.id and
+															  		approval_type_id='8' and 
+															  		approver.active_flag='1'"; // 04222024 by nessa
 										$rs = query($query);
 										while($obj=fetch($rs)){
 											if($obj->id==$purchasinghead){
@@ -242,7 +253,8 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Logistics General Manager Approval</label>
+							<!-- <label class="control-label col-md-4">Logistics General Manager Approval</label> -->
+							<label class="control-label col-md-4">Section Head Approval</label>
 							<div class="col-md-8">
 								<select class='form-input form-control pofirstapprover'>
 												<option value='NULL'>-</option>
@@ -270,7 +282,8 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">General Manager Approval</label>
+							<!-- <label class="control-label col-md-4">General Manager Approval</label> -->
+							<label class="control-label col-md-4">Department Head Approval</label>
 							<div class="col-md-8">
 								<select class='form-input form-control posecondapprover'>
 												<option value='NULL'>-</option>
@@ -298,6 +311,34 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="control-label col-md-4">Division Head Approval</label>
+							<div class="col-md-8">
+								<select class='form-input form-control podivapprover'>
+												<option value='NULL'>-</option>
+												<?php 
+													$query = "select  user.id,
+																	  first_name,
+																	  middle_name,
+																	  last_name
+															  from approver, user 
+															  where approver.user_id = user.id and
+															  		approval_type_id='8' and 
+															  		approver.active_flag='1'";
+													$rs = query($query);
+													while($obj=fetch($rs)){
+														if($obj->id==$divpprover){
+															echo "<option value='$obj->id' selected>$obj->first_name $obj->middle_name $obj->last_name</option>";
+														}
+														else{
+															echo "<option value='$obj->id'>$obj->first_name $obj->middle_name $obj->last_name</option>";
+														}
+														
+													}
+												?>
+											</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="control-label col-md-4">President Approval</label>
 							<div class="col-md-8">
 								<select class='form-input form-control polastapprover'>
@@ -309,7 +350,7 @@
 																	  last_name
 															  from approver, user 
 															  where approver.user_id = user.id and
-															  		approval_type_id='8' and 
+															  		approval_type_id='6' and 
 															  		approver.active_flag='1'";
 													$rs = query($query);
 													while($obj=fetch($rs)){
@@ -337,12 +378,20 @@
 								<select class='form-input form-control asstmng'>
 												<option value='NULL'>-</option>
 												<?php 
-													$query = "select  user.id,
+													// $query = "select  user.id,
+													// 				  first_name,
+													// 				  middle_name,
+													// 				  last_name
+													// 		  from  user 
+													// 		  where user.active_flag='1'"; 
+												$query = "select  user.id,
 																	  first_name,
 																	  middle_name,
 																	  last_name
-															  from  user 
-															  where user.active_flag='1'"; 
+															  from approver, user 
+															  where approver.user_id = user.id and
+															  		approval_type_id='8' and 
+															  		approver.active_flag='1'"; // 04222024 by nessa
 													$rs = query($query);
 													while($obj=fetch($rs)){
 														if($obj->id==$agm){
@@ -363,12 +412,19 @@
 								<select class='form-input form-control genmng'>
 												<option value='NULL'>-</option>
 												<?php 
-													$query = "select  user.id,
-																	  first_name,
-																	  middle_name,
-																	  last_name
-															  from  user 
-															  where user.active_flag='1'"; 
+													$query = "select DISTINCT (a.user_id) as id, b.first_name, b.middle_name, b.last_name 
+														from approver a 
+														INNER JOIN user b ON b.id = a.user_id
+														where a.approval_type_id='4' and a.active_flag='1'"; 
+													// $query = "select  user.id,
+													// 				  first_name,
+													// 				  middle_name,
+													// 				  last_name
+													// 		  from approver, user 
+													// 		  where approver.user_id = user.id and
+													// 		  		approval_type_id='4' and 
+													// 		  		approver.active_flag='1'"; // 04222024 by nessa
+															  				  
 													$rs = query($query);
 													while($obj=fetch($rs)){
 														if($obj->id==$gm){
@@ -389,12 +445,20 @@
 								<select class='form-input form-control pres'>
 												<option value='NULL'>-</option>
 												<?php 
+													// $query = "select  user.id,
+													// 				  first_name,
+													// 				  middle_name,
+													// 				  last_name
+													// 		  from  user 
+													// 		  where user.active_flag='1'"; 
 													$query = "select  user.id,
 																	  first_name,
 																	  middle_name,
 																	  last_name
-															  from  user 
-															  where user.active_flag='1'"; 
+															  from approver, user 
+															  where approver.user_id = user.id and
+															  		approval_type_id='6' and 
+															  		approver.active_flag='1'"; // 04222024 by nessa		  
 													$rs = query($query);
 													while($obj=fetch($rs)){
 														if($obj->id==$pr){
@@ -517,6 +581,7 @@
 	</div>  
 </div>
 
+
 <div class="modal fade" id="po-approval-assignment">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -544,8 +609,12 @@
 								<div class="col-md-8">
 									<select class='form-input form-control poapprovaltype'>
 													<option value='NULL'>-</option>
-													<option value='1'>Assistant Manager</option>
-													<option value='2'>General Manager</option>
+													<!-- <option value='1'>Assistant Manager</option>
+													<option value='2'>General Manager</option> -->
+
+													<option value='1'>Section Head</option>
+													<option value='2'>Department Head</option>
+													<option value='4'>Division Head</option>
 													<option value='3'>President</option>
 
 									</select>

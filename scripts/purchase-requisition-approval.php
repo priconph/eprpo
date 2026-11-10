@@ -232,7 +232,8 @@
 				 														action, 
 				 														user_id, 
 				 														reason_for_rejection, 
-				 														date,pr_flag,
+				 														date,
+																		pr_flag,
 				 														pr_approval_flag,
 				 														pr_approval_remarks,
 				 														revision_flag

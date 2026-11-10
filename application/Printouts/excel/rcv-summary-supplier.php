@@ -28,7 +28,8 @@ if(isset($_GET['rcvSummarySupplierExcelFormat1231003435'])){
 					 reference_po_number,
 					 other_reference,
 					  (SELECT purchase_order_details.`classification_code` FROM `purchase_order_details` WHERE purchase_order_details.`order_number` = receiving_header.reference_po_number AND purchase_order_details.item_id= receiving_details.item_id LIMIT 0,1) as classification_code,
-					 (SELECT purchase_order_header.`po_remarks` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as po_remarks
+					 (SELECT purchase_order_header.`po_remarks` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as po_remarks,
+					 (SELECT purchase_order_header.`bir_po_number` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as bir_po_number
 				  from receiving_header, receiving_details, item, supplier, currency
 				  where receiving_header.receiving_number=receiving_details.receiving_number and
 				  		supplier.id=receiving_header.supplier_id and
@@ -57,7 +58,8 @@ if(isset($_GET['rcvSummarySupplierExcelFormat1231003435'])){
     					<tr>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>DATE RCVD</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>RCV NUMBER</th>
-    						<th class='text-left' style='background-color:#0F3057; color:#fff'>REFERENCE</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO NUMBER</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>INVOICE NO.</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>CODE</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ITEM NAME</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>DESCRIPTION</th>
@@ -68,20 +70,34 @@ if(isset($_GET['rcvSummarySupplierExcelFormat1231003435'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>CLASSIFICATION CODE</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>BIR PO NUMBER</th>
     					</tr>
     				";
     
 
     while($obj=fetch($rs)){
-    			$ref = ($obj->reference_po_number==NULL)?$obj->other_reference:$obj->reference_po_number;
+    			// $ref = ($obj->reference_po_number==NULL)?$obj->other_reference:$obj->reference_po_number;
+    			$ref = $obj->other_reference;
 				$prnumber = getRefPrNumber($obj->reference_po_number);
 				$item_name = $obj->item_name == '' ? $obj->item_name1 : $obj->item_name;
 				$long_description = $obj->long_description == '' ? $obj->long_description1 : $obj->long_description;
     			$allocation = getAllocation($prnumber); 		//add as of January 31, 2018 by Rona
+    			$fac 		= getRefFac($obj->reference_po_number);  // 01312025 by Nessa
+
+    			// 10272025 by Nessa
+				if($obj->bir_po_number != "" || $obj->bir_po_number != NULL){
+					$bir_po_number 	= 'PO'.$obj->bir_po_number; 
+				}else{
+					$bir_po_number 	= '';  
+				}
+
+
 				$output .="<tr>
 								<td>".formatDate($obj->received_date)."</td>
 								<td>".$obj->receiving_number."</td>
-								<td>$ref</td>
+								<td>".$obj->reference_po_number."</td>
+								<td>".$ref."</td>
 								<td>".$obj->item_code."</td>
 								<td>".$item_name."</td>
 								<td>".$long_description."</td>
@@ -92,13 +108,15 @@ if(isset($_GET['rcvSummarySupplierExcelFormat1231003435'])){
 								<td>".$obj->classification_code."</td>
 								<td>".$allocation."</td>
 								<td>".$obj->po_remarks."</td>
+								<td>".$fac."</td>
+								<td>".$bir_po_number."</td>
 							</tr>";
 
 	}
 
 
 			if($count==0){
-				$output .= "<tr><td colspan='10' align='center'>No Results Found</td></tr>";
+				$output .= "<tr><td colspan='15' align='center'>No Results Found</td></tr>";
 			}
 			$output .="</table>";
 	

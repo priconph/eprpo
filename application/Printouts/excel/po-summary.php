@@ -17,6 +17,34 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
 	$dnto = escapeString($_GET['dateneededto']);
 	$staff = escapeString($_GET['staff']);
 	$pobalance = escapeString(strtoupper($_GET['pobalance']));
+	// $query = "select purchase_order_details.item_id,
+	// 						 item_code,
+	// 						 item.item_name as item_name1,
+	// 						 item.long_description as long_description1,
+	// 						 purchase_order_details.item_name,
+	// 						 purchase_order_details.long_description,
+	// 						 purchase_order_details.order_number,
+	// 						 currency_code,
+	// 						 purchase_order_details.unit_price, 
+	// 						 supplier_name,
+	// 						 order_date,
+	// 						 order_status,
+	// 						 expected_date,
+	// 						 purchase_order_details.quantity,
+	// 						 purchase_order_header.posted_by,
+	// 						 purchase_order_header.next_revision_series,
+	// 						 unit_of_measure_id,
+	// 				 		 unit_of_measure_code,
+	// 						 purchase_order_details.`classification_code` as classification_code,
+	// 						 po_remarks
+	// 				  from purchase_order_header, purchase_order_details, item, currency, supplier, unit_of_measure
+	// 				  where purchase_order_header.order_number=purchase_order_details.order_number and 
+	// 				  		supplier.id=purchase_order_header.supplier_id and
+	// 				  		purchase_order_details.item_id=item.id and 
+	// 				  		purchase_order_header.currency=currency.id and
+	// 				  		item.unit_of_measure_id=unit_of_measure.id";
+
+	/* 06062024 by Nessa */
 	$query = "select purchase_order_details.item_id,
 							 item_code,
 							 item.item_name as item_name1,
@@ -36,13 +64,16 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
 							 unit_of_measure_id,
 					 		 unit_of_measure_code,
 							 purchase_order_details.`classification_code` as classification_code,
-							 po_remarks
-					  from purchase_order_header, purchase_order_details, item, currency, supplier, unit_of_measure 
+							 po_remarks,
+							 purchase_requisition_header.facshipto
+					  from purchase_order_header, purchase_order_details, item, currency, supplier, unit_of_measure, purchase_requisition_header
 					  where purchase_order_header.order_number=purchase_order_details.order_number and 
 					  		supplier.id=purchase_order_header.supplier_id and
 					  		purchase_order_details.item_id=item.id and 
 					  		purchase_order_header.currency=currency.id and
-					  		item.unit_of_measure_id=unit_of_measure.id";
+					  		item.unit_of_measure_id=unit_of_measure.id and
+					  		purchase_requisition_header.requisition_number=purchase_order_header.reference_requisition_number
+							";
 
 	if($staff!='any'){
 		$query = $query." and purchase_order_header.posted_by='$staff'";
@@ -145,6 +176,7 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>CLASSIFICATION CODE</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
     						
 
     					</tr>
@@ -192,6 +224,12 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
 				//-11262019
 				$long_description = $obj->long_description1 == '' ? $obj->long_description1 : $obj->long_description1; 
 				
+				/* 06062024 by Nessa */
+				if ($obj->facshipto == '' || $obj->facshipto == NULL || $obj->facshipto == '0'){
+					$fac ='Factory 1';
+				}else{
+					$fac = $obj->facshipto;
+				}
 				/*$output .="<tr>
 								<td>$postedby</td>
 								<td>$obj->order_number</td>
@@ -234,6 +272,7 @@ if(isset($_GET['poSummaryExcelFormat019827@839'])){
 									<td>$obj->classification_code</td>
 									<td>$allocation</td>
 									<td>$obj->po_remarks</td>
+									<td>$fac</td>
 								</tr>";
 				}
 

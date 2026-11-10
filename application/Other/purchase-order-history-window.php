@@ -202,9 +202,9 @@
 																	</tr>
 																</thead>
 																<tbody id='poitems'>
-																	 <?php $query = "select item_code,
-																	                        item_name,
-																	                        long_description,
+																	 <?php $query = "select item.item_code,
+																	                        item.item_name,
+																	                        item.long_description,
 																	                        item_id,
 																	                        quantity,
 																	                        purchase_order_details_revision.unit_price,
@@ -231,7 +231,9 @@
 																	           $floatamount = $price*$qty;
 																	           $amount = $price * $qty;
 																	           $grandtotal = $grandtotal + round($amount,2);
-																	           $rcvdqty = getQtyReceived($po,$itemId,$price);
+																	           // $rcvdqty = getQtyReceived($po,$itemId,$price);
+																	           $rcvdqty = getQtyReceivedByPR($po,$itemId,$price);
+																	           
 																	           $bal = $qty-$rcvdqty;
 																	           $bal = convertWithDecimal($bal,0);
 																	           $qty = convertWithDecimal($qty,0);

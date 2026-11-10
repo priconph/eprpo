@@ -15,14 +15,42 @@ $(document).off('click','.viewreceivingpo').on('click','.viewreceivingpo',functi
 	
 });
 
-$(document).off('click','.pageContent .cancelholdbtn').on('click','.pageContent .cancelholdbtn', function(){
+$(document).off('click', '.viewreceivingpo_omrs').on('click', '.viewreceivingpo_omrs', function () {
+	$('#loading-img').removeClass('hidden');
+
+	var ponumber = $(this).attr('ponum_omrs');
+	var supplier = $(this).closest('tr').find('td:eq(2)').text();
+	console.log(ponumber +' '+ supplier);
+
+	$('.content').load("Transaction/rcv-transaction-po.php?JKeao4ihslk=" + encodeURIComponent(supplier) + "&skrbOIrhlk=" + encodeURIComponent(ponumber), function () {
+		setTimeout(function () {
+			$('#loading-img').addClass('hidden');
+		}, 300);
+	});
+	$.getScript(pagescripts + 'rcv-transaction-po.js');
+	$('.content').animate({ scrollTop: 0 }, 200);
+
+});
+
+$(document).off('click', '.cancelholdbtn').on('click', '.cancelholdbtn', function () {
+	// $(document).off('click', '.pageContent .cancelholdbtn').on('click', '.pageContent .cancelholdbtn', function () { //old
 	var modal = "#holdcancellationmodal",
 		ponumber = $(this).attr('ponum');
-
+	// alert(ponumber);
 
 	$(modal+' .holdcancellationmodal-ponumber').val(ponumber);
 	$(modal+' #holdcancellationmodal-ponumber').val(ponumber);
 
+
+});
+
+$(document).off('click', '.cancelholdbtn_omrs').on('click', '.cancelholdbtn_omrs', function () {
+	var modal = "#holdcancellationmodal",
+		ponumber_omrs = $(this).attr('ponum_omrs');
+	// alert(ponumber_omrs);
+
+	$(modal + ' .holdcancellationmodal-ponumber').val(ponumber_omrs);
+	$(modal + ' #holdcancellationmodal-ponumber').val(ponumber_omrs);
 
 });
 

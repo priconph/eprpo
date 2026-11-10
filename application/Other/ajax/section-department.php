@@ -6,7 +6,8 @@
 
 	$data = array();
 
-	$rs = query("select * from section_department");
+	// $rs = query("select * from section_department WHERE status = 'ACTIVE'");
+	$rs = query("select * from section_department WHERE category = 0 order by section_department_name ASC"); // 04012025 by Nessa
 
 	$hidebtn = (userAccess(USERID,'.editdepartmentbtn')==false)?'hidden':'';
 	while($obj=mysql_fetch_object($rs)){

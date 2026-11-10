@@ -43,10 +43,11 @@ $(document).off('click','#emailnotification-savebtn').on('click','#emailnotifica
 });
 
 $(document).off('click','#poapprovalsettings-savebtn').on('click','#poapprovalsettings-savebtn', function(){
-	var head, first, second, third, ok=true, asst, mng, pr;
+	var head, first, second, divapp, third, ok=true, asst, mng, pr;
 	head = $('.purchasingsectionhead').val();
 	first = $('.pofirstapprover').val();
 	second = $('.posecondapprover').val();
+	divapp = $('.podivapprover').val();
 	third = $('.polastapprover').val();
 
 	asst = $('.asstmng').val();
@@ -66,7 +67,7 @@ $(document).off('click','#poapprovalsettings-savebtn').on('click','#poapprovalse
 		$(this).removeAttr('disabled');
 	}
 	else{
-		$.post(server+'configuration.php',{Flekfiui42k3b49ksb:'aoirHkieHFi1hoi34i',asst:asst,mng:mng,pr:pr,head:head,firstapprover:first,secondapprover:second,lastapprover:third},function(data){
+		$.post(server + 'configuration.php', { Flekfiui42k3b49ksb: 'aoirHkieHFi1hoi34i', asst: asst, mng: mng, pr: pr, head: head, firstapprover: first, secondapprover: second, divapprover: divapp, lastapprover:third},function(data){
 			if(data.trim()=='success'){
 				
 				$('#po-approval-settings').modal('hide');

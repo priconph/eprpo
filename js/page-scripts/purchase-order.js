@@ -75,7 +75,7 @@ $(document).off('click','#potable .tagpoasprinted').on('click','#potable .tagpoa
 
 $(document).off('click','#potable .clickable').on('click','#potable .clickable', function(){
 	$('#poblowup').modal('show');
-	var withdiscrepancy, dateneeded, rejection, rejectedby, lastapprovedby, forrevision, ponumber, postedby, assignedto, attn, prnumber, status, supplier, supplierAddr, expdelivery, orderdate, remarks, grandtotal, terms, shipvia, currency, mode, cancelleddate, cancelledby, cancelledreason, prsuffix;
+	var withdiscrepancy, dateneeded, rejection, rejectedby, lastapprovedby, forrevision, ponumber, postedby, assignedto, attn, prnumber, status, supplier, supplierAddr, expdelivery, orderdate, remarks, grandtotal, terms, shipvia, currency, facshipto, mode, cancelleddate, cancelledby, cancelledreason, prsuffix;
 	ponumber = $(this).closest('tr').attr('ponumber');
 	prnumber = $(this).closest('tr').attr('refpr');
 	status = $(this).closest('tr').attr('status');
@@ -88,6 +88,7 @@ $(document).off('click','#potable .clickable').on('click','#potable .clickable',
 	terms = $(this).closest('tr').attr('terms');
 	shipvia = $(this).closest('tr').attr('shipvia');
 	currency = $(this).closest('tr').attr('currency');
+	facshipto = $(this).closest('tr').attr('facshipto');
 	mode = $(this).closest('tr').attr('mode');
 	attn = $(this).closest('tr').attr('attn');
 	dateassigned = $(this).closest('tr').attr('dateassigned');
@@ -123,6 +124,7 @@ $(document).off('click','#potable .clickable').on('click','#potable .clickable',
 	$('#paymentterms').html(terms);
 	$('#shipviafield').html(shipvia);
 	$('#pocurrency').html(currency);
+	$('#facshipto').html(facshipto);
 	$('#shipmentmode').html(mode);
 	$('#revisionnumber').html(revnum);
 	$('#lastapprovedby').html(lastapprovedby);
@@ -136,6 +138,7 @@ $(document).off('click','#potable .clickable').on('click','#potable .clickable',
 	$('#rejectedby').val(rejectedby);
 	$('#po-approverspane .asstmngr').html($(this).closest('tr').attr('firstapprover'));
 	$('#po-approverspane .genmngr').html($(this).closest('tr').attr('secondapprover'));
+	$('#po-approverspane .divmngr').html($(this).closest('tr').attr('divapprover'));
 	$('#po-approverspane .pres').html($(this).closest('tr').attr('thirdapprover'));
 	$('#po-approverspane .lastapprovedby').html($(this).closest('tr').attr('lastapprovedby'));
 	$('#cancelleddate').html(cancelleddate);
@@ -280,12 +283,20 @@ $(document).off('click','#printbtn-printingmodal').on('click','#printbtn-printin
 		revsuffix = $('#revsuffix').val(),
 		ponum = $(this).attr("ponumber");
 
-	if(template=='1'){
-		window.open('Printouts/purchase-order-printout.php?jkHIejPoeiwMlkdA='+ponum);
-	}
-	else{
-		// window.open('Printouts/purchase-order-printout2.php?jkHIejPoeiwMlkdA='+ponum+'&revsuffix='+revsuffix);
-		window.open('Printouts/purchase-order-printout2.php?jkHIejPoeiwMlkdA='+ponum); //di ko na sinama ung rev# sa link para di nila mapaltan :D
+	// if(template=='1'){
+	// 	window.open('Printouts/purchase-order-printout.php?jkHIejPoeiwMlkdA='+ponum);
+	// }
+	// else{
+	// 	// window.open('Printouts/purchase-order-printout2.php?jkHIejPoeiwMlkdA='+ponum+'&revsuffix='+revsuffix);
+	// 	window.open('Printouts/purchase-order-printout2.php?jkHIejPoeiwMlkdA='+ponum); //di ko na sinama ung rev# sa link para di nila mapaltan :D
+	// }
+	/* 02012025 by Nessa */
+	if (template == '2') {
+		window.open('Printouts/purchase-order-printout2.php?jkHIejPoeiwMlkdA=' + ponum);
+	} else if (template == '3') {
+		window.open('Printouts/purchase-order-printout_bir.php?jkHIejPoeiwMlkdA=' + ponum);
+	} else {
+		window.open('Printouts/purchase-order-printout.php?jkHIejPoeiwMlkdA=' + ponum);
 	}
 });
 

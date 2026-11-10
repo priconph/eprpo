@@ -18,6 +18,7 @@
             $reqtype = $obj->requisition_type;
             $dateneeded = formatDate($obj->date_needed);
             $currency = $obj->currency;
+            $facshipto = $obj->facshipto;
             $remarks = strUtfEncode($obj->justification);
             $prnotes = strUtfEncode($obj->pr_notes);
             $sh1selected = $obj->section_head1;
@@ -106,7 +107,7 @@
 											<label class="control-label col-sm-4">Currency</label>
 											<div class="col-sm-8">
 												<select name='type' class='form-input form-control currency'>
-													<option value='NULL'></option>
+													<option value='NULL'>---</option>
 													<?php 
 														$query = "select * from currency";
 														$rs = query($query);
@@ -121,6 +122,28 @@
 															}
 														}
 													?>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-4">Ship To</label>
+											<div class="col-sm-8">
+												<select name='type' class='form-input form-control facshipto'>
+														<?php
+															if($facshipto=='Factory 1'){
+																echo "<option value='Factory 1' selected>Factory 1</option>";
+															}
+															else{
+																echo "<option value='Factory 1'>Factory 1</option>";
+															}
+															if($facshipto=='Factory 3'){
+																echo "<option value='Factory 3' selected>Factory 3</option>";
+															}
+															else{
+																echo "<option value='Factory 3'>Factory 3</option>";
+															}
+															
+														?>
 												</select>
 											</div>
 										</div>
@@ -247,7 +270,7 @@
 												$grandtotal = 0;
 												$q = 'qty';
 												$a = 'amount';
-												$checkifconformance = false;
+												// $checkifconformance = false;
 												while($obj=fetch($rs)){
 													if($obj->supp_status == 1) {														
 														$itemId = $obj->item_id;
@@ -255,8 +278,11 @@
 														$shortdesc = strUtfEncode($obj->item_name);
 														$longdesc = strUtfEncode($obj->long_description);
 														$conf = $obj->conformance_flag;
+														/* 01262025 by Nessa */
 														if($conf=='1'){
 															$checkifconformance=true;
+														}else{
+															$checkifconformance=false;
 														}
 														$classfn = $obj->classification_code;
 														$qty = $obj->quantity;
@@ -328,6 +354,8 @@
 														<tr>
 															<th><input type='checkbox' class='selectall'></th>
 															<th>DEPARTMENT</th>
+															<th>BUSINESS UNIT</th>
+															<th>PRODUCT LINE</th>
 															<th class='text-center'>PERCENTAGE %</th>
 															<th>REMARKS</th>
 														</tr>
@@ -335,20 +363,37 @@
 													</thead>
 													<tbody id='allocationsummary'>
 														<?php
-	                                             
-	                                                        $query="select department_id, section_department_name, percentage, purchase_requisition_allocation.remarks 
-	                                                                from purchase_requisition_allocation, section_department 
-	                                                                where requisition_number='$pr' and
-	                                                                      department_id=section_department.id";
+	                                             			$dept = '--';
+	                                             			$pl = '--';
+
+	                                                        $query="SELECT a.*, b.section_department_name as dept, c.section_department_name as bu, d.section_department_name as pl 
+															FROM `purchase_requisition_allocation` a 
+															left JOIN section_department b ON b.id = a.department_id
+															left JOIN section_department c ON c.id = a.business_unit
+															left JOIN section_department d ON d.id = a.product_line
+															where a.requisition_number='$pr'
+																		  ";
 	                                                        $rs = query($query);
 	                                                        while($obj=fetch($rs)){
 	                                                            $deptid = $obj->department_id;
-	                                                            $dept = $obj->section_department_name;
-	                                                            $perc = $obj->percentage;
+	                                                            $buid = $obj->business_unit;
+	                                                            $bu = $obj->bu;
+	                                                            $plid = $obj->product_line;
+																$perc = $obj->percentage;
 	                                                            $notes = strUtfEncode($obj->remarks);
+
+																if ($obj->department_id != 0){
+																	$dept = $obj->dept;
+																}
+																if ($obj->product_line != 0){
+																	$pl = $obj->pl;
+																}
+	                                                            
 	                                                            echo "<tr>
 	                                                                    <td><input type='checkbox' class='itemcheckbox'></td>
 	                                                                    <td class='allocationdeptid' allocdeptid='$deptid'>$dept</td>
+	                                                                    <td class='allocationbuid' allocbuid='$buid'>$bu</td>
+	                                                                    <td class='allocationplid' allocplid='$plid'>$pl</td>
 	                                                                    <td class='text-center allocationpercentage'>$perc</td>
 	                                                                    <td class='allocationnotes'>$notes</td>
 	                                                                  </tr>";
@@ -441,15 +486,18 @@
 								<form class="form-horizontal">
 									<div class="col-md-6">
 										
+										
 										<div class="form-group">
-											<label class="control-label col-sm-5">Section Head</label>
+											<label class="control-label col-sm-5">Checked By / Section Head</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control sectionhead1'>
 													<option value='NULL'>-</option>
 													
 													<?php
-														$query = "select * from approver where section_department_id='$loginuserdeptid' and active_flag='1' and approval_type_id='1'";
+														// $query = "select * from approver where section_department_id='$loginuserdeptid' and active_flag='1' and approval_type_id='1'";
+														$query = "select * from approver where section_department_id='$loginuserdeptid' and (approval_type_id='1' or approval_type_id='9') and active_flag='1'";
 														$rs = query($query);
+														// echo "<option value='1'>Not Applicable</option>";
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
 															$approver = getUserName($id);
@@ -465,7 +513,7 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-5">Section Head</label>
+											<label class="control-label col-sm-5">Section Head (2)</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control sectionhead2'>
 													<option value='NULL'>-</option>
@@ -477,6 +525,7 @@
 															echo "<option value='1'>Not Applicable</option>";
 														}
 														$query = "select * from approver where section_department_id='$loginuserdeptid' and active_flag='1' and approval_type_id='1'";
+														// $query = "select * from approver where section_department_id='$loginuserdeptid' and approval_type_id='9' and active_flag='1'";
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -498,7 +547,7 @@
 												<select type='text' class='form-input defaultsign form-control confhead'>
 													<option value='NULL'>-</option>
 													<?php
-														//$query = "select * from approver where section_department_id='$loginuserdeptid' and active_flag='1' and approval_type_id='7'";
+														// $query = "select * from approver where section_department_id='$loginuserdeptid' and active_flag='1' and approval_type_id='7'";
 														$query = "select * from approver where approval_type_id='7' and active_flag='1'";
 														$rs = query($query);
 														while($obj=fetch($rs)){
@@ -515,38 +564,40 @@
 												</select>
 											</div>
 										</div>
-										<div class="form-group">
+										<!-- <div class="form-group">
 											<label class="control-label col-sm-5">General Manager</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control genman'>
 													<option value='NULL'>-</option>
 													<?php 
-														if($gmselected=='1'){
-															echo "<option value='1' selected>Not Applicable</option>";
-														}
-														else{
-															echo "<option value='1'>Not Applicable</option>";
-														}
-														$query = "select * from approver where active_flag='1' and approval_type_id='3'";
-														$rs = query($query);
-														while($obj=fetch($rs)){
-															$id = $obj->user_id;
-															$approver = getUserName($id);
-															if($id==$gmselected){
-																echo "<option value='$id' selected>$approver</option>";
-															}
-															else{
-																echo "<option value='$id'>$approver</option>";
-															}
-														}
+														// if($gmselected=='1'){
+														// 	echo "<option value='1' selected>Not Applicable</option>";
+														// }
+														// else{
+														// 	echo "<option value='1'>Not Applicable</option>";
+														// }
+														// $query = "select DISTINCT (user_id) from approver where section_department_id='$loginuserdeptid' and approval_type_id='3' and active_flag='1'";										
+														// $rs = query($query);
+														// while($obj=fetch($rs)){
+														// 	$id = $obj->user_id;
+														// 	$approver = getUserName($id);
+														// 	if($id==$gmselected){
+														// 		echo "<option value='$id' selected>$approver</option>";
+														// 	}
+														// 	else{
+														// 		echo "<option value='$id' selected>$approver</option>";
+														// 	}
+														// }
+		
+
 													?>
 												</select>
 											</div>
-										</div>	
+										</div>	 -->
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label class="control-label col-sm-5">Asst. Vice Pres./Vice President</label>
+											<label class="control-label col-sm-5">GM / AVP / VP</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control asstvp'>
 													<option value='NULL'>-</option>
@@ -557,7 +608,8 @@
 														else{
 															echo "<option value='1'>Not Applicable</option>";
 														}
-														$query = "select * from approver where active_flag='1' and approval_type_id='4'";
+														// $query = "select * from approver where active_flag='1' and approval_type_id='4'";
+														$query = "select DISTINCT (user_id) from approver where section_department_id='$loginuserdeptid' and approval_type_id='4' and active_flag='1'";										
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -566,7 +618,7 @@
 																echo "<option value='$id' selected>$approver</option>";
 															}
 															else{
-																echo "<option value='$id'>$approver</option>";
+																echo "<option value='$id' selected>$approver</option>";
 															}
 														}
 													?>
@@ -574,7 +626,7 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-5">Sr. Vice President</label>
+											<label class="control-label col-sm-5">Operations Division Head</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control srvp'>
 													<option value='NULL'>-</option>
@@ -585,7 +637,8 @@
 														else{
 															echo "<option value='1'>Not Applicable</option>";
 														}
-														$query = "select * from approver where approval_type_id='5' and active_flag='1'";
+														// $query = "select * from approver where approval_type_id='5' and active_flag='1'";
+														$query = "select DISTINCT (user_id) from approver where section_department_id='$loginuserdeptid' and approval_type_id='5' and active_flag='1'";										
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -594,7 +647,7 @@
 																echo "<option value='$id' selected>$approver</option>";
 															}
 															else{
-																echo "<option value='$id'>$approver</option>";
+																echo "<option value='$id' selected>$approver</option>";
 															}
 														}
 													?>
@@ -728,8 +781,48 @@
 							<div class="col-md-9">
 								<select class='form-input form-control department chosen-select' style='width:100%'>
 									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
 									<?php
-										$query = "select * from section_department where status='ACTIVE'";
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='1'";
+										$rs = query($query);
+										while ($obj=fetch($rs)) {
+											$id = $obj->id;
+											$name = $obj->section_department_name;
+											echo "<option value='$id'>$name</option>";
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class='control-label col-md-3'>Business Unit</label>
+							<div class="col-md-9">
+								<select class='form-input form-control business_unit chosen-select' style='width:100%'>
+									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
+									<?php
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='2'";
+										$rs = query($query);
+										while ($obj=fetch($rs)) {
+											$id = $obj->id;
+											$name = $obj->section_department_name;
+											echo "<option value='$id'>$name</option>";
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class='control-label col-md-3'>Product Line</label>
+							<div class="col-md-9">
+								<select class='form-input form-control product_line chosen-select' style='width:100%'>
+									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
+									<?php
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='3'";
 										$rs = query($query);
 										while ($obj=fetch($rs)) {
 											$id = $obj->id;
@@ -892,12 +985,12 @@
 						<div class="form-group">
 								<label class='control-label col-md-4'>Supplier</label>
 								<div class="col-md-8">
-									<div class="input-group">
+									<!-- <div class="input-group"> -->
 										<input type='text' class='form-input form-control supplier disabled' readonly>
-										<div class="input-group-addon button-addon supplierlookupbtn" data-toggle='modal' href='#editpr-supplierlistmodal'>
+										<!-- <div class="input-group-addon button-addon supplierlookupbtn" data-toggle='modal' href='#editpr-supplierlistmodal'>
 											<i class='fa fa-search'></i>
-										</div>
-									</div>
+										</div> -->
+									<!-- </div> -->
 								</div>
 						</div>
 						<div class="form-group">
@@ -1075,15 +1168,18 @@
 							$line1 = 1;
 							$q1 = 'qty';
 							$a1 = 'amount';
-							$checkifconformance = false;
+							// $checkifconformance = false;
 							while($obj=fetch($rs1)){
 								$itemId = $obj->item_id;
 								$itemcode = $obj->item_code;
 								$shortdesc = strUtfEncode($obj->item_name);
 								$longdesc = strUtfEncode($obj->long_description);
 								$conf = $obj->conformance_flag;
+								/* 01262025 by Nessa */
 								if($conf=='1'){
 									$checkifconformance=true;
+								}else{
+									$checkifconformance=false;
 								}
 								$classfn = $obj->classification_code;
 								$qty = $obj->quantity;
@@ -1134,17 +1230,19 @@
 		$('.totalcurrencycode').html('<b>'+$('.currency option:selected').text()+'</b>');
 		var ifconf, grandtotal, forrevision;
 		ifconf = <?php echo json_encode($checkifconformance); ?>;
+		console.log(ifconf);
 		grandtotal = $('#totalpramount').val().replace(/,/g,'');
 		checkGrandTotal(grandtotal);
+
 		if($('.confhead option:selected').attr('value')!='NULL'||ifconf==true){
 			$('.confhead').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 		}
 		if(ifconf==false){
 			$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
 		}
-		if($('.srvp option:selected').attr('value')!='NULL'){
-			$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-		}
+		// if($('.srvp option:selected').attr('value')!='NULL'){
+		// 	$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+		// }
 		if($('.president option:selected').attr('value')!='NULL'){
 			$('.president').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 		}

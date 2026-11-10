@@ -208,46 +208,46 @@ function checkGrandTotal(grandtotal){
 			var reqnum = $('.pageContent .reqnum').val();
 			var checkdept = false;
 
-
+			/* 07052024 Updated by Nessa Removed SRVP except sa last else*/
 			if(currency=='1'){//JPY
 				if(grandtotal>=228153){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 					$('.president').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 				}
-				else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
-				else{
-					$('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+				// else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
+				// else{
+					// $('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+					// $('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
 			}
 			else if(currency=='2'){//php
 				if(grandtotal>=100000){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 					$('.president').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 				}
-				else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+				// else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
 				else{
-					$('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+					// $('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
 					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
 				}
 			}
 			else if(currency=='3'){//usd
 				if(grandtotal>=2500){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 					$('.president').addClass('defaultsign').closest('.form-group').removeClass('hidden');
 				}
-				else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
-					$('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+				// else if(reqnum.search('FCLTY')>=0||reqnum.search('HRD')>=0){
+					// $('.srvp').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+					// $('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
 				else{
-					$('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+					// $('.srvp').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
 					$('.president').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
 				}
 			}

@@ -1,7 +1,11 @@
+
+const timestamp = new Date().getTime();
+
 $(document).off('click','#prpendingapprovaltable .tablerow').on('click','#prpendingapprovaltable .tablerow', function(){
 	$('#loading-img').removeClass('hidden');
 	var prnumber = $(this).attr('id');
-	$.getScript(pagescripts+'purchase-requisition-approval.js');
+
+	$.getScript(pagescripts + 'purchase-requisition-approval.js?v=' + timestamp);
 	$('.content').load("Approvals/purchase-requisition-approval.php?LdekFprJdlURd="+prnumber,function(){
 						setTimeout(function(){
 							$('#loading-img').addClass('hidden');
@@ -12,7 +16,6 @@ $(document).off('click','#prpendingapprovaltable .tablerow').on('click','#prpend
 	
 });
 
-
 $(document).off('click','#popendingapprovaltable .tablerow').on('click','#popendingapprovaltable .tablerow', function(){
 	$('#loading-img').removeClass('hidden');
 	var ponumber = $(this).attr('po');
@@ -21,7 +24,7 @@ $(document).off('click','#popendingapprovaltable .tablerow').on('click','#popend
 							$('#loading-img').addClass('hidden');
 						},300);
 					});
-	$.getScript(pagescripts+'purchase-order-approval.js');
+	$.getScript(pagescripts + 'purchase-order-approval.js?v=' + timestamp);
 	$('.content').animate({scrollTop:0},200);
 	
 });
@@ -34,7 +37,7 @@ $(document).off('click','#rcvpendingapprovaltable .tablerow').on('click','#rcvpe
 							$('#loading-img').addClass('hidden');
 						},300);
 					});
-	$.getScript(pagescripts+'receiving-approval.js');
+	$.getScript(pagescripts + 'receiving-approval.js?v=' + timestamp);
 	$('.content').animate({scrollTop:0},200);
 	
 });
@@ -57,7 +60,7 @@ $(document).off('click','#dashsettingsbtn').on('click','#dashsettingsbtn',functi
 							$('#loading-img').addClass('hidden');
 						},300);
 					});
-	$.getScript(pagescripts+'user-settings.js');
+	$.getScript(pagescripts + 'user-settings.js?v=' + timestamp);
 	$('.content').animate({scrollTop:0},200);
 });
 
@@ -198,7 +201,7 @@ $(document).off('click',quicklinks+' .qlrcvhistory').on('click',quicklinks+' .ql
 
 $(document).off('click','.qlpoassignment, .actql-assignpo, .actql-viewpo').on('click','.qlpoassignment, .actql-assignpo, .actql-viewpo', function(){
 	$('.content').animate({scrollTop:0},200);
-	$.getScript(pagescripts+'purchase-order.js');
+	$.getScript(pagescripts + 'purchase-order.js?v=' + timestamp);
 	$('.content').load('Transaction/purchase-order.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');
@@ -210,7 +213,7 @@ $(document).off('click','.qlpoassignment, .actql-assignpo, .actql-viewpo').on('c
 
 $(document).off('click','.actql-viewpo-history').on('click','.actql-viewpo-history', function(){
 	$('.content').animate({scrollTop:0},200);
-	// $.getScript(pagescripts+'purchase-order.js');
+	// $.getScript(pagescripts+'purchase-order.js?v=' + timestamp);
 	$('.content').load('Transaction/po-history.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');
@@ -228,7 +231,7 @@ $(document).off('click','#prdetailtbdy .prinforow').on('click','#prdetailtbdy .p
 
 $(document).off('click','.actql-viewpr').on('click','.actql-viewpr', function(){
 	$('.content').animate({scrollTop:0},200);
-	$.getScript(pagescripts+'purchase-requisition.js');
+	$.getScript(pagescripts + 'purchase-requisition.js?v=' + timestamp);
 	$('.content').load('Transaction/purchase-requisition.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');
@@ -240,7 +243,7 @@ $(document).off('click','.actql-viewpr').on('click','.actql-viewpr', function(){
 
 $(document).off('click','.actql-newpr').on('click','.actql-newpr', function(){
 	$('.content').animate({scrollTop:0},200);
-	$.getScript(pagescripts+'pr-transaction.js');
+	$.getScript(pagescripts + 'pr-transaction.js?v=' + timestamp);
 	$('.content').load('Transaction/pr-transaction.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');
@@ -252,7 +255,7 @@ $(document).off('click','.actql-newpr').on('click','.actql-newpr', function(){
 
 $(document).off('click','.actql-changepwd').on('click','.actql-changepwd', function(){
 	$('.content').animate({scrollTop:0},200);
-	$.getScript(pagescripts+'user-settings.js');
+	$.getScript(pagescripts + 'user-settings.js?v=' + timestamp);
 	$('.content').load('user-settings.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');
@@ -264,7 +267,7 @@ $(document).off('click','.actql-changepwd').on('click','.actql-changepwd', funct
 
 $(document).off('click','.itemapprovalrow').on('click','.itemapprovalrow', function(){
 	$('.content').animate({scrollTop:0},200);
-	$.getScript(pagescripts+'item.js');
+	$.getScript(pagescripts + 'item.js?v=' + timestamp);
 	$('.content').load('Maintenance/items.php',function(){
 		setTimeout(function(){
 			$('#loading-img').addClass('hidden');

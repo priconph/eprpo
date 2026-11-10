@@ -30,7 +30,11 @@ if(isset($_GET['rcvSummaryReferenceExcelFormat1231003435'])){
 					 unit_of_measure_code,
 					 (SELECT purchase_order_details.`classification_code` FROM `purchase_order_details` WHERE purchase_order_details.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as classification_code,
 					 (SELECT purchase_order_header.`reference_requisition_number` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as reference_requisition_number,
+
 					 (SELECT purchase_order_header.`po_remarks` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as po_remarks,
+
+ 					 (SELECT purchase_order_header.`bir_po_number` FROM `purchase_order_header` WHERE purchase_order_header.`order_number` = receiving_header.reference_po_number LIMIT 0,1) as bir_po_number,
+
  					 (SELECT hold_invoice_remarks.`remarks` FROM `hold_invoice_remarks` WHERE hold_invoice_remarks.`reference_po_number` = receiving_header.reference_po_number LIMIT 0,1) as hold_remarks
 
 				  from receiving_header, receiving_details, item, supplier, currency, unit_of_measure
@@ -40,6 +44,7 @@ if(isset($_GET['rcvSummaryReferenceExcelFormat1231003435'])){
 				  		item.id=receiving_details.item_id and
 				  		item.unit_of_measure_id=unit_of_measure.id and
 				  		reference_po_number is not null";
+
 	if(strtoupper(trim($ponumber))!=''){
 		$query = $query." and reference_po_number='$ponumber'";
 	}
@@ -91,13 +96,24 @@ if(isset($_GET['rcvSummaryReferenceExcelFormat1231003435'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>HOLD REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>BIR PO NUMBER</th>
     					</tr>
     				";
     
 
     while($obj=fetch($rs)){
-				$prnumber = getRefPrNumber($obj->reference_po_number);
-				$allocation = getAllocation($prnumber); 		//add as of January 31, 2018 by Rona
+				$prnumber 		= getRefPrNumber($obj->reference_po_number);
+				$allocation 	= getAllocation($prnumber); 		//add as of January 31, 2018 by Rona
+				$fac 			= getRefFac($obj->reference_po_number);  // 01312025 by Nessa
+
+				// 10272025 by Nessa
+				if($obj->bir_po_number != "" || $obj->bir_po_number != NULL){
+					$bir_po_number 	= 'PO'.$obj->bir_po_number; 
+				}else{
+					$bir_po_number 	= '';  
+				}
+
 				$output .="<tr>
 								<td>".getPoDate($obj->reference_po_number)."</td>
 								<td>".$obj->reference_po_number."</td>
@@ -120,11 +136,13 @@ if(isset($_GET['rcvSummaryReferenceExcelFormat1231003435'])){
 								<td>".$allocation."</td>
 								<td>".$obj->po_remarks."</td>
 								<td>".$obj->hold_remarks."</td>
+								<td>".$fac."</td>
+								<td>".$bir_po_number."</td>
 							</tr>";
 
 	}
 			if($count==0){
-				$output .= "<tr><td colspan='16' align='center'>No Results Found</td></tr>";
+				$output .= "<tr><td colspan='23' align='center'>No Results Found</td></tr>";
 			}
 			$output .="</table>";
 	

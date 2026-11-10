@@ -6,7 +6,7 @@
 ?>
 <div class='header-page' >
 	<div class='header-page-inner'>
-		Purchase Order .
+		Purchase Order
         <?php 
             $rs = query("select COUNT(order_number) as numrows from purchase_order_header WHERE `printed_flag`=0 AND (printed_timestamp='0000-00-00 00:00:00' OR printed_timestamp='') AND `assigned_to`='$userid'");
             if($obj=fetch($rs)){
@@ -15,18 +15,19 @@
             }
         ?>
 		<div class="button-group">
+			<button class="btn btn-sm btn-blue2 mybtn border-right" id='findponew'>
+				<i class='fa fa-asterisk fa-lg fa-space'></i>SHOW NEW
+			</button>
 			<button class="btn btn-sm mybtn btn-blue2" id='load_for_printing' value="<?php echo $userid; ?>">
 				<i class='fa fa-warning fa-lg fa-space'></i>For Printing <?php echo $for_print_badge; ?>
 			</button>
 			<button class="btn btn-sm btn-blue2 mybtn border-right" id='findpobtn' data-toggle='modal' href='#findpomodal'>
 				<i class='fa fa-search fa-lg fa-space'></i>Find Purchase Order
 			</button>
-			<button class="btn btn-sm mybtn btn-blue2" id='printtemplate'>
+			<!-- OLD 02012025 by Nessa -->
+			<!-- <button class="btn btn-sm mybtn btn-blue2" id='printtemplate'>
 				<i class='fa fa-print fa-lg fa-space'></i>Print Template
-			</button>
-			<button class="btn btn-sm btn-blue2 mybtn border-right" id='findponew'>
-				<i class='fa fa-asterisk fa-lg fa-space'></i>SHOW NEW
-			</button>
+			</button> -->
 		</div>
 	</div>
 </div>
@@ -43,12 +44,14 @@
 													<th>ORDER DATE</th>
 													<th>PO NUMBER</th>
 													<th>REVISION NO.</th>
+													<th>BIR PO NUMBER</th> <!--09092025-->
 													<th>SUPPLIER</th>
 													<th>REQUISITION DATE</th>
 													<th>DATE NEEDED</th>
 													<th>PRINTED</th>
 													<th>LAST MODIFIED</th>
 													<th class='column-nosort'>REASON FOR REJECTION</th>
+													<!-- <th>TOTAL PO AMOUNT</th> -->
 												</tr>
 											</thead>
 											<tbody>
@@ -182,6 +185,13 @@
 															</div>
 														</div>
 														<div class="form-group">
+															<label class="control-label col-sm-4">Ship To</label>
+															<div class="col-sm-8">
+																 <span class='form-control-static' id='facshipto'></span>
+															</div>
+														</div>
+														
+														<div class="form-group">
 															<label class="control-label col-sm-4">Remarks</label>
 															<div class="col-sm-8">
 																 <span class='form-control-static' id='remarks'></span>
@@ -289,17 +299,27 @@
 					                                <form class='form-horizontal'>
 					                                    <div class="col-sm-6">
 					                                        <div class="form-group">
-					                                            <label class="control-label col-sm-5">Asst. Manager</label>
+					                                            <!-- <label class="control-label col-sm-5">Asst. Manager</label> -->
+					                                            <!-- <label class="control-label col-sm-5">Logistics Section Head</label> -->
+					                                            <label class="control-label col-sm-5">Section Head</label>
 					                                            <div class="col-sm-7">
 					                                                <span class='form-control-static asstmngr'></span>
 					                                            </div>
 					                                        </div>
 					                                       <div class="form-group">
-					                                            <label class="control-label col-sm-5">General Manager</label>
+					                                            <!-- <label class="control-label col-sm-5">General Manager</label> -->
+					                                            <!-- <label class="control-label col-sm-5">Logistics Department Head</label> -->
+					                                            <label class="control-label col-sm-5">Department Head</label>
 					                                            <div class="col-sm-7">
 					                                                <span class='form-control-static genmngr'></span>
 					                                            </div>
-					                                        </div>       
+					                                        </div> 
+															<div class="form-group">
+					                                            <label class="control-label col-sm-5">Division Head</label>
+					                                            <div class="col-sm-7">
+					                                                <span class='form-control-static divmngr'></span>
+					                                            </div>
+					                                        </div>      
 					                                        <br>
 					                                    </div>
 					                                    <div class="col-sm-6">
@@ -347,7 +367,7 @@
 								<br>
 								<div class='tabpane-white margin-top-20 margin-bottom-10' id='polineitems'>
 										<ul class="nav nav-tabs">
-										  <li role="presentation" class="active" data-pane='#lineitems'><a>Line Items</a></li>
+										  <li role="presentation" class="active" data-pane='#lineitems'><a>Line Item</a></li>
 										  <li role="presentation" data-pane='#receivinghistory'><a>Receiving History</a></li>
 										</ul>
 										<div class='tab-panes'>
@@ -492,7 +512,8 @@
 	            			<label class='control-label col-sm-offset-2 col-sm-3'>Template</label>
 	            			<div class="col-sm-5">
 	            				<select id='printtype' class='form-control'>
-	            					<option value='2'>Template 1</option>
+	            					<!-- <option value='2'>Template 1</option> -->
+	            					<option value='3'>NEW TEMPLATE (BIR)</option>
 	            					<!--<option value='1'>Template 2</option>-->
 	            				</select>
 	            			</div>
@@ -715,7 +736,7 @@
 
 	$('#potable').DataTable({
 				pagingType:"full_numbers",
-				aaSorting: [[ 9, "desc" ]],
+				aaSorting: [[ 3, "desc" ]],
 	        	columnDefs: [
 				      				 {
 								        targets: "column-nosort", 
@@ -745,6 +766,9 @@
 		                        { data: 'next_revision_series',
 		                          "className":'clickable text-center' 
 		                        },
+								{ data: 'bir_po_number',  //09092025
+		                          "className":'clickable text-center' 
+		                        },
 		                        { data: 'supplier_name', 
 		                          "className":'clickable'
 		                        },
@@ -762,7 +786,10 @@
 		                        },
 		                        { data: 'reason',
 		                          "className":'clickable' 
-		                        }
+		                        },
+								// { data: 'pototal',
+		                        //   "className":'clickable' 
+		                        // }
 		                   ],
 				"processing": true,
 				"serverSide": true,

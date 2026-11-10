@@ -26,8 +26,15 @@
 						user 
 					where section_department_id=section_department.id and 
 					user_group_id=user_group.id and 
+					active_flag=1 and
 					user.id!=1"
 				);
+
+				// where section_department_id=section_department.id and 
+				// 	user_group_id=user_group.id and 
+				// 	active_flag=1 and
+				// 	section_department.status='ACTIVE' and
+				// 	user.id!=1"
 
 	$hidebtn = (userAccess(USERID,'.edituserbtn')==false)?'hidden':'';
 	$hidebtn1 = (userAccess(USERID,'.resetpassword')==false)?'hidden':'';

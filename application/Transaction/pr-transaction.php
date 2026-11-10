@@ -5,7 +5,7 @@
     include('../../config/functions.php');
     $deptid = getUserDeptId($userid);
     $transNumber = getNextTransactionNumber(1);
-
+	// echo $deptid;
 ?>
 <div class='header-page' >
 	<div class='header-page-inner'>
@@ -54,7 +54,8 @@
 											<div class="col-sm-8">
 												<select name='type' class='form-input form-control reqtype'>
 													<option value='regular'>Regular</option>
-													<option value='urgent'>Urgent</option>
+													<!-- <option value='urgent'>Urgent</option> -->
+													<option value='urgent'>Priority</option>
 												</select>
 											</div>
 										</div>
@@ -62,7 +63,7 @@
 											<label class="control-label col-sm-4">Currency</label>
 											<div class="col-sm-8">
 												<select name='type' class='form-input form-control currency'>
-													<option value='NULL'></option>
+													<option value='NULL'>---</option>
 													<?php 
 														$query = "select * from currency";
 														$rs = query($query);
@@ -72,6 +73,16 @@
 															echo "<option value='$id'>$code</option>";
 														}
 													?>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-4">Ship To</label>
+											<div class="col-sm-8">
+												<select name='type' class='form-input form-control facshipto'>
+													<option value='NULL'>---</option>
+													<option value='Factory 1'>Factory 1</option>
+													<option value='Factory 3'>Factory 3</option>
 												</select>
 											</div>
 										</div>
@@ -182,6 +193,8 @@
 														<tr>
 															<th><input type='checkbox' class='selectall'></th>
 															<th>DEPARTMENT</th>
+															<th>BUSINESS UNIT</th>
+															<th>PRODUCT LINE</th>
 															<th class='text-center'>PERCENTAGE %</th>
 															<th>REMARKS</th>
 														</tr>
@@ -233,6 +246,7 @@
 																				<option value='Sample Unit'>Sample Unit</option>
 																				<option value='Drawing Layout'>Drawing Layout</option>
 																				<option value='Computation'>Computation</option>
+																				<option value='Quotation'>Quotation</option>
 																				<option value='NULL'>Other Description</option>
 							
 																			</select>
@@ -253,6 +267,7 @@
 																				<option value='Sample Unit'>Sample Unit</option>
 																				<option value='Drawing Layout'>Drawing Layout</option>
 																				<option value='Computation'>Computation</option>
+																				<option value='Quotation'>Quotation</option>
 																				<option value='NULL'>Other Description</option>
 
 																			</select>
@@ -291,14 +306,14 @@
 							<div class="pane-content">
 								<form class="form-horizontal">
 									<div class="col-md-6">
-
 										<div class="form-group">
-											<label class="control-label col-sm-5">Section Head</label>
+											<label class="control-label col-sm-5">Checked By / Section Head</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control sectionhead1'>
 													<option value='NULL'>-</option>
+													<!-- <option value='1'>Not Applicable</option> -->
 													<?php 
-														$query = "select * from approver where section_department_id='$deptid' and approval_type_id='1' and active_flag='1'";
+														$query = "select * from approver where section_department_id='$deptid' and (approval_type_id='1' or approval_type_id='9') and active_flag='1'";
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -311,12 +326,15 @@
 										</div>
 
 										<div class="form-group">
-											<label class="control-label col-sm-5">Section Head</label>
+											<label class="control-label col-sm-5">Section Head (2)</label>
+											<!-- <label class="control-label col-sm-5">Checked by</label> -->
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control sectionhead2'>
 													<option value='NULL'>-</option>
-													<option value='1'>Not Applicable</option>
+													<option value='1'>--Not Applicable--</option>
 													<?php 
+														/* 01262025 by Nessa */
+														// $query = "select * from approver where section_department_id='$deptid' and approval_type_id='9' and active_flag='1'";
 														$query = "select * from approver where section_department_id='$deptid' and approval_type_id='1' and active_flag='1'";
 														$rs = query($query);
 														while($obj=fetch($rs)){
@@ -328,6 +346,8 @@
 												</select>
 											</div>
 										</div>
+
+										
 
 										<div class="form-group">
 											<label class="control-label col-sm-5">Conformance Head</label>
@@ -348,14 +368,15 @@
 											</div>
 										</div>
 										
-										<div class="form-group">
+										<!-- <div class="form-group">
 											<label class="control-label col-sm-5">General Manager</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control genman'>
 													<option value='NULL'>-</option>
-													<option value='1'>Not Applicable</option>
+													<option value='1'>--Not Applicable--</option>
 													<?php 
-														$query = "select * from approver where approval_type_id='3' and active_flag='1'";
+														// $query = "select * from approver where approval_type_id='3' and active_flag='1'";
+														$query = "select DISTINCT (user_id) from approver where section_department_id='$deptid' and approval_type_id='3' and active_flag='1'";										
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -365,17 +386,18 @@
 													?>
 												</select>
 											</div>
-										</div>	
+										</div>	 -->
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label class="control-label col-sm-5">Asst. Vice Pres./Vice President</label>
+											<label class="control-label col-sm-5">GM / AVP / VP</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control asstvp'>
 													<option value='NULL'>-</option>
-													<option value='1'>Not Applicable</option>
+													<option value='1'>--Not Applicable--</option>
 													<?php 
-														$query = "select * from approver where approval_type_id='4' and active_flag='1'";
+														// $query = "select * from approver where approval_type_id='4' and active_flag='1'";
+														$query = "select DISTINCT (user_id) from approver where section_department_id='$deptid' and approval_type_id='4' and active_flag='1'";										
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -387,13 +409,14 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-sm-5">Sr. Vice President</label>
+											<label class="control-label col-sm-5">Operations Division Head</label>
 											<div class="col-sm-7">
 												<select type='text' class='form-input defaultsign form-control srvp'>
 													<option value='NULL'>-</option>
-													<option value='1'>Not Applicable</option>
+													<option value='1'>--Not Applicable--</option>
 													<?php 
-														$query = "select * from approver where approval_type_id='5' and active_flag='1'";
+														// $query = "select * from approver where approval_type_id='5' and active_flag='1'";
+														$query = "select DISTINCT (user_id) from approver where section_department_id='$deptid' and approval_type_id='5' and active_flag='1'";										
 														$rs = query($query);
 														while($obj=fetch($rs)){
 															$id = $obj->user_id;
@@ -471,8 +494,48 @@
 							<div class="col-md-9">
 								<select class='form-input form-control department chosen-select' style='width:100%'>
 									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
 									<?php
-										$query = "select * from section_department where status='ACTIVE'";
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='1'";
+										$rs = query($query);
+										while ($obj=fetch($rs)) {
+											$id = $obj->id;
+											$name = $obj->section_department_name;
+											echo "<option value='$id'>$name</option>";
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class='control-label col-md-3'>Business Unit</label>
+							<div class="col-md-9">
+								<select class='form-input form-control business_unit chosen-select' style='width:100%'>
+									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
+									<?php
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='2'";
+										$rs = query($query);
+										while ($obj=fetch($rs)) {
+											$id = $obj->id;
+											$name = $obj->section_department_name;
+											echo "<option value='$id'>$name</option>";
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class='control-label col-md-3'>Product Line</label>
+							<div class="col-md-9">
+								<select class='form-input form-control product_line chosen-select' style='width:100%'>
+									<option value=''>-</option>
+									<option value='0'>--Not Applicable--</option>
+									<?php
+										// $query = "select * from section_department where status='ACTIVE'";
+										$query = "select * from section_department where status='ACTIVE' AND category ='3'";
 										$rs = query($query);
 										while ($obj=fetch($rs)) {
 											$id = $obj->id;
@@ -599,12 +662,13 @@
 						<div class="form-group">
 								<label class='control-label col-md-4'>Supplier</label>
 								<div class="col-md-8">
-									<div class="input-group">
+									<!-- 07052024 by Nessa -->
+									<!-- <div class="input-group"> --> 
 										<input type='text' class='form-input form-control supplier disabled' readonly>
-										<div class="input-group-addon button-addon supplierlookupbtn" data-toggle='modal' href='#addpr-supplierlistmodal'>
+										<!-- <div class="input-group-addon button-addon supplierlookupbtn" data-toggle='modal' href='#addpr-supplierlistmodal'>
 											<i class='fa fa-search'></i>
 										</div>
-									</div>
+									</div> -->
 								</div>
 						</div>
 						<div class="form-group">

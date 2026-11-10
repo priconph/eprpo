@@ -162,17 +162,42 @@ if($ponum!=''&&$check==true){
 	$pdf->Cell(75,4,'PRICON MICROELECTRONICS INC.',0,1,"C");
 	$pdf->SetFont('Arial','',$labelfont);
 
+	$ss = query("select purchase_requisition_header.facshipto, purchase_order_header.order_number
+				 from purchase_requisition_header 
+				 inner join purchase_order_header on purchase_order_header.reference_requisition_number=purchase_requisition_header.requisition_number 
+				 where purchase_order_header.order_number='".$ponum."'");
+	while($obj=fetch($ss)){
+		$facshipto = $obj->facshipto;
+
+		if ($facshipto == 'Factory 3'){
+			$lineheight = 4;
+			$pdf->SetFont('Arial','B',$labelfont);
+			$pdf->Cell(138,6,'');
+			$pdf->Cell(27,4,'FACTORY 3',0,1,"C");
+			$shiptoaddr = " Lot 1-2 Block 5 Elysan Road , Light Industry and Science Park 4 Bulihan, Malvar Batangas" ;
+			$maxwidth = 50;
+		}else{
+			$lineheight = 4;
+			$pdf->SetFont('Arial','B',$labelfont);
+			$pdf->Cell(138,6,'');
+			$pdf->Cell(27,4,'FACTORY 1',0,1,"C");
+			$shiptoaddr = $fac." No. 14 Ampere Street, Barangay Diezmo, Light Industry and Science Park 1, Cabuyao Laguna Philippines";
+			$maxwidth = 50;
+		}
+	}
 
 	//ADDRESS SECTION
-	$lineheight = 4;
-	$shiptoaddr = "No. 14 Ampere Street, Barangay Diezmo, Light Industry and Science Park 1, Cabuyao Laguna Philippines";
-	$maxwidth = 50;
+	// $lineheight = 4;
+	// $shiptoaddr = "No. 14 Ampere Street, Barangay Diezmo, Light Industry and Science Park 1, Cabuyao Laguna Philippines";
+	// $maxwidth = 50;
 
 
 	$flag = 0;
 	while($flag<1){
 		$supplieradd = lineBreak($supplieraddr,$maxwidth);
 		$shippingadd = lineBreak($shiptoaddr,35);
+
+
 		$pdf->SetFont('Arial','',$labelfont);
 		$pdf->Cell(20,$lineheight,'  ');
 		// $pdf->Cell(75,$lineheight,'  '.$supplieradd);
@@ -263,7 +288,7 @@ if($ponum!=''&&$check==true){
 			}
     		$code = $obj->item_code;
 			$name = strUtfEncode($obj->item_name) == '' ? '*'.strUtfEncode($obj->item_name1) : strUtfEncode($obj->item_name);
-			$description = strUtfEncode($obj->long_description) == '' ? '*'.strUtfEncode($obj->long_description1) : strUtfEncode($obj->long_description);
+			$description = utf8_decode($obj->long_description) == '' ? '*'.utf8_decode($obj->long_description1) : utf8_decode($obj->long_description);
     		$uom = $obj->unit_of_measure_code;
     		$classfn = $obj->classification_code;
     		$price=$obj->unit_price;
@@ -289,7 +314,7 @@ if($ponum!=''&&$check==true){
 			$pdf->Cell(25,$itemlineheight,$qty,0,0,'L',$odd);
 			$pdf->Cell(15,$itemlineheight,$uom,0,0,'L',$odd);
 			$pdf->SetFont('Arial','B',$fontsize);
-			$flname = lineBreak($name, 35);
+			$flname = lineBreak($name, 40);
 			$pdf->Cell(74,$itemlineheight,$flname,0,0,'L',$odd);
 			$pdf->SetFont('Arial','',$fontsize);
 			$pdf->Cell(10,$itemlineheight,$classfn,0,0,'C',$odd);
@@ -301,7 +326,7 @@ if($ponum!=''&&$check==true){
 			$name = trim(str_replace($flname, '', $name));
 			$flag1 = 0;
 			while($flag1<1&&$name!=''){
-				$substr = lineBreak($name, 35);
+				$substr = lineBreak($name, 40);
 				$pdf->Cell(15,$itemlineheight,'',0,0,'C',$odd);
 				$pdf->Cell(25,$itemlineheight,'',0,0,'C',$odd);
 				$pdf->Cell(15,$itemlineheight,'',0,0,'L',$odd);

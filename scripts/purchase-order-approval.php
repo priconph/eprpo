@@ -8,7 +8,8 @@
 	$loginuser = $userid;
 	$date = date('y-m-d H:i:s');
 
-
+	
+			
 	if(isset($_POST['sdfnrworthdf'])){
 		$ponumber = escapeString($_POST['sdfnrworthdf']);
 		$loginuser = escapeString($userid);
@@ -21,7 +22,10 @@
 		$remarks = escapeString($_POST['remarks']);
 		$revision = getInfo("purchase_order_header","next_revision_series","where order_number='".$ponumber."'");
 
+
 		if($rs=='true'){
+			
+			// $query = "insert into purchase_order_appr
 			$query = "insert into purchase_order_approval_history(order_number,
 																  action,
 																  date,
@@ -49,6 +53,159 @@
 			else{
 				echo "success";
 			}
+
+			// /* 04062025 by Nessa */
+			// $getlastbirnumber = '';
+			// // $getlastbirnumber = query("SELECT order_number, order_date, bir_po_number FROM `purchase_order_header` ORDER BY `order_date` DESC LIMIT 1");
+			// // $getlastbirnumber = query("SELECT order_number, order_date, bir_po_number FROM `purchase_order_header` WHERE order_number='$ponumber' ORDER BY `order_date` DESC LIMIT 1");
+			// $getlastbirnumber = query("SELECT order_number, order_date, bir_po_number FROM purchase_order_header 
+			// WHERE order_date < (SELECT order_date FROM purchase_order_header WHERE order_number = '$ponumber')
+			// AND bir_po_number != '' 
+			// ORDER BY order_date 
+			// DESC LIMIT 1"
+			// );
+			
+			// // print_r(gettype($getlastbirnumber));
+			// // exit();
+			
+			// while($obj=fetch($getlastbirnumber)){	
+			// 	$bir_number 			= $obj->bir_po_number;
+			// 	$previousOrderNumber 	= $obj->order_number;
+		
+			// 	$counter = 0000000000;
+			// 	if($bir_number != null || $bir_number != ''){
+			// 		$ctrl_no = $bir_number;
+			// 		$counter = (intval($ctrl_no) + 1);
+			// 	}else{
+			// 		$counter = 1;
+			// 	}
+
+			// 	// print_r($counter);
+			// 	// exit();
+
+			// 	$bir_po_number = str_pad($counter, 10, "0", STR_PAD_LEFT);
+			// 	// print_r ($bir_po_number);
+			// 	// exit();
+			// 	$updateQuery = "UPDATE purchase_order_header 
+			// 						SET bir_po_number = '$bir_po_number' 
+			// 						where order_number = '$ponumber'
+
+			// 						";
+			// 	$updateBirCounter = query($updateQuery);
+			// 	if(!$updateBirCounter){
+			// 		echo $updateBirCounter;
+			// 	}
+
+			// }
+
+
+
+			
+				// else{
+				// 	echo "Update BIR Number Success!";
+				// } 
+			
+			/* while($obj=fetch($getlastbirnumber)){
+				$birLastCounter = $obj->bir_po_number;
+				$ponumber = $obj->order_number;
+				$orderdate = $obj->order_date;
+
+				if($birLastCounter != '' ){
+					$lastZeroPos = strrpos($birLastCounter, '0');
+					if ($lastZeroPos !== false) {
+						// Get the substring starting from the position after the last '0'
+						$lastCounter = substr($birLastCounter, $lastZeroPos + 1);
+						$nextCounter = $lastCounter + 1;
+						
+						// echo "The characters next to the last '0' are: " . $lastCounter;
+					}
+					
+				}else{
+					// $nextCounter = 1;
+					$nextCounter = "PO".$birLastCounter . str_pad(1, 10, '0', STR_PAD_LEFT);
+				}
+			}
+
+			$updateQuery = "UPDATE purchase_order_header 
+								SET bir_po_number = '$nextCounter' where order_number = '$ponumber'
+
+								";
+				$updateBirCounter = query($updateQuery);
+				if(!$updateBirCounter){
+					echo $updateBirCounter;
+				}
+				else{
+					// echo "Update BIR Number Success!";
+				}  */
+			
+			/* 10012024 by Darren */
+			// $checkApprovedCount = query("SELECT * FROM `purchase_order_approval_history` WHERE `order_number`='$ponumber'");
+			// $approvedCount = getNumRows($checkApprovedCount);
+			
+			// $toApprovedCount = query("SELECT 
+			// 						first_approver as first_approver,
+			// 						second_approver as second_approver,
+			// 						third_approver as third_approver
+			// 						FROM purchase_order_header
+			// 						WHERE order_number = '$ponumber'
+			// 						");
+
+			// $toApprovedCounter = 0;
+			// while($obj=fetch($toApprovedCount)){
+			// 	$f_approver = $obj->first_approver;
+			// 	$s_approver = $obj->second_approver;
+			// 	$t_approver = $obj->third_approver;
+			// 	if($f_approver != '' ){
+			// 		$toApprovedCounter+=1;
+			// 	}
+			// 	if($s_approver != '' ){
+			// 		$toApprovedCounter+=1;
+			// 	}
+			// 	if($t_approver != '' ){
+			// 		$toApprovedCounter+=1;
+			// 	}
+			// }
+
+			// if($toApprovedCounter == $approvedCount){
+				$previousBIR = query("SELECT *
+                      FROM `purchase_order_header`
+                      WHERE `bir_po_number` != ''
+                      OR `bir_po_number` IS NOT NULL
+                      ORDER BY `bir_po_number` DESC
+                      LIMIT 1");
+
+				// var_dump($previousBIR);
+				// exit();
+
+				if (!$previousBIR) {
+					die("Query failed: " . mysqli_error($conn));
+				}
+				
+				// Fetch and print the data
+				$counter = "0000000000"; // default
+				if ($previousBIR && $row = fetch($previousBIR)) {
+					$previousCounter = $row->bir_po_number;
+					$counter = intval($previousCounter) + 1;
+				} else {
+					$counter = 1; // no previous row
+				}
+
+				$nextBirCounter = str_pad($counter, 10, "0", STR_PAD_LEFT);
+
+				$updateQuery = "UPDATE purchase_order_header 
+								SET bir_po_number = '$nextBirCounter'
+								WHERE order_number = '$ponumber'
+
+								";
+				$updateBirCounter = query($updateQuery);
+				if(!$updateBirCounter){
+					echo $updateBirCounter;
+				}
+				else{
+					// echo "Update BIR Number Success!";
+				} 
+			// }
+			
 		}
 	}
 

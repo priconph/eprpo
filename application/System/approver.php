@@ -97,7 +97,8 @@
 									<select data-placeholder='Select a department' class='chosen-select form-control department' id='addselectdep'>
 												<option value=''>-</option>
 												<?php
-													$query='select * from section_department';
+													// $query='select * from section_department WHERE status="ACTIVE"';
+													$query='select * from section_department WHERE category = "0" AND status = "ACTIVE" ';
 													$rs = query($query);
 													while($obj=fetch($rs)){
 														$id = $obj->id;
@@ -180,7 +181,8 @@
 									<select data-placeholder='Select a department' class='chosen-select form-control department'>
 												<option value=''>-</option>
 												<?php
-													$query='select * from section_department';
+													// $query='select * from section_department WHERE status = "ACTIVE"';
+													$query='select * from section_department ';
 													$rs = query($query);
 													while($obj=fetch($rs)){
 														$id = $obj->id;

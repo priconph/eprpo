@@ -130,7 +130,7 @@
 			                                	<a>Receiving</a>
 			                                </li>
 			                                <li class='nosubmenu hidden' data-file='Transaction/hold-invoice.php' data-js='hold-invoice.js' data-id='hold-invoice'>
-			                                	<a>Hold Invoice</a>
+			                                	<a>Hold PO / Invoices</a>
 			                                </li>
 
          								 </ul>
@@ -146,6 +146,10 @@
 			                                </li>
 			                                <li class='nosubmenu hidden' data-file='Reports/rcv-summary.php' data-js='rcv-summary.js' data-id='rcvsumm'>
 			                                	<a>Receiving Summary</a>
+			                                </li>
+			                                <!-- 02032026 -->
+			                                <li class='nosubmenu hidden' data-file='Reports/item-summary.php' data-js='item-summary.js' data-id='itemsumm'>
+			                                	<a>Item Summary</a>
 			                                </li>
 							          	</ul>
 							         </li>
@@ -171,7 +175,7 @@
 			   <div id="sidebar">
 			   		<ul id="sidebar-nav">
 			   			<li class="sidebarlogo">
-			   				<a href='http://www.pricon.com.ph'><img class='img img-responsive' src="../resources/logo.png?v=2"></a>
+			   				<a href='http://www.pricon.com.ph'><img class='img img-responsive' style="width: 100%; height: 100px; position: relative;src="../resources/img/eprpo_v3"></a>
 			   			</li>
 			   			<li class='nosubmenu active hidden' data-file='dashboard.php' data-js='dashboard.js' id='dash'><img class='img' src="../resources/icons/home.png"><span>Dashboard</span></li>
 			   			<li class='withsubmenu hidden' id='system-section'><img class='img' src="../resources/icons/system.png">System</li>
@@ -228,7 +232,7 @@
 	                                	<img class='img' src="../resources/img/folder_64.png">Receiving
 	                                </li>
 	                                <li class='hidden' data-file='Transaction/hold-invoice.php' data-js='hold-invoice.js' id='hold-invoice'>
-	                                	<img class='img' src="../resources/img/folder_64.png">Hold Invoice
+	                                	<img class='img' src="../resources/img/folder_64.png">Hold PO / Invoices
 	                                </li>
 
 	                            </ul>
@@ -240,6 +244,8 @@
 	                                	<img class='img' src="../resources/img/folder_64.png">Purchase Order Summary</li>
 	                                <li class='hidden' data-file='Reports/rcv-summary.php' data-js='rcv-summary.js' id='rcvsumm'>
 	                                	<img class='img' src="../resources/img/folder_64.png">Receiving Summary</li>
+	                                <li class='hidden' data-file='Reports/item-summary.php' data-js='item-summary.js' id='itemsumm'>
+	                                	<img class='img' src="../resources/img/folder_64.png">Item Summary</li>
 	                            </ul>
 
 			   		</ul>

@@ -8,7 +8,6 @@ $(document).ready(function(){
 			}
 		});
 
-
 		var filestobedeleted = [];
 		$(document).off('click','#fileattachment-addbtn').on('click','#fileattachment-addbtn', function(){
 			$('#attachmentstable').append("<tr class='newattachments'><td><input type='checkbox' class='itemcheckbox'></td><td><input class='fileattachment' type='file' name='file[]'></td><td class='text-center'><select class='form-input form-control filetype' name='filetype[]'><option value=''>-</option><option value='Part Description/Specification'>Part Description/Specification</option><option value='Sample Unit'>Sample Unit</option><option value='Drawing Layout'>Drawing Layout</option><option value='Computation'>Computation</option><option value='NULL'>Other Description</option></select></td><td class='text-center'><input type='text' class='form-input form-control disabled otherfiletype' name='otherfiletype[]' readonly></td></tr>");
@@ -52,9 +51,9 @@ $(document).ready(function(){
 					}
 					grandtotal = grandtotal+parseFloat($(this).children('.amount').attr('amount'));
 				});
-				if(conformanceneeded==false){//check if hides conformance if not needed
-					$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+				// if(conformanceneeded==false){//check if hides conformance if not needed
+				// 	$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
 				checkGrandTotal(grandtotal);
 				var g = convertFloat(grandtotal);
 				$('#totalpramount').val(g).attr('grandtotal',grandtotal);
@@ -95,9 +94,13 @@ $(document).ready(function(){
 		});
 
 		$(document).off('click','#allocationmodal-addbtn').on('click','#allocationmodal-addbtn', function(){
-			var deptid, department, percentage, current, newperc, exist=false, totalpercperitem=0, temp;
+			var deptid, department, buid, business_unit, plid, product_line, percentage, current, newperc, exist=false, totalpercperitem=0, temp;
 			deptid = $('#allocationmodal .department').val();
 			department = $('#allocationmodal .department').find("option:selected").text();
+			buid = $('#allocationmodal .business_unit').val();
+			business_unit = $('#allocationmodal .business_unit').find("option:selected").text();
+			plid = $('#allocationmodal .product_line').val();
+			product_line = $('#allocationmodal .product_line').find("option:selected").text();
 			percentage = $('#allocationmodal .percentage').val();
 			remarks = $('#allocationmodal .allocationremarks').val();
 			$('#allocationsummary tr').each(function(){
@@ -107,6 +110,13 @@ $(document).ready(function(){
 			if(deptid==''){
 				$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>department.</b></div></div>");
 			}
+			else if (buid == '') {
+				$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>business unit.</b></div></div>");
+			}
+			else if (plid == '') {
+				$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select a <b>product line.</b></div></div>");
+			}
+
 			else if(percentage<0.01){
 				$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Invalid Percentage Input</b><br>Please provide <b>percentage</b> for selected department.</div></div>");
 			}
@@ -114,18 +124,44 @@ $(document).ready(function(){
 				$('#allocationmodal .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Invalid Percentage Input</b><br>It exceeds the maximum percentage.</div></div>");
 			}
 			else{
-				$('#allocationsummary tr').each(function(){
-					if($(this).children('.allocationdeptid').text().search(new RegExp(department,"i"))>=0){
+				// $('#allocationsummary tr').each(function(){
+				// 	if($(this).children('.allocationdeptid').text().search(new RegExp(department,"i"))>=0){
+				// 			current = $(this).children('.allocationpercentage').text();
+				// 			newperc = parseFloat(current) + parseFloat(percentage);
+				// 			$(this).children('.allocationpercentage').html(newperc);
+				// 			$(this).children('.allocationnotes').html(remarks);
+				// 			exist=true;
+				// 		}
+
+				// });
+				$('#allocationsummary tr').each(function () {
+					// if ($(this).children('.allocationdeptid').text().search(new RegExp(department, "i")) >= 0) {
+					console.log('business_unit', $(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")));
+					console.log('product_line', $(this).children('.allocationplid').text().search(new RegExp(product_line, "i")));
+
+					if (plid != 0) {
+						if ($(this).children('.allocationplid').text().search(new RegExp(product_line, "i")) >= 0 && $(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")) >= 0) {
+
 							current = $(this).children('.allocationpercentage').text();
 							newperc = parseFloat(current) + parseFloat(percentage);
 							$(this).children('.allocationpercentage').html(newperc);
 							$(this).children('.allocationnotes').html(remarks);
-							exist=true;
+							exist = true;
+
 						}
+					} else {
+						if ($(this).children('.allocationbuid').text().search(new RegExp(business_unit, "i")) >= 0) {
+							current = $(this).children('.allocationpercentage').text();
+							newperc = parseFloat(current) + parseFloat(percentage);
+							$(this).children('.allocationpercentage').html(newperc);
+							$(this).children('.allocationnotes').html(remarks);
+							exist = true;
+						}
+					}
 
 				});
 				if(exist==false){
-					$('#allocationsummary').append("<tr ><td><input type='checkbox' class='itemcheckbox'></td><td class='allocationdeptid' allocdeptid='"+deptid+"'>"+department+"</td><td class='allocationpercentage text-center'>"+percentage+"</td><td class='allocationnotes'>"+remarks+"</td></tr>");
+					$('#allocationsummary').append("<tr ><td><input type='checkbox' class='itemcheckbox'></td><td class='allocationdeptid' allocdeptid='" + deptid + "'>" + department + "</td><td class='allocationbuid' allocbuid='" + buid + "' >" + business_unit + "</td><td class='allocationplid' allocplid='" + plid + "' >" + product_line +"</td><td class='allocationpercentage text-center'>"+percentage+"</td><td class='allocationnotes'>"+remarks+"</td></tr>");
 				}
 				$('#allocationmodal .allocationremarks').val('');
 				$('#allocationmodal .department').val('').trigger('change');
@@ -260,12 +296,12 @@ $(document).ready(function(){
 						conformance = true;
 					}
 				});
-				if(conformance==true){//shows conformance if needed
-					$('.confhead').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-				}
-				else{
-					$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+				// if(conformance==true){//shows conformance if needed
+				// 	$('.confhead').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+				// }
+				// else{
+				// 	$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
 				var g = convertFloat(grandtotal);
 				$('#totalpramount').val(g).attr('grandtotal',grandtotal);
 				checkGrandTotal(grandtotal);
@@ -283,7 +319,7 @@ $(document).ready(function(){
 		$(document).off('click','.preditsavesubmit:not([disabled])').on('click','.preditsavesubmit:not([disabled])', function(){
 			var button = $(this);
 			button.attr('disabled',true);
-			var file, filetype, fileotherdesc, allocvalid, prnotes, reqnum, currency, type, dateneeded, justification, sh1, sh2, dh, gm, avp, svp, p, conf, attachmentcount=0, defaultsign=false, items=[], qty=[], prices=[], suppliers=[], classfns=[], attachmenterr=false, allocremarks=[], allocdept=[], allocperc=[];
+			var file, filetype, fileotherdesc, facshipto, allocvalid, prnotes, reqnum, currency, type, dateneeded, justification, sh1, sh2, dh, gm, avp, svp, p, conf, attachmentcount = 0, defaultsign = false, items = [], qty = [], prices = [], suppliers = [], classfns = [], attachmenterr = false, allocremarks = [], allocdept = [], allocbu = [], allocpl = [], allocperc=[];
 			reqnum = $('.pageContent .reqnum').val();
 			currency = $('.pageContent .currency').val();
 			type = $('.pageContent .reqtype').val();
@@ -298,7 +334,14 @@ $(document).ready(function(){
 			p = $('.pageContent .president').val();
 			conf = $('.pageContent .confhead').val();
 			prnotes = $('.pageContent .prnotes').val();
+			facshipto = $('.pageContent .facshipto').val();
 
+			$(document).off('change', '.facshipto').on('change', '.facshipto', function () {
+				var facshipto = $(this).val();
+
+			});
+
+			
 			$('.defaultsign').each(function(){
 				if($(this).val()=='NULL'){
 					defaultsign=true;
@@ -345,10 +388,14 @@ $(document).ready(function(){
 			});
 			$('#allocationsummary tr').each(function(){
 				allocdept.push($(this).children('.allocationdeptid').attr('allocdeptid'));
+				allocbu.push($(this).children('.allocationbuid').attr('allocbuid'));
+				allocpl.push($(this).children('.allocationplid').attr('allocplid'));
 				allocperc.push($(this).children('.allocationpercentage').text());
 				allocremarks.push($(this).children('.allocationnotes').text());
 			});
 
+			// console.log('allocvalid', allocvalid);
+			// console.log('allocbu', allocbu);
 
 			//Check attachment size
 			var attachmentsize = 0;
@@ -378,11 +425,16 @@ $(document).ready(function(){
 						$('#attachments').addClass('active').siblings().removeClass('active');
 						$('.content').animate({scrollTop:0},200);
 						button.removeAttr('disabled');
+					// } else if (allocdept == false || allocvalid == false) {
+					} else if (allocbu == '' || allocvalid == false) {
+						$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Purchase Requisition</b> is not properly allocated.<br>Please check allocation summary.</div></div>");
+						$('.content').animate({ scrollTop: 0 }, 200);
+						button.removeAttr('disabled');
 					}
 					else{
 						$('#source-button').val('savebtn');
 						$('#loading-img').removeClass('hidden');
-						$.post(server+'pr-transaction-edit.php',{JKDlkjHFlriKDhl:'NDkdleipskje93lkj9',prnotes:prnotes,reqnum:reqnum,reqtype:type,dateneeded:dateneeded,remarks:justification,sh1:sh1,sh2:sh2,gm:gm,avp:avp,svp:svp,pr:p,conf:conf,items:items,qty:qty,prices:prices,classfns:classfns,allocremarks:allocremarks,allocdept:allocdept,allocperc:allocperc,curr:currency,deletefiles:filestobedeleted,suppliers:suppliers},function(data){
+						$.post(server + 'pr-transaction-edit.php', { JKDlkjHFlriKDhl: 'NDkdleipskje93lkj9', prnotes: prnotes, reqnum: reqnum, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, gm: gm, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc:allocperc,curr:currency,deletefiles:filestobedeleted,suppliers:suppliers},function(data){
 								if(data.trim()=='success'){
 									if($('#attachmentstable .newattachments').length>0){
 										$('#attachmentsform').submit();
@@ -415,7 +467,8 @@ $(document).ready(function(){
 						$('.content').animate({scrollTop:0},200);
 						button.removeAttr('disabled');
 					}
-					else if(allocvalid==false){
+					// else if (allocdept == false || allocvalid == false) {
+					else if (allocbu == '' || allocvalid == false) {
 						$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span><b>Purchase Requisition</b> is not properly allocated.<br>Please check allocation summary.</div></div>");
 						$('.content').animate({scrollTop:0},200);
 						button.removeAttr('disabled');
@@ -432,6 +485,12 @@ $(document).ready(function(){
 					}
 					else if(justification==''){
 						$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please provide <b>justification.</b></div></div>");
+						$('.content').animate({scrollTop:0},200);
+						button.removeAttr('disabled');
+					}
+
+					else if(facshipto=='NULL'||facshipto==''){
+						$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select <b>Ship to.</b></div></div>");
 						$('.content').animate({scrollTop:0},200);
 						button.removeAttr('disabled');
 					}
@@ -480,7 +539,7 @@ $(document).ready(function(){
 
 										confirm: function(){
 											$('#loading-img').removeClass('hidden');
-											$.post(server+'pr-transaction-edit.php',{JKdekJFHnKhkerjb:'',prnotes:prnotes,reqnum:reqnum,reqtype:type,dateneeded:dateneeded,remarks:justification,sh1:sh1,sh2:sh2,gm:gm,avp:avp,svp:svp,pr:p,conf:conf,items:items,qty:qty,prices:prices,classfns:classfns,allocremarks:allocremarks,allocdept:allocdept,allocperc:allocperc,curr:currency,deletefiles:filestobedeleted,suppliers:suppliers},function(data){
+											$.post(server + 'pr-transaction-edit.php', { JKdekJFHnKhkerjb: '', prnotes: prnotes, reqnum: reqnum, facshipto: facshipto, reqtype: type, dateneeded: dateneeded, remarks: justification, sh1: sh1, sh2: sh2, gm: gm, avp: avp, svp: svp, pr: p, conf: conf, items: items, qty: qty, prices: prices, classfns: classfns, allocremarks: allocremarks, allocdept: allocdept, allocbu: allocbu, allocpl: allocpl, allocperc:allocperc,curr:currency,deletefiles:filestobedeleted,suppliers:suppliers},function(data){
 														
 														var dt = data.split('@#$');
 														var rsp = dt[0];
@@ -905,12 +964,14 @@ $(document).ready(function(){
 						conformance = true;
 					}
 				});
-				if(conformance==true){//shows conformance if needed
-					$('.confhead').addClass('defaultsign').closest('.form-group').removeClass('hidden');
-				}
-				else{
-					$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
-				}
+
+				// if(conformance==true){//shows conformance if needed
+				// 	$('.confhead').addClass('defaultsign').closest('.form-group').removeClass('hidden');
+				// }
+				// else{
+				// 	$('.confhead').removeClass('defaultsign').val('NULL').closest('.form-group').addClass('hidden');
+				// }
+
 				var g = convertFloat(grandtotal);
 				$('#totalpramount').val(g).attr('grandtotal',grandtotal);
 				checkGrandTotal(grandtotal);

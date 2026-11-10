@@ -1,8 +1,12 @@
 <?php
+
 	include("../../../config/connection.php");
     include("../../../config/checkurlaccess.php");
     include("../../../config/checklogin.php");
     include("../../../config/functions.php");
+
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
 
     $userid = USERID;
     $where = array();
@@ -42,7 +46,7 @@
 
 /* IF Query comes from DataTables do the following */
 if (!empty($_POST) ) {
-	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==106||USERID==51||USERID==374){
+	if($userid==getPoConfigData('purchasing_head')||USERID==1||USERID==106||USERID==51||USERID==378||USERID==262||USERID==283||USERID==284){
 		//do nothing
 //            $condition = '';
 	}
@@ -60,6 +64,7 @@ if (!empty($_POST) ) {
 							purchase_order_header.reference_requisition_number,
 							purchase_order_header.order_status,
 							purchase_requisition_header.requisition_date,
+							purchase_requisition_header.facshipto,
 							supplier.supplier_name,
 							purchase_order_header.printed_timestamp,
 							purchase_order_header.supplier_address,
@@ -81,10 +86,14 @@ if (!empty($_POST) ) {
 							purchase_order_header.expected_date,
 							purchase_order_header.first_approver,
 							purchase_order_header.second_approver,
+							purchase_order_header.division_approver,
 							purchase_order_header.third_approver,
+							purchase_order_header.flag,
 							purchase_order_header.currency,
 							purchase_order_header.discrepancy_flag,
+							purchase_order_header.bir_po_number,
 							ship_via.ship_by,
+							purchase_order_header.updated_date,
 							(SELECT purchase_order_revision_history.remarks FROM purchase_order_revision_history WHERE purchase_order_revision_history.order_number=purchase_order_header.order_number LIMIT 0,1) as remarks
 					from purchase_order_header
 					left join supplier on supplier.id=supplier_id
@@ -95,7 +104,8 @@ if (!empty($_POST) ) {
 					$condition
 				) as a
 		   ";	
-	
+        // $qry = "SELECT * FROM purchase_order_header ";
+        
 	function getData2($sql){
         global $connection ;//we use connection already opened
         $query = mysql_query($sql) OR DIE ("Can't get Data from DB , check your SQL Query " );
@@ -111,6 +121,7 @@ if (!empty($_POST) ) {
              $printedflag = $obj->printed_flag==0?'NO':formatDate4($obj->printed_timestamp);
              $supplierAddr = strUtfEncode($obj->supplier_address);
              $remarks = strUtfEncode($obj->po_remarks);
+             $facshipto = strUtfEncode($obj->facshipto);
              $po_rev_remarks = strUtfEncode($obj->remarks);
              $expdelivery = formatDate($obj->delivery_date);
              $terms = strUtfEncode($obj->payment_terms_code);
@@ -134,8 +145,22 @@ if (!empty($_POST) ) {
              $cancelledreason = $orderStatus=='FOR CANCELLATION'||$orderStatus=='CANCELLED'?strUtfEncode($pocancellationinfo[0]):'';
              $approverfirst = getUserName($obj->first_approver).' '.getPoApprovalTimestamp($orderNum,$obj->first_approver,1);
              $approversecond = getUserName($obj->second_approver).' '.getPoApprovalTimestamp($orderNum,$obj->second_approver,2);
-             $approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalTimestamp($orderNum,$obj->third_approver,3);
+             
+             if (formatDate6($obj->updated_date) <= '2025-11-03'){
+                $approverdivision = 'N/A';
+                $approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalTimestamp($orderNum,$obj->third_approver,3);            
+            }else{
+                $approverdivision = $obj->division_approver==NULL?'Not Required':getUserName($obj->division_approver).' '.getPoApprovalTimestamp($orderNum,$obj->division_approver,3);
+                $approverlast = $obj->third_approver==NULL?'Not Required':getUserName($obj->third_approver).' '.getPoApprovalTimestamp($orderNum,$obj->third_approver,4);            
+             }
+
              $discrepancy = $obj->discrepancy_flag;
+             $bir_po_number = $obj->bir_po_number; //09092025
+             if($bir_po_number == '' || $bir_po_number == NULL){
+                $bir_po_number = '---';
+             }else{
+                $bir_po_number = 'PO'.$bir_po_number;
+             }
              $discrepancy = explode(',', $discrepancy);
              $variance='';
              for($i=0;$i<count($discrepancy);$i++){
@@ -166,7 +191,7 @@ if (!empty($_POST) ) {
                 $enableedit = "<img ponum='$orderNum' class='nopadding editpurchaseorder' src='../resources/img/File_Edit.png' title='Edit Purchase Order'>";
             }
             else if($orderStatus=='NEW'){
-                if (USERID==51||USERID==374){
+                if (USERID==51||USERID==378||USERID==262||USERID==31){ //jmm, ily, noreen, avhic
                     $assignbtn='';
                 }else{
                     $assignbtn = "<img ponum='$orderNum' data-toggle='modal' href='#assignmentmodal' class='nopadding assignpurchaseorder' src='../resources/img/assign.png' title='Assign Purchase Order'>";
@@ -174,13 +199,13 @@ if (!empty($_POST) ) {
             }
             else if($orderStatus=='UNSERVED'||$orderStatus=='PARTIAL DELIVERY'||$orderStatus=='SERVED'||$orderStatus=='HOLD'){
                 
-                if (USERID==51||USERID==374){
+                if (USERID==51||USERID==378||USERID==262||USERID==31){ //jmm, ily, noreen, avhic
                    $revisebtn =''; 
                 }else{
                     $revisebtn = "<img data-toggle='modal' href='#revisionmodal' ponum='$orderNum' reqnum='$referenceprnum' class='nopadding revisepurchaseorder' src='../resources/img/File_List.png' title='Revise Purchase Order'>";
                     if($printedflag=='NO'){
                         
-                        if (USERID==51||USERID==374){
+                if (USERID==51||USERID==378||USERID==262||USERID==31){ //jmm, ily, noreen, avhic
                             $printbtn =''; 
                         }else{
                             $printbtn = "<img ponum='$orderNum' class='nopadding printpurchaseorder' src='../resources/img/Printer.png' data-toggle='modal' href='#printpomodal' title='Print Purchase Order'>";
@@ -198,7 +223,7 @@ if (!empty($_POST) ) {
             $cancelpobtn = '';
             if($orderStatus!='CANCELLED'&&$orderStatus!='FOR REVISION'&&$orderStatus!='FOR CANCELLATION'){
                 
-                if (USERID==51||USERID==374){
+                if (USERID==51||USERID==378||USERID==262||USERID==31){ //jmm, ily, noreen, avhic
                    $cancelpobtn =''; 
                 }else{
                     $cancelpobtn = "<img ponum='$orderNum' style='margin-left:3px' class='nopadding cancelpobtn' src='../resources/img/block_32.png' data-toggle='modal' href='#pocancellationmodal' title='Cancel PO'>";
@@ -243,12 +268,14 @@ if (!empty($_POST) ) {
                                                         "firstapprover"=>$approverfirst,
                                                         "secondapprover"=>$approversecond,
                                                         "thirdapprover"=>$approverlast,
+                                                        "divapprover"=>$approverdivision,
                                                         "dateassigned"=>$dateassigned,
                                                         "dateposted"=>$dateposted,
                                                         "cancelleddate"=>$cancelleddate,
                                                         "cancelledby"=>$cancelledby,
                                                         "cancelledreason"=>$cancelledreason,
-                                                        "prsuffix"=>$prrevsuffix
+                                                        "prsuffix"=>$prrevsuffix,
+                                                        "facshipto"=>$facshipto
                                                     ),
                                 "DT_RowClass"=>"tablerow pointer",
                                 'ACTION'=>$enableedit.$assignbtn.$revisebtn.$printbtn.$toggleprintflag.$cancelpobtn,
@@ -256,12 +283,15 @@ if (!empty($_POST) ) {
                                 'order_date'=>$orderdate, 
                                 'order_number'=>$orderNum, 
                                 'next_revision_series'=>$revnum,
+                               
+                                'bir_po_number'=>$bir_po_number,
                                 'supplier_name'=>$supplier,
                                 'requisition_date'=>$reqdate,
                                 'expected_date'=>$podateneeded,
                                 'printed_timestamp'=>$printedflag,
                                 'date_flag'=>$datelastmod,
-                                'reason'=>$reason
+                                'reason'=>$reason,
+                                // 'pototal'=>$currency.' '.$pototal
 
                             );
             array_push($data, $arraydata);

@@ -81,7 +81,7 @@
         while($obj=fetch($rs)){
 		
 			$invoice = $obj->other_reference;
-      $itemId = $obj->item_id;
+            $itemId = $obj->item_id;
 			$shortdesc = strUtfEncode($obj->item_name) == '' ? ''.strUtfEncode($obj->item_name) : strUtfEncode($obj->item_name);
 			$longdesc = strUtfEncode($obj->long_description) == '' ? ''.strUtfEncode($obj->long_description) : strUtfEncode($obj->long_description);
 			$itemcode = $obj->item_code;
@@ -102,9 +102,11 @@
 				$eoh = $qty;				
 			}
 			if($prevItemId == $itemId) {
-				$bal = $eoh - $rcvdqty; 
+				$balx = $eoh - $rcvdqty; 
+                $bal = number_format((float)$balx, 2, '.', ''); //09132024 by Nessa
 			} else {
-				$bal = $qty - $rcvdqty;
+				$balx = $qty - $rcvdqty;
+				$bal = number_format((float)$balx, 2, '.', ''); //09132024 by Nessa
 			}
 			
 			echo "<tr title='Item Description: \n$longdesc'>

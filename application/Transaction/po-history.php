@@ -114,6 +114,12 @@
 												</div>
 											</div>
 											<div class="form-group">
+												<label class="control-label col-sm-4">Ship To</label>
+												<div class="col-sm-8">
+													 <span class='form-control-static' id='facshipto'></span>
+												</div>
+											</div>
+											<div class="form-group">
 												<label class="control-label col-sm-4">Remarks</label>
 												<div class="col-sm-8">
 													 <span class='form-control-static' id='remarks'></span>

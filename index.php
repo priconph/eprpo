@@ -17,7 +17,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-offset-4 col-sm-4">
-					<img class='img-responsive' src="resources/logo.png?v=2" style='margin:auto'>
+					<!-- <img class='img-responsive' src="resources/logo.png?v=2" style='margin:auto'> Orig code commented by JD as of 02-05-2025-->
+					<div class="image-container" style="width: 100%; height: 120px; position: relative;">
+						<img class='img-responsive' src="resources/img/eprpo_v3.png" style='position: absolute;top: -140px;left: 50px;'>
+					</div>
+
 					<br>
 					<form action='index.php' method='post' class='form-horizontal'>
 						<div class="form-group">

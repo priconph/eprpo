@@ -37,6 +37,8 @@
 		$rs = query($query);
 		while($obj=fetch($rs)){
 			$prnumber = $obj->requisition_number;
+			$facshipto = $obj->facshipto;
+			
 			$stat = strtoupper($obj->requisition_status);
 
 			$currency = getCurrencyCode($obj->currency);
@@ -149,6 +151,12 @@
 															</div>
 														</div>
 														<div class="form-group">
+															<label class="control-label col-sm-4">Ship To</label>
+															<div class="col-sm-8">
+																 <span class='form-control-static' id='facshipto'><?php echo $facshipto; ?></span>
+															</div>
+														</div>
+														<div class="form-group">
 															<label class="control-label col-sm-4">Justification</label>
 															<div class="col-sm-8">
 																 <span class='form-control-static' id='justification'><?php echo $justification; ?></span>
@@ -245,7 +253,7 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="control-label col-sm-5">Sr. Vice President</label>
+															<label class="control-label col-sm-5">Operations Division Head</label>
 															<div class="col-sm-7">
 																 <span class='form-control-static srvp'><?php echo $svp; ?></span>
 															</div>

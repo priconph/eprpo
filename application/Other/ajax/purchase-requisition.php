@@ -43,6 +43,7 @@ if (!empty($_POST) ) {
             $remarks = strUtfEncode($obj->justification);
             $lastupdate =  formatDate2($obj->last_made_changes);
             $prnotes = strUtfEncode($obj->pr_notes);
+            $facshipto = strUtfEncode($obj->facshipto);
             $lastmodified = formatDate2($obj->last_modified);
             // $conf = ($obj->conformance=='1')?'Not Applicable':(($obj->conformance==NULL&&$stat!='DRAFT')?'Not Required':getUserName($obj->conformance)).' '.getPrApprovalTimestampWithRev($prnumber,$obj->conformance,2,$revnumber);
             $conf = ($obj->conformance=='1')?'Not Applicable':(($obj->conformance==NULL&&$stat!='DRAFT')?'Not Required':getUserName($obj->conformance)).' '.getPrApprovalTimestampWithRev($prnumber,$obj->conformance,2,$revnumber);
@@ -88,7 +89,8 @@ if (!empty($_POST) ) {
             	$viewremarks = '<span style="font-style:italic; font-size:10px ">Click to see details on revision</span>';
             }
 
-            if($stat!='FOR REVISION'&&$stat!='CANCELLED'&&$stat!='APPROVED'){
+            // if($stat!='FOR REVISION'&&$stat!='CANCELLED'&&$stat!='APPROVED'){
+            if($stat!='CANCELLED' && $stat!='APPROVED'){ // commented out FOR REVISION condition since PR with FOR REVISION status can also be cancelled and we want to show cancel button for those PRs as well
             	if(checkIfPrHasPo($prnumber)==0||$forcancellation==1){
             		$notifyapprover = $notifyapprover."<img prnum='$prnumber' style='margin-left:3px' class='nopadding cancelprbtn' src='../resources/img/block_32.png' data-toggle='modal' href='#prcancellationmodal' title='Cancel PR'>";	
             	}
@@ -135,7 +137,8 @@ if (!empty($_POST) ) {
 														"avp"=>$avp,
 														"svp"=>$svp,
 														"pr"=>$pr,
-														"reasonforcancellation"=>$reasonforcancellation
+                                                        "reasonforcancellation"=>$reasonforcancellation,
+														"facshipto"=>$facshipto
 													),
 								"DT_RowClass"=>"tablerow pointer",
 								'ACTION'=>$enableedit.$notifyapprover,
@@ -145,7 +148,8 @@ if (!empty($_POST) ) {
 								'requisition_date'=>$reqdate,
 								'pr_description'=>$prdesc,
 								'pr_notes'=>$viewremarks,
-								'last_made_changes'=>$lastupdate
+								'last_made_changes'=>$lastupdate,
+
 
 							);
 			array_push($data, $arraydata);

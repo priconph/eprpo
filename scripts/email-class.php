@@ -25,14 +25,14 @@ class Email{
 					$mail->Host       = '192.168.3.244';                      //Set the SMTP server to send through
 					$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
 					$mail->Username   = 'issinfoservice@pricon.ph';             //SMTP username
-					$mail->Password   = 'EYGEKFwlzuDfNufG2DGk';                 //SMTP password
+					$mail->Password   = '6nJWqJWLq5Fvns4jK0v2';                 //SMTP password
 					$mail->SMTPSecure = 'ssl';            						//Enable implicit TLS encryption
 					$mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 				
 					//Recipients
 					$mail->From = $emailfrom;
 					$mail->setFrom('issinfoservice@pricon.ph', 'EPRPO');
-					$mail->addBCC('jgsulit@pricon.ph');
+					// $mail->addBCC('jgsulit@pricon.ph');
 				
 					//Content
 					$mail->addAddress($emailto, $toname);     					// Add a recipient

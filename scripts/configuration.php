@@ -28,6 +28,7 @@
     		$head = escapeString($_POST['head']);
     		$firstapprover = escapeString($_POST['firstapprover']);
     		$secondapprover = escapeString($_POST['secondapprover']);
+    		$divapprover = escapeString($_POST['divapprover']);
     		$lastapprover = escapeString($_POST['lastapprover']);
 
             $asst = escapeString($_POST['asst']);
@@ -37,6 +38,7 @@
     		$query = "update purchase_order_configuration set purchasing_head=$head, 
                                                               first_approver=$firstapprover, 
                                                               second_approver=$secondapprover, 
+                                                              division_approver=$divapprover, 
                                                               third_approver=$lastapprover,
                                                               assistant_manager=$asst,
                                                               general_manager=$mng,
@@ -109,6 +111,11 @@
                     query("update purchase_order_header set third_approver='$assignedto' where order_status='IN REVIEW' and third_approver='$oldapprover' and flag<=3");
                      query("update purchase_order_configuration set third_approver='$assignedto' where id='1'");
                     break;
+                case '4': // Division Head
+                    query("update purchase_order_header set division_approver='$assignedto' where order_status='IN REVIEW' and division_approver='$oldapprover' and flag<=4");
+                     query("update purchase_order_configuration set division_approver='$assignedto' where id='1'");
+                    break;
+
             }
             echo "success";
         }

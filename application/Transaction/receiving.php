@@ -377,13 +377,13 @@
 						},
 						{ data: 'other_reference'
 						},
-						{ data: 'supplier_name'
+						{ data: 'supplier_id'
 						},
 						{ data: 'actual_delivery_date'
 						},
 						{ data: 'received_date'
 						},
-						{ data: 'rcvd_by'
+						{ data: 'received_by'
 						}
 				   ],
 		"processing": true,
@@ -392,7 +392,7 @@
 						url: "Other/ajax/receiving.php",
 						type: 'POST'
 				},
-		"sScrollY": "350px",
+		// "sScrollY": "350px",
 		"sScrollX": "auto"
 	});
 	$('#rejectedrcvtable').DataTable({
@@ -432,7 +432,7 @@
 						url: "Other/ajax/receiving-rejected.php",
 						type: 'POST'
 				},
-		"sScrollY": "350px",
+		// "sScrollY": "350px",
 		"sScrollX": "100%"
 	});
 </script>

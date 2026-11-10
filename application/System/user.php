@@ -116,7 +116,8 @@
 																	<select name='sec-dept-div' data-placeholder=' ' class='chosen-select form-input form-control uppercase requiredinput department'>
 																			<option value=''></option>
 																			<?php
-																				$query='select * from section_department order by section_department_name asc';
+																				// $query='select * from section_department WHERE status = "ACTIVE" order by section_department_name asc';
+																				$query='select * from section_department WHERE category ="0" order by section_department_name asc';
 																				$rs = query($query);
 																				while($obj=fetch($rs)){
 																					$id = $obj->id;
@@ -530,10 +531,11 @@
 															<div class="form-group">
 																<label class='control-label col-md-4'>Department*</label>
 																<div class="col-md-8">
+																	<!-- <select name='sec-dept-div' data-placeholder='Select a department' class='chosen-select form-input form-control uppercase requiredinput department' disabled> -->
 																	<select name='sec-dept-div' data-placeholder='Select a department' class='chosen-select form-input form-control uppercase requiredinput department'>
 																			<option value=''>-</option>
 																			<?php
-																				$query='select * from section_department order by section_department_name asc';
+																				$query='select * from section_department WHERE status ="ACTIVE" order by section_department_name asc';
 																				$rs = query($query);
 																				while($obj=fetch($rs)){
 																					$id = $obj->id;

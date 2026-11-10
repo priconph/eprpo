@@ -102,6 +102,7 @@ $(document).off('click','#prtable .clickable').on('click','#prtable .clickable',
 	$('#reasonforrejection').html(row.attr('rejectionreason'));
 	$('#rejectedby').val(row.attr('rejectedby'));
 	$('#prnotes').html(row.attr('prnotes'));
+	$('#facshipto').html(row.attr('facshipto'));
 	$('#cancellationreason').html(row.attr('reasonforcancellation'));
 	if(row.attr('type').trim()=='REGULAR'){
 		$('#reqtype').addClass('label').addClass('label-primary').html(row.attr('type'));
@@ -109,6 +110,7 @@ $(document).off('click','#prtable .clickable').on('click','#prtable .clickable',
 	else{
 		$('#reqtype').addClass('label').addClass('label-danger').html(row.attr('type'));
 	}
+	
 	
 	$('#reqdate').html(row.attr('reqdate'));
 	$('#reqdateneeded').html(row.attr('dateneeded'));

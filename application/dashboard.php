@@ -68,7 +68,8 @@
 																			        (
 																			         (first_approver='$userid' and purchase_order_header.flag='1') or 
 																			         (second_approver='$userid' and purchase_order_header.flag='2') or 
-																			         (third_approver='$userid' and purchase_order_header.flag='3')
+																			         (division_approver='$userid' and purchase_order_header.flag='3') or 
+																			         (third_approver='$userid' and purchase_order_header.flag='4')
 																			        )";
 				    								$rs = query($query);
 				    								// $approvalcount = getNumRows($rs);
@@ -88,6 +89,7 @@
 				    					</div>
 				    				</div>
 			    				</div>
+								
 			    				<div class="col-md-3 pointer hidden">
 				    				<div class="sm-st clearfix qlrcvapproval">
 				    					<span class="sm-st-icon st-red">
@@ -100,7 +102,7 @@
 																	  where receiving_status='IN REVIEW' and
 																		(
 																		 (first_approver='$userid' and flag='1') or 
-																		 (second_approver='$userid' and flag='2')
+																		 (second_approver='$userid' and flag='2') 
 																		)";
 				    								$rs = query($query);
 				    								// $approvalcount = getNumRows($rs);
@@ -127,7 +129,7 @@
 				    						<i class="fa fa-truck"></i>
 				    					</span>
 				    					<div class="sm-st-info">
-				    						Hold <br>Supplier's Invoice
+				    						Hold <br>PO / Invoices
 				    						<?php 
 				    								$query = $query = "select COUNT(order_status) as holdcount from purchase_order_header 
 																	  where order_status='HOLD'";
@@ -528,7 +530,8 @@
 									    								<th class='text-center'>ACTION</th>
 									    								<th class='text-center'>PR NUMBER</th>
 									    								<th>REVISION NO.</th>
-									    								<th>APPROVAL TYPE</th>
+									    								<!-- <th>APPROVAL TYPE</th> -->
+									    								<th>PO NUMBER</th>
 									    								<th>REQUISITIONER</th>
 									    								<th>REMARKS</th>
 									    								<th class='text-center'>DATE</th>
@@ -536,10 +539,15 @@
 									    						</thead>
 									    						<tbody id='prhistory'>
 									    							<?php
-									    								$query = "select purchase_requisition_approval_history.requisition_number, action, pr_flag, pr_approval_flag, pr_approval_remarks, requisitioner, `date`, last_made_changes
+									    								$query = "select purchase_requisition_approval_history.requisition_number, 
+																				action, pr_flag, pr_approval_flag, pr_approval_remarks, requisitioner, `date`, last_made_changes,
+																				purchase_order_header.order_number
 																				  from purchase_requisition_approval_history, 
-																				       purchase_requisition_header 
-																				  where purchase_requisition_header.requisition_number=purchase_requisition_approval_history.requisition_number and user_id=".USERID." order by date desc limit 50";
+																				       purchase_requisition_header,
+																					   purchase_order_header 
+																				  where purchase_requisition_header.requisition_number=purchase_requisition_approval_history.requisition_number and 
+																					purchase_order_header.reference_requisition_number=purchase_requisition_header.requisition_number and 
+																				  	user_id=".USERID." order by date desc limit 50";
 																		$rs = query($query);
 																		while($obj=fetch($rs)){
 																			$pr = $obj->requisition_number;
@@ -552,6 +560,8 @@
 																			$flag = $obj->pr_flag;
 																			$last_update = $obj->last_made_changes;
 																			$last_update = date('M d, Y h:i:s A', strtotime($last_update));
+																			$po_number = $obj->order_number;
+
 
 																			switch ($obj->pr_approval_flag){
 																				case '0':
@@ -579,13 +589,14 @@
 																					$approvaltype = '';
 																					break;
 																			}
-
+																			// 09122025 by Nessa
+																			// <td>$approvaltype</td>
 																			echo "<tr class='tablerow prrowlog pointer' prnumber='$pr' prflag='$flag'>
 																					<td class='text-center'>$last_update</td>
 																					<td class='text-center'>$action</td>
 																					<td class='text-center'>$pr</td>
 																					<td>$revnum</td>
-																					<td>$approvaltype</td>
+																					<td>$po_number</td>
 																					<td>$requisitioner</td>
 																					<td>$reason</td>
 																					<td class='text-center'>$date</td>
@@ -689,9 +700,10 @@
 																							        (
 																							         (first_approver='$userid' and purchase_order_header.flag='1') or 
 																							         (second_approver='$userid' and purchase_order_header.flag='2') or 
-																							         (third_approver='$userid' and purchase_order_header.flag='3')
+																							         (division_approver='$userid' and purchase_order_header.flag='3') or 
+																							         (third_approver='$userid' and purchase_order_header.flag='4')
 																							        )
-																							  order by date_flag desc LIMIT 50";
+																							  order by date_flag desc LIMIT 150";
 																					
 																					$rs = query($query);
 																					$rscount = getNumRows($rs);
@@ -742,7 +754,17 @@
 																	</thead>
 																	<tbody id='pohistory'>
 																		<?php 
-																			$query = "select order_number, action, po_flag, purch_revision_no, po_approval_remarks, `date`, po_approval_flag  from purchase_order_approval_history order by date desc limit 50";
+																			$query = "select order_number, 
+																						action, 
+																						po_flag, 
+																						purch_revision_no, 
+																						po_approval_remarks, 
+																						date, 
+																						user_id, 
+																						po_approval_flag  
+																					from purchase_order_approval_history 
+																					WHERE user_id='$userid'
+																					order by date desc limit 50";
 																				$rs = query($query);
 																				while($obj=fetch($rs)){
 																					$pr = $obj->order_number;
@@ -753,20 +775,47 @@
 																					$reason = strUtfEncode($obj->po_approval_remarks);
 																					$date = formatDate4($obj->date);
 																					$fl = $obj->po_flag.'.'.$purch_revision_no;
-																					switch ($obj->po_approval_flag){
-																							case '1':
-																								$poapprovaltype = 'Logistics Manager';
-																								break;
-																							case '2':
-																								$poapprovaltype = 'General Manager';
-																								break;
-																							case '3':
-																								$poapprovaltype = 'President';
-																								break;
-																							default:
-																								$poapprovaltype = '';
-																								break;
+																					$po_app_date = formatDate6($obj->date);
+
+																					if ($po_app_date <= '2025-11-03'){
+																						if ($obj->po_approval_flag == '1'){
+																							$poapprovaltype = 'Section Head';
+																						}else if ($obj->po_approval_flag == '2'){
+																							$poapprovaltype = 'Department Head';
+																						}else if ($obj->po_approval_flag == '3'){
+																							$poapprovaltype = 'President';
+																						}else{
+																							$poapprovaltype = '--';
+																						}
+																					}else{
+																						if ($obj->po_approval_flag == '1'){
+																							$poapprovaltype = 'Section Head';
+																						}else if ($obj->po_approval_flag == '2'){
+																							$poapprovaltype = 'Department Head';
+																						}else if ($obj->po_approval_flag == '3'){
+																							$poapprovaltype = 'Disivion Head';
+																						}else if ($obj->po_approval_flag == '4'){
+																							$poapprovaltype = 'President';
+																						}else{
+																							$poapprovaltype = '--';
+																						}
 																					}
+																					
+																					/* OLD */
+																					// switch ($obj->po_approval_flag){
+																					// 		case '1':
+																					// 			$poapprovaltype = 'Logistics Manager';
+																					// 			break;
+																					// 		case '2':
+																					// 			$poapprovaltype = 'General Manager';
+																					// 			break;
+																					// 		case '3':
+																					// 			$poapprovaltype = 'President';
+																					// 			break;
+																					// 		default:
+																					// 			$poapprovaltype = '';
+																					// 			break;
+																					// }
 																					echo "<tr class='tablerow porowlog pointer' ponumber='$pr' poflag='$fl'>
 																							<td class='text-center'>$pr</td>
 																							<td>$revnum</td>
@@ -825,7 +874,7 @@
 																							  where receiving_status='IN REVIEW' and
 																							        (
 																							         (first_approver='$userid' and flag='1') or 
-																							         (second_approver='$userid' and flag='2')
+																							         (second_approver='$userid' and flag='2') 
 																							        )
 																							  order by date_flag desc LIMIT 50";
 																					
@@ -886,17 +935,21 @@
 																					$revnum = $obj->rcv_flag;
 																					$reason = strUtfEncode($obj->rcv_approval_remarks);
 																					$date = formatDate4($obj->date);
+																					
 																					switch ($obj->rcv_approval_flag){
 																							case '1':
-																								$rcvapprovaltype = 'Logistics Manager';
+																								// $rcvapprovaltype = 'Logistics Manager';
+																								$rcvapprovaltype = 'Section Head';
 																								break;
 																							case '2':
-																								$rcvapprovaltype = 'General Manager';
+																								// $rcvapprovaltype = 'General Manager';
+																								$rcvapprovaltype = 'Department Head';
 																								break;
 																							default:
 																								$rcvapprovaltype = '';
 																								break;
 																					}
+
 																					echo "<tr class='tablerow rcvrowlog pointer' rcvnumber='$rcvno' rcvflag='$revnum'>
 																							<td class='text-center'>$rcvno</td>
 																							<td>$revnum</td>
@@ -922,11 +975,11 @@
 
 				<div id='hold-supplier-row' class='hidden'>
 	    			<fieldset>
-	    				<legend>Hold Supplier's Invoice</legend>
+	    				<legend>Hold PO / Invoices</legend>
 		    			<div class='tabpane-white tab-pane-wrapper margin-top-20 margin-bottom-10'>
 								<ul class="nav nav-tabs">
 								    <li role="presentation" class="active" data-pane='#dashboard-hold-supplier-pane'><a>On-hold PO</a></li>
-									<li role="presentation" data-pane='#dashboard-hold-supplier-history-pane'><a>Hold Supplier's History</a></li>
+									<li role="presentation" data-pane='#dashboard-hold-supplier-history-pane'><a>Hold PO's History</a></li>
 								</ul>
 								<div class='tab-panes bg-white'>
 									<div class='pane active' id='dashboard-hold-supplier-pane'>

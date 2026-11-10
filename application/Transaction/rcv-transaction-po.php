@@ -5,6 +5,7 @@
     include('../../config/functions.php');
 	$supplier = isset($_GET['JKeao4ihslk'])?$_GET['JKeao4ihslk']:'';
 	$ponumber = isset($_GET['skrbOIrhlk'])?$_GET['skrbOIrhlk']:'';
+	
 	if($ponumber==''||$supplier==''){
 		exit('Direct Access Not Allowed');
 	}
@@ -194,14 +195,28 @@
 																			$qtyprevreceived =convertWithDecimal(getQtyReceived_2($ponumber,$itemId,$price,$shortdesc,$longdesc),0);
 			                                                                $bal = $qty - getQtyReceived_2($ponumber,$itemId,$price,$shortdesc,$longdesc);
 
-			                                                                $rcvdamount = $bal*$price;
-			                                                                $grandtotal = $grandtotal + round($rcvdamount,2);
-			                                                                $price = convertWithDecimal($price,5);
-			                                                                $amount = convertWithDecimal($amount,2);
-			                                                                $rcvdamount = convertWithDecimal($rcvdamount,2);
+			                                                                // $rcvdamount = $bal*$price;
+			                                                                // $grandtotal = $grandtotal + round($rcvdamount,2);
+			                                                                // $price = convertWithDecimal($price,5);
+			                                                                // $amount = convertWithDecimal($amount,2);
+			                                                                // $rcvdamount = convertWithDecimal($rcvdamount,2);
 			                                                                
 																			$qty = convertWithDecimal($qty,0);
 																			
+
+																			if($ponumber == 'PO-58402' || $ponumber == 'PO-58603') {
+																				$rcvdamount = $bal*$price;
+																				$grandtotal = $grandtotal + round($rcvdamount,2);
+																				$price = convertWithDecimal($price,6);
+																				$amount = bcdiv($amount,1, 2);
+																				$rcvdamount = bcdiv($rcvdamount,1, 2);
+																			}else{
+																				$rcvdamount = $bal*$price;
+																				$grandtotal = $grandtotal + round($rcvdamount,2);
+																				$price = convertWithDecimal($price,5);
+																				$amount = convertWithDecimal($amount,2);
+																				$rcvdamount = convertWithDecimal($rcvdamount,2);
+																			}
 																			//Check for old PO record per item
 																			$old_po_query = query("SELECT details.order_number, details.quantity, details.item_name, details.long_description, details.unit_price FROM `purchase_order_details` details INNER JOIN purchase_order_header header ON details.order_number = header.order_number WHERE details.`item_id` ='".$itemId."' AND order_status in ('UNSERVED', 'PARTIAL DELIVERY') AND details.order_number != '".$ponumber."' AND details.order_number < '".$ponumber."' ORDER BY details.order_number ASC LIMIT 0,1");
 																			$old_po_row_count = getNumRows($old_po_query);
@@ -294,7 +309,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class='page-title'>
-                   Hold Supplier's Invoice
+                   Hold PO / Invoices
                     <button class="close" data-dismiss="modal">&times;</button>
                 </div>
             </div>

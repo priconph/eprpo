@@ -190,11 +190,11 @@
 	$('#sectiontable').DataTable({
 					"sScrollY": "350px",
 					"sScrollX": "auto",
-		 			aaSorting: [[ 4, "asc" ]], //initially, table is sorted by second column desc
+		 			// aaSorting: [[ 5, "asc" ]], //initially, table is sorted by second column desc
 				    columnDefs: [
 				      				 {
 								        targets: "column-nosort", //class of columns you dont want to be sortable
-								        orderable: false,
+								        orderable: true,
 								        //visible: false,
 		               					//searchable: true
 

@@ -26,7 +26,8 @@
 	    							<select class='form-input form-control popurchasingstaff chosen-select'>
 	    								<option value='any'>Any</option>
 	    								<?php
-	    								$query='select * from user where section_department_id=17';
+	    								// $query='select * from user where section_department_id=17';
+	    								$query='select * from user where section_department_id=17 and active_flag=1';// 06062024 by Nessa
 	    								$rs = query($query);
 	    								while($obj=fetch($rs)){
 	    									$id = $obj->id;

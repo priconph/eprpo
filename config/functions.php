@@ -218,6 +218,15 @@
         }
         return $date;
     }
+    function formatDate6($date){
+        if($date=="0000-00-00 00:00:00"||$date==''){
+            $date ='';
+        }
+        else{
+           $date = date('Y-m-d', strtotime($date));
+        }
+        return $date;
+    }
     function convertWithDecimal($number,$decimalplaces){
         if($decimalplaces==0&&is_numeric($number) && ((float) $number != (int) $number)){
             $temp = number_format($number,2,'.',',');
@@ -266,6 +275,16 @@
         $str = strUtfEncode($str);
         return $str;
 	}
+
+    function getHoldRemarks($po){
+        $remarks = '';
+        $r = query("select * from hold_invoice_remarks where reference_po_number='$po'");
+        while($obj=fetch($r)){
+           $remarks = $obj->remarks;
+           
+        }
+        return $remarks;
+    }
 
     function getUserEmail($id){
         $mail = '';
@@ -488,15 +507,35 @@
         return $pr;
     }
 
+    function getRefFac($po){
+        $fac = 'No Factory Reference';
+        $rs = query("select a.facshipto from purchase_requisition_header a
+                    INNER JOIN purchase_order_header b on b.reference_requisition_number = a.requisition_number
+                    where b.order_number='$po'");
+        while($obj=fetch($rs)){
+            if ($obj->facshipto == '' || $obj->facshipto == null || $obj->facshipto == '0'){
+                $fac = 'Factory 1';
+            }else{
+                $fac = $obj->facshipto;
+            }
+        }
+        return $fac;
+    }
+
 	//add as of January 31, 2018 by Rona
     function getAllocation($prnumber){
         $allocation = '';
         $rs = query("SELECT 
-					(SELECT section_department_name FROM section_department WHERE section_department.id = purchase_requisition_allocation.department_id LIMIT 0,1) as allocation, percentage 
+					(SELECT section_department_name FROM section_department 
+                        WHERE section_department.id = purchase_requisition_allocation.department_id LIMIT 0,1) as allocation,
+                    (SELECT section_department_name FROM section_department 
+                        WHERE section_department.id = purchase_requisition_allocation.business_unit LIMIT 0,1) as allocation2, 
+                    (SELECT section_department_name FROM section_department 
+                        WHERE section_department.id = purchase_requisition_allocation.product_line LIMIT 0,1) as allocation3, percentage 
 						FROM `purchase_requisition_allocation` 
 						WHERE purchase_requisition_allocation.requisition_number = '".$prnumber."'");
         while($obj=fetch($rs)){
-            $allocation .= $obj->allocation.' ('.$obj->percentage.' %)<br>';
+            $allocation .= $obj->allocation.' '.$obj->allocation2.' '.$obj->allocation3.' ('.$obj->percentage.' %)<br>';
         }
         return $allocation;
     }
@@ -544,15 +583,46 @@
             $qty = $obj->quantity;
             $price = $obj->unit_price;
             $amount = $qty*$price;
-            //10222021
-            $grandtotal = $grandtotal + round($amount,2); // orig data
-            // $grandtotal = $grandtotal + $amount; //uncomment this to resolve the .1 issue/concern in total amount
+
+            //06172025 by Nessa
+            // if($po == 'PO-58402' || $po == 'PO-57456' || $po == 'PO-62365'){
+            //     $grandtotal = $grandtotal + $amount; //this to resolve the .1 issue/concern in total amount
+            // }else if ($po == 'PO-62496' ){
+            //     $grandtotal = '900.00'; // from 300.02 01222026 by Nessa
+            // }else if ($po == 'PO-62502'){
+            //     $grandtotal = '300.00'; // from 300.02 01222026 by Nessa
+            // }
+            // else{
+                // $grandtotal = $grandtotal + round($amount,2); // orig data
+            // }           
+                
+                   
+            //06172025 by Nessa
+            // if($po == 'PO-58402' || $po == 'PO-57456' || $po == 'PO-62365' || $po == 'PO-62502'){
+            //     $grandtotal = bcdiv($grandtotal, 1, 2); // this to resolve the .1 issue/concern in total amount
+            // }else if ($po == 'PO-62496' ){
+            //     $grandtotal = '900.00'; // from 300.02 01222026 by Nessa
+            // }else if ($po == 'PO-62502'){
+            //     $grandtotal = '300.00'; // from 300.02 01222026 by Nessa
+            // }else{
+                // $grandtotal = convertWithDecimal($grandtotal,2); // orig data
+            // }
+
+            if($po == 'PO-66208'){
+                $grandtotal = $amount - 0.02;
+            }
+            else{
+                $grandtotal = $grandtotal + round($amount,2); // orig data
+            }
+            
         }
-        //10222021
+
+        
         $grandtotal = convertWithDecimal($grandtotal,2); // orig data
-        // $grandtotal = bcdiv($grandtotal, 1, 2); //uncomment this to resolve the .1 issue/concern in total amount
         return $grandtotal;
     }
+
+ 
     function getPrGrandTotal($pr){
         $query = "select * from purchase_requisition_details where requisition_number='$pr'";
         $rs = query($query);
@@ -561,9 +631,33 @@
             $qty = $obj->quantity;
             $price = $obj->unit_price;
             $amount = $qty*$price;
-            $grandtotal = $grandtotal + round($amount,2);
+
+            //06172025 by Nessa
+            if($pr == 'CN-PPC-PR2505-020' || $pr == 'CN-PPC-PR2504-005'){
+                $grandtotal = $grandtotal + $amount; //this to resolve the .1 issue/concern in total amount
+            }
+            else if($pr == 'PPSTS-PR2605-024'){ //chris for YEC adjustment -0.02
+                $grandtotal = $amount - 0.02;
+            }
+            else{
+                $grandtotal = $grandtotal + round($amount,2); // orig data
+            }
+
         }
-        return convertWithDecimal($grandtotal,2);
+
+         //06172025 by Nessa
+        if($pr == 'CN-PPC-PR2505-020' || $pr == 'CN-PPC-PR2504-005'){
+            $grandtotal = bcdiv($grandtotal, 1, 2); // this to resolve the .1 issue/concern in total amount
+        }
+        else if($pr == 'PPSTS-PR2605-024'){ //chris for YEC adjustment -0.02
+            $grandtotal = bcdiv($grandtotal, 1, 2); 
+        }
+        else{
+            $grandtotal = convertWithDecimal($grandtotal,2); // orig data
+        }
+        return $grandtotal;
+
+        // return convertWithDecimal($grandtotal,2);
     }
 
     function getSupplierName($supplierId){
@@ -606,21 +700,42 @@
         while($obj=fetch($rs)){
             $asstmng = $obj->first_approver;
             $genmng = $obj->second_approver;
+            $divmng = $obj->division_approver;
             $pr = $obj->third_approver;
             $flag = $obj->flag;
             $stat = $obj->order_status;
+            $updated_date = $obj->updated_date;
 
         }
         if($stat!='REJECTED'){
-            if($flag=='2'){
-                $response = "Asst. Manager: ".getUserName($asstmng);
+            if (formatDate6($updated_date) <= '2025-11-03'){
+                if($flag=='2'){
+                    $response = "Section Head: ".getUserName($asstmng);
+
+                }else if($flag=='3' || ($flag=='4'&&$pr==NULL) ){
+                    $response = "Department Head: ".getUserName($genmng);
+
+                }else if($flag=='4' || ($flag=='5'&&$divmng==NULL)){
+                    $response = "President: ".getUserName($pr);
+
+                }
+                
+            }else{
+                 if($flag=='2'){
+                    $response = "Section Head: ".getUserName($asstmng);
+
+                }else if($flag=='3' || ($flag=='5'&&$pr==NULL&&$divmng==NULL)){
+                    $response = "Department Head: ".getUserName($genmng);
+
+                }else if($flag=='4' || ($flag=='5'&&$pr==NULL)){
+                    $response = "Division Head: ".getUserName($divmng);
+
+                }
+                else if(($flag=='5') ){
+                    $response = "President: ".getUserName($pr);
+                }
             }
-            else if($flag=='3'||($flag=='4'&&$pr==NULL)){
-                $response = "Gen. Manager: ".getUserName($genmng);
-            }
-            else if($flag=='4'){
-                $response = "President: ".getUserName($pr);
-            }
+            
         }
         return $response;
     }
@@ -631,6 +746,7 @@
         while($obj=fetch($rs)){
             $asstmng = $obj->first_approver;
             $genmng = $obj->second_approver;
+            $divmng = $obj->division_approver;
             $pr = $obj->third_approver;
             $flag = $obj->flag;
             $stat = $obj->order_status;
@@ -638,14 +754,26 @@
         }
         if($stat!='REJECTED'){
             if($flag=='2'){
-                $response = "Asst. Manager: ".getUserName($asstmng);
+                $response = "Section Head: ".getUserName($asstmng);
             }
-            else if($flag=='3'||($flag=='4'&&$pr==NULL)){
-                $response = "Gen. Manager: ".getUserName($genmng);
+            else if($flag=='3'&&$pr==NULL){
+                $response = "Department Head: ".getUserName($genmng);
             }
-            else if($flag=='4'){
+            else if($flag=='4'&&$pr==NULL){
+                $response = "Division Head: ".getUserName($divmng);
+            }
+            else if($flag=='5'){
                 $response = "President: ".getUserName($pr);
             }
+            // if($flag=='2'){
+            //     $response = "Asst. Manager: ".getUserName($asstmng);
+            // }
+            // else if($flag=='3'||($flag=='4'&&$pr==NULL)){
+            //     $response = "Assistant VP: ".getUserName($genmng);
+            // }
+            // else if($flag=='4'){
+            //     $response = "President: ".getUserName($pr);
+            // }
         }
         return $response;
 
@@ -719,8 +847,13 @@
                 array_push($data, $secondapprover);
             }
 
+            $divapprover = $obj->division_approver;
+            if($divapprover!=NULL&&$flag==4){
+                array_push($data, $divapprover);
+            }
+
             $thirdapprover = $obj->third_approver;
-            if($thirdapprover!=NULL&&$flag==4){
+            if($thirdapprover!=NULL&&$flag==5){
                 array_push($data, $thirdapprover);
             }
 
@@ -1025,17 +1158,45 @@
 
     function getPoApprovalTimestamp($po,$userid,$approvallevel){
         $timestamp = '';
-        $remarks = '';
-        /*$rs = query("select * 
-                     from purchase_order_header
-                     where
-                           
-                             ((first_approver='$userid' and purchase_order_header.flag>1) or 
-                             (second_approver='$userid' and purchase_order_header.flag>2) or 
-                             (third_approver='$userid' and purchase_order_header.flag>3))
-                             and order_number='$po'
-                            
-                   ");*/
+        $remarks = '';  
+
+
+        // if($approvallevel=='1'){
+        //     $rs = query("select * 
+        //                  from purchase_order_header 
+        //                  where ((first_approver='$userid' and purchase_order_header.flag>1)) and 
+        //                         order_number='$po'");
+        //     }
+        // else if($approvallevel=='2'){
+        //     $rs = query("select * 
+        //                  from purchase_order_header 
+        //                  where ((second_approver='$userid' and purchase_order_header.flag>2)) and 
+        //                         order_number='$po'");
+        // }
+        // // else if($approvallevel=='3'){
+        // //     $rs = query("select * 
+        // //                  from purchase_order_header 
+        // //                  where ((division_approver='$userid' and purchase_order_header.flag>3)) and 
+        // //                         order_number='$po'");
+        // // }
+        // else if($approvallevel=='3'){
+        //     $rs = query("select * 
+        //                  from purchase_order_header 
+        //                  where ((third_approver='$userid' and purchase_order_header.flag>3)) and 
+        //                         order_number='$po'");
+
+        // }
+
+        // else if($approvallevel=='4'){
+        //     $rs = query("select * 
+        //                  from purchase_order_header 
+        //                  where ((third_approver='$userid' and purchase_order_header.flag>4)) and 
+        //                         order_number='$po'");
+
+        // }
+        
+
+        // OLD
         switch ($approvallevel) {
             case '1':
                     $rs = query("select * 
@@ -1050,12 +1211,19 @@
             case '3':
                     $rs = query("select * 
                                  from purchase_order_header
-                                 where ((third_approver='$userid' and purchase_order_header.flag>3) and order_number='$po')");
+                                 where ( ( (third_approver='$userid' OR division_approver='$userid') and purchase_order_header.flag IN (4,5) ) and order_number='$po' )");
             break;
+            case '4':
+                    $rs = query("select * 
+                                 from purchase_order_header
+                                 where ((third_approver='$userid' and purchase_order_header.flag=5) and order_number='$po')");
+            break;
+            
+            
             default:
                      $rs = query("select * 
                                  from purchase_order_header
-                                 where ((third_approver='sdfs' and purchase_order_header.flag>3) and order_number='$po')");
+                                 where ((third_approver='sdfs' and purchase_order_header.flag>4) and order_number='$po')");
             break;
 
         }
@@ -1748,12 +1916,14 @@
             if(!$r){
                 echo error();
             }
+            /* 02012025 by Nessa */
             else{
                 $emailsuccess = $emailClass->sendNotification(getUserEmail($nextapprover),getUserName($nextapprover),'EPRPO - Purchase Order Approval',poMessage($ponumber),poMessage($ponumber),$cc);
             }
             return $r;
         }
 
+        /* 2ND APPROVER */
         $query = "select * from purchase_order_header where order_number='$ponumber' and flag='2' and second_approver='$userid' and order_status='IN REVIEW'";
         $rs = query($query);
         $count = getNumRows($rs);
@@ -1769,10 +1939,10 @@
             array_push($cc, $ccprchstaff, $ccprreq);
             /** GET CC **/
 
-            $nextapproverexist = $obj->third_approver;
+            $nextapproverexist = $obj->division_approver;
             $statbeforerevision = ($obj->status_before_revision!='PARTIAL DELIVERY'&&$obj->status_before_revision!='SERVED')?'UNSERVED':$obj->status_before_revision;
             if($nextapproverexist==NULL){
-                $nextflag='4';
+                $nextflag='5';
                 $revised = getNumRows(query("select * from purchase_requisition_revision_sources where order_number='$ponumber'"));
                 if($revised>0){
                     $withorderdate = '';
@@ -1801,7 +1971,7 @@
                 echo error();
             }
             else{
-                if($nextflag!='4'){
+                if($nextflag!='5'){
                     $emailsuccess = $emailClass->sendNotification(getUserEmail($nextapproverexist),getUserName($nextapproverexist),'EPRPO - Purchase Order Approval',poMessage($ponumber),poMessage($ponumber),$cc);
                 }
                 else{
@@ -1811,7 +1981,67 @@
             return $r;
         }
 
-        $query = "select * from purchase_order_header where order_number='$ponumber' and flag='3' and third_approver='$userid' and order_status='IN REVIEW'";
+         /* DIVISION */
+        $query = "select * from purchase_order_header where order_number='$ponumber' and flag='3' and division_approver='$userid' and order_status='IN REVIEW'";
+        $rs = query($query);
+        $count = getNumRows($rs);
+        if($count==1){
+            $obj = fetch($rs);
+            /** GET CC **/
+            $ccprchstaff = getUserEmail($obj->posted_by);
+            $ccprreq = getUserEmail(getInfo("purchase_requisition_header","requisitioner","where requisition_number='".$obj->reference_requisition_number."'"));
+            $ccprchhead = getUserEmail(getInfo("purchase_order_configuration","purchasing_head","where id='1'"));
+            $cc1 = array();
+            array_push($cc1, $ccprchhead, $ccprreq);
+            $cc = array();
+            array_push($cc, $ccprchstaff, $ccprreq);
+            /** GET CC **/
+
+            $nextapproverexist = $obj->third_approver;
+            $statbeforerevision = ($obj->status_before_revision!='PARTIAL DELIVERY'&&$obj->status_before_revision!='SERVED')?'UNSERVED':$obj->status_before_revision;
+            if($nextapproverexist==NULL){
+                $nextflag='5';
+                $revised = getNumRows(query("select * from purchase_requisition_revision_sources where order_number='$ponumber'"));
+                if($revised>0){
+                    $withorderdate = '';
+                    $c = query("select * from purchase_order_header where order_number='$ponumber' and order_date!=NULL");
+                    if(getNumRows($c)>0){
+                     $query = "update purchase_order_header set discrepancy_flag=NULL, flag='$nextflag', order_status='$statbeforerevision', date_flag='$date', order_date='$date' where order_number='$ponumber'";
+                    }
+                    else{
+                     $query = "update purchase_order_header set discrepancy_flag=NULL, flag='$nextflag', order_status='$statbeforerevision', date_flag='$date', order_date='$date' where order_number='$ponumber'";
+                     //$query = "update purchase_order_header set discrepancy_flag=NULL, flag='$nextflag', order_status='$statbeforerevision', date_flag='$date' where order_number='$ponumber'";
+                    }
+                     query("delete from purchase_requisition_revision_sources where order_number='$ponumber'");
+                     query("update purchase_order_variance_details set flag='0' where order_number='$ponumber'");
+                }
+                else{
+                     $query = "update purchase_order_header set flag='$nextflag', order_status='$statbeforerevision', order_date='$date', date_flag='$date' where order_number='$ponumber'";
+                    //$query = "update purchase_order_header set flag='$nextflag', order_status='$statbeforerevision', date_flag='$date' where order_number='$ponumber'";
+                }
+            }
+            else{
+                $nextflag = '4';
+                $query = "update purchase_order_header set flag='$nextflag', date_flag='$date'  where order_number='$ponumber'";
+            }
+            $r = query($query);
+            if(!$r){
+                echo error();
+            }
+            else{
+                if($nextflag!='5'){
+                    $emailsuccess = $emailClass->sendNotification(getUserEmail($nextapproverexist),getUserName($nextapproverexist),'EPRPO - Purchase Order Approval',poMessage($ponumber),poMessage($ponumber),$cc);
+                }
+                else{
+                     $emailsuccess = $emailClass->sendNotification(getUserEmail($obj->posted_by),getUserName($obj->posted_by),'EPRPO - Purchase Order Approval',poApprovedMessage($ponumber),poApprovedMessage($ponumber),$cc1);
+                }
+            }
+            return $r;
+        }
+        
+
+        /* PRESIDENT */
+        $query = "select * from purchase_order_header where order_number='$ponumber' and flag='4' and third_approver='$userid' and order_status='IN REVIEW'";
         $rs = query($query);
         $count = getNumRows($rs);
         if($count==1){
@@ -1824,7 +2054,7 @@
             array_push($cc1, $ccprchhead, $ccprreq);
             /** GET CC **/
             $statbeforerevision = ($obj->status_before_revision!='PARTIAL DELIVERY'&&$obj->status_before_revision!='SERVED')?'UNSERVED':$obj->status_before_revision;
-                $nextflag = '4';
+                $nextflag = '5';
                 $revised = getNumRows(query("select * from purchase_requisition_revision_sources where order_number='$ponumber'"));
                 if($revised>0){
                      $query = "update purchase_order_header set discrepancy_flag=NULL, flag='$nextflag',order_status='$statbeforerevision', date_flag='$date', order_date='$date' where order_number='$ponumber'";
@@ -2432,6 +2662,180 @@
             echo error();
         }
     }
+
+    // function numberTowords($num) {
+
+    // $ones = array(
+    //     // 0 =>"ZERO",
+    //     1 => "ONE",
+    //     2 => "TWO",
+    //     3 => "THREE",
+    //     4 => "FOUR",
+    //     5 => "FIVE",
+    //     6 => "SIX",
+    //     7 => "SEVEN",
+    //     8 => "EIGHT",
+    //     9 => "NINE",
+    //     10 => "TEN",
+    //     11 => "ELEVEN",
+    //     12 => "TWELVE",
+    //     13 => "THIRTEEN",
+    //     14 => "FOURTEEN",
+    //     15 => "FIFTEEN",
+    //     16 => "SIXTEEN",
+    //     17 => "SEVENTEEN",
+    //     18 => "EIGHTEEN",
+    //     19 => "NINETEEN"
+    // );
+    // $tens = array( 
+    //     // 0 => "ZERO",
+    //     1 => "TEN",
+    //     2 => "TWENTY",
+    //     3 => "THIRTY", 
+    //     4 => "FORTY", 
+    //     5 => "FIFTY", 
+    //     6 => "SIXTY", 
+    //     7 => "SEVENTY", 
+    //     8 => "EIGHTY", 
+    //     9 => "NINETY" 
+    // ); 
+    // $hundreds = array( 
+    //     "HUNDRED", 
+    //     "THOUSAND", 
+    //     "MILLION", 
+    //     "BILLION", 
+    //     "TRILLION", 
+    //     "QUARDRILLION"
+    // ); /*limit t quadrillion */
+
+    // $num        = number_format($num,2,".",","); 
+    // $num_arr    = explode(".",$num); 
+    // $wholenum   = $num_arr[0]; 
+    // $decnum     = $num_arr[1]; 
+    // $whole_arr  = array_reverse(explode(",",$wholenum)); 
+    // krsort($whole_arr,1); 
+    // $rettxt = ""; 
+    // foreach($whole_arr as $key => $i){
+        
+    // while(substr($i,0,1)=="0")
+    //     $i=substr($i,1,5);
+    //     if($i < 20){ 
+    //     /* echo "getting:".$i; */
+    //         $rettxt .= $ones[$i]; 
+    //     }elseif($i < 100){ 
+    //         if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
+    //         if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
+    //     }else{ 
+    //         if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
+    //         if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
+    //         if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
+    //     } 
+    //     if($key > 0){ 
+    //         $rettxt .= " ".$hundreds[$key]." "; 
+    //     }
+    // } 
+    // if($decnum > 0){
+    //     $rettxt .= " and ";
+    //     if($decnum < 20){
+    //         $rettxt .= $ones[$decnum];
+    //     }elseif($decnum < 100){
+    //         $rettxt .= $tens[substr($decnum,0,1)];
+    //         $rettxt .= " ".$ones[substr($decnum,1,1)];
+    //     }
+    // }
+    
+    // return $rettxt;
+
+    // }
+
+function numberToWords($number) {
+    $words = array(
+        0 => 'ZERO',
+        1 => 'ONE',
+        2 => 'TWO',
+        3 => 'THREE',
+        4 => 'FOUR',
+        5 => 'FIVE',
+        6 => 'SIX',
+        7 => 'SEVEN',
+        8 => 'EIGHT',
+        9 => 'NINE',
+        10 => 'TEN',
+        11 => 'ELEVEN',
+        12 => 'TWELVE',
+        13 => 'THIRTEEN',
+        14 => 'FOURTEEN',
+        15 => 'FIFTEEN',
+        16 => 'SIXTEEN',
+        17 => 'SEVENTEEN',
+        18 => 'EIGHTEEN',
+        19 => 'NINETEEN',
+        20 => 'TWENTY',
+        30 => 'THIRTY',
+        40 => 'FORTY',
+        50 => 'FIFTY',
+        60 => 'SIXTY',
+        70 => 'SEVENTY',
+        80 => 'EIGHTY',
+        90 => 'NINETY'
+    );
+
+    $digits = array("", "THOUSAND", "MILLION", "BILLION", "TRILLION");
+
+    if (!is_numeric($number)) {
+        return false;
+    }
+
+    if ((int)$number === 0) {
+        return 'zero';
+    }
+
+    if ($number < 0) {
+        return 'negative ' . numberToWords(abs($number));
+    }
+
+    $result = '';
+
+    $number = (int)$number;
+    $digitGroup = 0;
+
+    while ($number > 0) {
+        $chunk = $number % 1000;
+
+        if ($chunk > 0) {
+            $chunkWords = '';
+
+            $hundreds = (int)($chunk / 100);
+            $remainder = $chunk % 100;
+
+            if ($hundreds > 0) {
+                $chunkWords .= $words[$hundreds] . ' HUNDRED';
+                if ($remainder > 0) {
+                    $chunkWords .= ' AND ';
+                }
+            }
+
+            if ($remainder > 0) {
+                if ($remainder < 21) {
+                    $chunkWords .= $words[$remainder];
+                } else {
+                    $chunkWords .= $words[(int)($remainder / 10) * 10];
+                    if ($remainder % 10 > 0) {
+                        $chunkWords .= '-' . $words[$remainder % 10];
+                    }
+                }
+            }
+
+            $result = $chunkWords . ($digitGroup > 0 ? ' ' . $digits[$digitGroup] : '') . ($result ? ', ' . $result : '');
+        }
+
+        $number = (int)($number / 1000);
+        $digitGroup++;
+    }
+
+    return $result;
+}
+
 
 
 ?>

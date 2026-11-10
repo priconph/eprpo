@@ -23,7 +23,7 @@ class Email{
 					$mail->addCC($ccrequestor[$i]);
 				}
 				
-				$mail->addBCC('jgsulit@pricon.ph');
+				// $mail->addBCC('jgsulit@pricon.ph');
 				$mail->isHTML(true);                                 
 
 				$mail->Subject = $subject;

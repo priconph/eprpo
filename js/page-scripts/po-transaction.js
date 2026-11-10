@@ -12,14 +12,14 @@ $(document).off('click','#pocreate-cancelbtn').on('click','#pocreate-cancelbtn',
 			$('#loading-img').addClass('hidden');
 		},300);
 	});
-	
-	
+		
 });
 
 $(document).off('click','.pobuttons:not(".disabled")').on('click','.pobuttons:not(".disabled")', function(){
 	var button=$(this);
 	button.addClass('disabled');
-	var crntdateneeded, dateneeded, prnumber, ponumber, attn, supplieraddr, term, shipvia, deliverydate, remarks, poapprover, action, grandtotal, currency, response=false, modeofshipment;
+	var crntdateneeded, dateneeded, prnumber, president, ponumber, attn, supplieraddr, term, shipvia, deliverydate, remarks, poapprover, action, grandtotal, currency, response=false, modeofshipment;
+	president = $('.president').val();
 	prnumber = $('.refreqnum').val();
 	dateneeded = $('#dateneeded').val();
 	ponumber = $('.ponumber').val();
@@ -34,8 +34,16 @@ $(document).off('click','.pobuttons:not(".disabled")').on('click','.pobuttons:no
 
 	grandtotal=$('#pograndtotal').val().replace(/,/g,'');
 	currency = $('.pocurrency').val();
-
-	
+	if (currency == '1') {
+		curr = 'JPY';
+	} else if (currency == '2') {
+		curr = 'PHP';
+	} else if (currency == '3') {
+		curr = 'USD';
+	} else {
+		curr = '---';
+	}
+	facshipto = $('.facshipto').val();
 
 	if($(this).attr('id')=='pocreate-savebtn'){
 		action="SAVE";
@@ -43,8 +51,6 @@ $(document).off('click','.pobuttons:not(".disabled")').on('click','.pobuttons:no
 	else if($(this).attr('id')=='pocreate-submitbtn'){
 		action='SUBMIT';
 	}
-
-
 
 	if(action!='SAVE'&&term=='NULL'){
 		$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>Please select <b>term of payment.</b></div></div>");
@@ -68,56 +74,165 @@ $(document).off('click','.pobuttons:not(".disabled")').on('click','.pobuttons:no
 	}*/
 	else{
 		if(action=='SUBMIT'){
+			/* 10222024 Updated */
+			if (currency == '1' && grandtotal >= 228153 || currency == '2' && grandtotal >= 100000 || currency == '3' && grandtotal >= 2500) {//JPY
+				if (president == null || president == '') {
+					$('.pageContent .errordiv').html("<div class='message'><div class='message-content'><span class='closemessage'>&times;</span>The total amount is <b>" + curr + " " + grandtotal + " </b> and the <b>President</b> was not identified in the PR. This is subject for revision. Thank you!</div></div>");
+					$('.content').animate({ scrollTop: 0 }, 200);
+					button.removeClass('disabled');
+				} else {
+					$.confirm({
+						animation: 'bottom',
+						closeAnimation: 'top',
+						animationSpeed: 1000,
+						animationBounce: 1,
+						title: 'Confirmation',
+						content: 'Are you sure you want to continue?',
+						confirmButton: 'Confirm',
+						cancelButton: 'Cancel',
+						confirmButtonClass: 'btn-oceanblue',
+						cancelButtonClass: 'btn-royalblue',
+						theme: 'white',
 
-			$.confirm({
-					animation: 'bottom', 
+						confirm: function () {
+							$('#loading-img').removeClass('hidden');
+							$.post(server + 'po-transaction.php', { kerbfdsoirp: action, attn: attn, prnumber: prnumber, crntdateneeded: crntdateneeded, dateneeded: dateneeded, grandtotal: grandtotal, mode: modeofshipment, currency: currency, ponumber: ponumber, supplieraddr: supplieraddr, term: term, shipvia: shipvia, remarks: remarks }, function (data) {
+								var dt = data.trim().split('#@$');
+								var ponumber = dt[1];
+								if (dt[0] == 'success') {
+									$('.content').animate({ scrollTop: 0 }, 200);
+									$('.content').load('Transaction/purchase-order.php', function () {
+										$.getScript(pagescripts + 'purchase-order.js');
+										setTimeout(function () {
+											$('#loading-img').addClass('hidden');
+										}, 300);
+										notify("Purchase Order has been <b>submitted</b>", "success", "fa fa-check-circle");
+
+										setTimeout(function(){
+												$.post(server+'po-transaction.php',{emailnotification:'Nsl3Ep203N0amlOepan10@#0',ponumber:ponumber},function(data){
+														if(data.trim()!=1||data.trim()!=true){
+															alert(data);
+														}
+												});
+										},500);
+									});
+
+								}
+								else {
+									$('#loading-img').addClass('hidden');
+									// alert(data);
+									button.removeClass('disabled');
+								}
+							});
+						},
+						cancel: function () {
+							button.removeClass('disabled');
+						}
+
+					});
+				}
+			} else {
+				$.confirm({
+					animation: 'bottom',
 					closeAnimation: 'top',
 					animationSpeed: 1000,
-					animationBounce:1,
+					animationBounce: 1,
 					title: 'Confirmation',
 					content: 'Are you sure you want to continue?',
 					confirmButton: 'Confirm',
-					cancelButton: 'Cancel',	
-					confirmButtonClass: 'btn-oceanblue', 
-					cancelButtonClass: 'btn-royalblue', 
-					theme: 'white', 
+					cancelButton: 'Cancel',
+					confirmButtonClass: 'btn-oceanblue',
+					cancelButtonClass: 'btn-royalblue',
+					theme: 'white',
 
-					confirm: function(){
-							$('#loading-img').removeClass('hidden');
-							$.post(server+'po-transaction.php',{kerbfdsoirp:action,attn:attn,prnumber:prnumber,crntdateneeded:crntdateneeded,dateneeded:dateneeded,grandtotal:grandtotal,mode:modeofshipment,currency:currency,ponumber:ponumber,supplieraddr:supplieraddr,term:term,shipvia:shipvia,remarks:remarks},function(data){
-									var dt = data.trim().split('#@$');
-									var ponumber = dt[1];
-									if(dt[0]=='success'){
-										$('.content').animate({scrollTop:0},200);
-										$('.content').load('Transaction/purchase-order.php',function(){
-												$.getScript(pagescripts+'purchase-order.js');
-												setTimeout(function(){
-													$('#loading-img').addClass('hidden');
-												},300);
-												notify("Purchase Order has been <b>submitted</b>", "success","fa fa-check-circle");
-												
-												/*setTimeout(function(){
-														$.post(server+'po-transaction.php',{emailnotification:'Nsl3Ep203N0amlOepan10@#0',ponumber:ponumber},function(data){
-																if(data.trim()!=1||data.trim()!=true){
-																	alert(data);
-																}
-														});
-												},500);*/
-										});
-
-									}
-									else{
+					confirm: function () {
+						$('#loading-img').removeClass('hidden');
+						$.post(server + 'po-transaction.php', { kerbfdsoirp: action, attn: attn, prnumber: prnumber, crntdateneeded: crntdateneeded, dateneeded: dateneeded, grandtotal: grandtotal, mode: modeofshipment, currency: currency, ponumber: ponumber, supplieraddr: supplieraddr, term: term, shipvia: shipvia, remarks: remarks }, function (data) {
+							var dt = data.trim().split('#@$');
+							var ponumber = dt[1];
+							if (dt[0] == 'success') {
+								$('.content').animate({ scrollTop: 0 }, 200);
+								$('.content').load('Transaction/purchase-order.php', function () {
+									$.getScript(pagescripts + 'purchase-order.js');
+									setTimeout(function () {
 										$('#loading-img').addClass('hidden');
-										alert(data);
-										button.removeClass('disabled');
-									}
-							});	
+									}, 300);
+									notify("Purchase Order has been <b>submitted</b>", "success", "fa fa-check-circle");
+
+									setTimeout(function(){
+											$.post(server+'po-transaction.php',{emailnotification:'Nsl3Ep203N0amlOepan10@#0',ponumber:ponumber},function(data){
+													if(data.trim()!=1||data.trim()!=true){
+														alert(data);
+													}
+											});
+									},500);
+								});
+
+							}
+							else {
+								$('#loading-img').addClass('hidden');
+								// alert(data);
+								button.removeClass('disabled');
+							}
+						});
 					},
-					cancel:function(){ 
+					cancel: function () {
 						button.removeClass('disabled');
 					}
+
+				});
+			}
+
+
+			// $.confirm({
+			// 		animation: 'bottom', 
+			// 		closeAnimation: 'top',
+			// 		animationSpeed: 1000,
+			// 		animationBounce:1,
+			// 		title: 'Confirmation',
+			// 		content: 'Are you sure you want to continue?',
+			// 		confirmButton: 'Confirm',
+			// 		cancelButton: 'Cancel',	
+			// 		confirmButtonClass: 'btn-oceanblue', 
+			// 		cancelButtonClass: 'btn-royalblue', 
+			// 		theme: 'white', 
+
+			// 		confirm: function(){
+			// 				$('#loading-img').removeClass('hidden');
+			// 				$.post(server+'po-transaction.php',{kerbfdsoirp:action,attn:attn,prnumber:prnumber,crntdateneeded:crntdateneeded,dateneeded:dateneeded,grandtotal:grandtotal,mode:modeofshipment,currency:currency,ponumber:ponumber,supplieraddr:supplieraddr,term:term,shipvia:shipvia,remarks:remarks},function(data){
+			// 						var dt = data.trim().split('#@$');
+			// 						var ponumber = dt[1];
+			// 						if(dt[0]=='success'){
+			// 							$('.content').animate({scrollTop:0},200);
+			// 							$('.content').load('Transaction/purchase-order.php',function(){
+			// 									$.getScript(pagescripts+'purchase-order.js');
+			// 									setTimeout(function(){
+			// 										$('#loading-img').addClass('hidden');
+			// 									},300);
+			// 									notify("Purchase Order has been <b>submitted</b>", "success","fa fa-check-circle");
+												
+			// 									/*setTimeout(function(){
+			// 											$.post(server+'po-transaction.php',{emailnotification:'Nsl3Ep203N0amlOepan10@#0',ponumber:ponumber},function(data){
+			// 													if(data.trim()!=1||data.trim()!=true){
+			// 														alert(data);
+			// 													}
+			// 											});
+			// 									},500);*/
+			// 							});
+
+			// 						}
+			// 						else{
+			// 							$('#loading-img').addClass('hidden');
+			// 							alert(data);
+			// 							button.removeClass('disabled');
+			// 						}
+			// 				});	
+			// 		},
+			// 		cancel:function(){ 
+			// 			button.removeClass('disabled');
+			// 		}
 					
-			});
+			// });
 
 		}
 		else{

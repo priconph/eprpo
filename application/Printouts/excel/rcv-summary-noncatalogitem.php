@@ -79,12 +79,14 @@ if(isset($_GET['rcvSummaryNonCatalogItemExcelFormat1231003435'])){
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>CLASSIFICATION CODE</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>ALLOCATION (%)</th>
     						<th class='text-left' style='background-color:#0F3057; color:#fff'>PO REMARKS</th>
+    						<th class='text-left' style='background-color:#0F3057; color:#fff'>SHIP TO</th>
     					</tr>
     				";
     
 
     while($obj=fetch($rs)){
     			$ref = ($obj->reference_po_number==NULL)?$obj->other_reference:$obj->reference_po_number;
+				$fac 		= getRefFac($obj->reference_po_number);  // 01312025 by Nessa
 				$output .="<tr>
 								<td>NO PO REFERENCE</td>
 								<td>NO PO REFERENCE</td>
@@ -105,11 +107,12 @@ if(isset($_GET['rcvSummaryNonCatalogItemExcelFormat1231003435'])){
 								<td>".$obj->classification_code."</td>
 								<td>NO PR REFERENCE</td>
 								<td>".$obj->po_remarks."</td>
+								<td>".$fac."</td>
 							</tr>";
 
 	}
 			if($count==0){
-				$output .= "<tr><td colspan='11' align='center'>No Results Found</td></tr>";
+				$output .= "<tr><td colspan='20' align='center'>No Results Found</td></tr>";
 			}
 			$output .="</table>";
 	
